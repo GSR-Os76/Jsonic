@@ -49,13 +49,10 @@ namespace GSR.Tests.Jsonic
         [DataRow("1e-")]
         [DataRow("320l")]
         [DataRow("-E+3")]
-
-
         public void TestInvalid(string s)
         {
             new JsonNumber(s);
-        }// end TestValid
-
+        }// end TestInvalid()
 
     }  // end class
 } // end namespace

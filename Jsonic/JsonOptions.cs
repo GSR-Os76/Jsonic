@@ -3,6 +3,6 @@
     [Flags]
     public enum JsonOptions
     {
-       WRITE_CONCISE = 1,
+        WRITE_CONCISE = 1,
     } // end enum
 } // end namespace
