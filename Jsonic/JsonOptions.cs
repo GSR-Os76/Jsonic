@@ -1,8 +1,10 @@
-﻿namespace Jsonic
+﻿namespace GSR.Jsonic
 {
     [Flags]
     public enum JsonOptions
     {
-        WRITE_CONCISE = 1,
+        Compress = 0b_0001,
+
+        Default = 0b_0000,
     } // end enum
 } // end namespace

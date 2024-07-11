@@ -2,11 +2,13 @@
 
 namespace GSR.Jsonic
 {
-    public sealed class JsonNumber
+    public sealed class JsonNumber : IJsonComponent
     {
         public const string STRICT_VALIDATOR_REGEX = @"^-?(([1-9][0-9]*)|0)(\.[0-9]+)?([eE][-+]?[0-9]+)?$";
 
         public string Value { get; }
+
+        public JsonOptions Options { get; set; } = JsonOptions.Default;
 
 
 
@@ -24,6 +26,8 @@ namespace GSR.Jsonic
         public override string ToString() => Value;
 
 
+
+        // I still strongly dislike implicits, and even explicits. Probably make into AsType methods, possibly by extension for cleanliness and singularism.
         public static implicit operator sbyte(JsonNumber a) => sbyte.Parse(a.Value);
         public static explicit operator JsonNumber(sbyte a) => new(a.ToString());
         public static implicit operator byte(JsonNumber a) => byte.Parse(a.Value);

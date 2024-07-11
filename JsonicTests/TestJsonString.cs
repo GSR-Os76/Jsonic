@@ -82,7 +82,7 @@ namespace GSR.Tests.Jsonic
         public void TestToString(string a, string b)
         {
             Assert.AreEqual(b, new JsonString(a).ToString());
-        }// end TestInvalid()
+        }// end TestToString()
 
         [TestMethod]
         [DataRow("", "\"\"")]
@@ -96,7 +96,7 @@ namespace GSR.Tests.Jsonic
         public void TestParse(string a, string b)
         {
             Assert.AreEqual(b, JsonString.Parse(a).Value);
-        }// end TestInvalid()
+        }// end TestParse()
 
     } // end class
 } // end namespace
