@@ -79,10 +79,13 @@ namespace GSR.Tests.Jsonic
         [DataRow("\"\\u00A9\"", "©")]
         [DataRow("\"\\u0152\"", "Œ")]
         [DataRow("\"\\u0489\"", "҉")]
-        public void TestToString(string a, string b)
+        [DataRow("\":erwojofe\"", ":erwojofe")]
+        [DataRow("\"\\\\ge4\\b\"", "\\ge4\b")]
+        [DataRow("\"\\\\\\b\"", "\\\b")]
+        public void TestToRepresentedString(string a, string b)
         {
-            Assert.AreEqual(b, new JsonString(a).ToString());
-        }// end TestToString()
+            Assert.AreEqual(b, new JsonString(a).ToRepresentedString());
+        }// end TestToRepresentedString()
 
         [TestMethod]
         [DataRow("", "\"\"")]

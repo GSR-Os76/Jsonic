@@ -28,13 +28,22 @@ namespace GSR.Jsonic
 
 
 
-        // we're using this for serialization, so this should no change the json into non.
+
+        /// <summary>
+        /// Unescapes escaped characters, and remove enquotement, turning it into the string it represents.
+        /// </summary>
+        /// <returns></returns>
+        public string ToRepresentedString() => Value[1..^1].Replace("\\\"", "\"").Replace("\\/", "/").Replace("\\b", "\b").Replace("\\f", "\f").Replace("\\n", "\n").Replace("\\r", "\r").Replace("\\t", "\t").UnescapeUnicodeCharacters().Replace("\\\\", "\\");
+
+
         /// <summary>
         /// Unescapes escaped characters, turning it into the string it represents.
         /// </summary>
         /// <returns></returns>
-        public override string ToString() => Value[1..^1].Replace("\\\"", "\"").Replace("\\\\", "\\").Replace("\\/", "/").Replace("\\b", "\b").Replace("\\f", "\f").Replace("\\n", "\n").Replace("\\r", "\r").Replace("\\t", "\t").UnescapeUnicodeCharacters();
-        
+        public override string ToString() => Value;
+
+
+
         /// <summary>
         /// Escapes all unescaped characters necessary, turning it into an equivalent string that represents it.
         /// </summary>
@@ -44,7 +53,7 @@ namespace GSR.Jsonic
         {
             StringBuilder sb = new(s.Length + 2);
             sb.Append("\"");
-            foreach(char c in s)
+            foreach (char c in s)
                 sb.Append(c == '"' ? "\\\"" : c == '\\' ? "\\\\" : c);
 
             return new(sb.Append("\"").ToString());
