@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text;
+using System.Text.RegularExpressions;
 
 namespace GSR.Jsonic
 {
@@ -10,6 +11,11 @@ namespace GSR.Jsonic
 
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="json"></param>
+        /// <exception cref="MalformedJsonException">sString wasn't in valid Json string format.</exception>
         public JsonString(string json)
         {
             if (!Regex.IsMatch(json, STRICT_VALIDATOR_REGEX))
@@ -19,10 +25,27 @@ namespace GSR.Jsonic
         } // end constructor()
 
 
-        public override string ToString() => Value;
 
+        /// <summary>
+        /// Unescapes escaped characters, turning it into the string it represents.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString() => Value[1..^1].Replace("\\\"", "\"").Replace("\\\\", "\\").Replace("\\/", "/").Replace("\\b", "\b").Replace("\\f", "\f").Replace("\\n", "\n").Replace("\\r", "\r").Replace("\\t", "\t").UnescapeUnicodeCharacters();
 
-        public static implicit operator string(JsonString a) => a.Value;
-        public static explicit operator JsonString(string a) => new(a);
+        /// <summary>
+        /// Escapes all unescaped characters necessary, turning it into an equivalent string that represents it.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static JsonString Parse(string s)
+        {
+            StringBuilder sb = new(s.Length + 2);
+            sb.Append("\"");
+            foreach(char c in s)
+                sb.Append(c == '"' ? "\\\"" : c == '\\' ? "\\\\" : c);
+
+            return new(sb.Append("\"").ToString());
+        } // end Parse()           // TODON'T: would be unecessary and oppressive: TODO, maybe also escape \ in the script tag context, maybe also do: .Replace("\b", "\\b").Replace("\f", "\\f").Replace("\n", "\\n").Replace("\r", "\\r").Replace("\t", "\\t")
+
     } // end class
 } // end namespace
