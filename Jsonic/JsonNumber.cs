@@ -2,13 +2,11 @@
 
 namespace GSR.Jsonic
 {
-    public sealed class JsonNumber : IJsonComponent
+    public sealed class JsonNumber : JsonComponent
     {
         public const string STRICT_VALIDATOR_REGEX = @"^-?(([1-9][0-9]*)|0)(\.[0-9]+)?([eE][-+]?[0-9]+)?$";
 
         public string Value { get; }
-
-        public JsonOptions Options { get; set; } = JsonOptions.Default;
 
 
 

@@ -1,46 +1,37 @@
 ﻿namespace GSR.Jsonic
 {
-    public sealed class JsonElement : IJsonComponent
+    public sealed class JsonElement : JsonComponent
     {
-        // if we're already boxing a boolean sometimes, why not just wrap it in JsonBoolean usurping unboxing? Then eveything is IJsonComponent too. Even storing a bool typed value would not help, as the value property would still just box it. 
-        public object? Value { get; }
+        public IJsonComponent? Value { get; }
 
         public JsonType Type { get; }
-
-        public JsonOptions Options { get; set; } = JsonOptions.Default;
 
 
 
         public JsonElement() : this(null, JsonType.Null) { } // end constructor
-        public JsonElement(JsonArray? element) : this(element, JsonType.Array) { } // end constructor
-        public JsonElement(bool element) : this(element, JsonType.Boolean) { } // end constructor
-        public JsonElement(JsonNumber? element) : this(element, JsonType.Number) { } // end constructor
-        public JsonElement(JsonObject? element) : this(element, JsonType.Object) { } // end constructor
-        public JsonElement(JsonString? element) : this(element, JsonType.String) { } // end constructor
-        private JsonElement(object? element, JsonType type)
+        public JsonElement(bool value) : this(new JsonBoolean(value)) { } // end constructor
+        public JsonElement(string value) : this(new JsonString(value)) { } // end constructor
+        public JsonElement(JsonArray? value) : this(value, JsonType.Array) { } // end constructor
+        public JsonElement(JsonBoolean? value) : this(value, JsonType.Boolean) { } // end constructor
+        public JsonElement(JsonNumber? value) : this(value, JsonType.Number) { } // end constructor
+        public JsonElement(JsonObject? value) : this(value, JsonType.Object) { } // end constructor
+        public JsonElement(JsonString? value) : this(value, JsonType.String) { } // end constructor
+        private JsonElement(IJsonComponent? value, JsonType type)
         {
-            Value = element;
-            Type = element is null ? JsonType.Null : type;
+            Value = value;
+            Type = value is null ? JsonType.Null : type;
         } // end constructor
 
 
 
         public override string ToString()
         {
-            switch (Type) 
-            {
-                case JsonType.Null:
-                    return JsonUtil.JSON_NULL;
-                case JsonType.Boolean:
-                    return ((bool)Value) ? JsonUtil.JSON_TRUE : JsonUtil.JSON_FALSE;
-                default:
-                    IJsonComponent j = (IJsonComponent)Value;
-                    j.Options = Options;
-                    return j.ToString();
-            }
-        } // end ToString()
-        //Separate constructors an implement ToString, and json state
+            if (Type == JsonType.Null)
+                return JsonUtil.JSON_NULL;
 
+            Value.Options = Options;
+            return Value.ToString();
+        } // end ToString()
 
     } // end record class
 } // end namespace

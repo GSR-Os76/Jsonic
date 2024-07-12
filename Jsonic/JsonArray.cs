@@ -2,11 +2,9 @@
 
 namespace GSR.Jsonic
 {
-    public sealed class JsonArray : IJsonComponent, IEnumerable<JsonElement>
+    public sealed class JsonArray : JsonComponent, IEnumerable<JsonElement>
     {
         private IList<JsonElement> _elements = new List<JsonElement>();
-
-        public JsonOptions Options { get; set; } = JsonOptions.Default;
 
 
 

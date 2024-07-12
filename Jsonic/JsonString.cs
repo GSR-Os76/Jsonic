@@ -3,13 +3,11 @@ using System.Text.RegularExpressions;
 
 namespace GSR.Jsonic
 {
-    public sealed class JsonString : IJsonComponent
+    public sealed class JsonString : JsonComponent
     {
         public const string STRICT_VALIDATOR_REGEX = @"^""([^\\""]|(\\([""\\/bfnrt]|(u[0-9a-fA-F]{4}))))*""$";
 
         public string Value { get; }
-
-        public JsonOptions Options { get; set; } = JsonOptions.Default;
 
 
 

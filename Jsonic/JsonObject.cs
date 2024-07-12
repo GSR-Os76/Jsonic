@@ -1,10 +1,8 @@
 ﻿namespace GSR.Jsonic
 {
-    public sealed class JsonObject : IJsonComponent
+    public sealed class JsonObject : JsonComponent
     {
         private Dictionary<JsonString, JsonElement> _kvps;
-
-        public JsonOptions Options { get; set; } = JsonOptions.Default;
 
 
         /*
