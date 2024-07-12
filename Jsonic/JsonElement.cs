@@ -1,6 +1,6 @@
 ﻿namespace GSR.Jsonic
 {
-    public sealed class JsonElement : JsonComponent
+    public sealed class JsonElement : IJsonComponent
     {
         public IJsonComponent? Value { get; }
 
@@ -24,14 +24,17 @@
 
 
 
-        public override string ToString()
+        public string ToCompressedString() => AsString(true);
+
+        public override string ToString() => AsString();
+
+        private string AsString(bool compress = false) 
         {
             if (Type == JsonType.Null)
                 return JsonUtil.JSON_NULL;
 
-            Value.Options = Options;
-            return Value.ToString();
-        } // end ToString()
+            return compress ? Value.ToCompressedString() : Value.ToString();
+        } // end AsString()
 
     } // end record class
 } // end namespace

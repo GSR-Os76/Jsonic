@@ -2,7 +2,7 @@
 
 namespace GSR.Jsonic
 {
-    public sealed class JsonNumber : JsonComponent
+    public sealed class JsonNumber : IJsonComponent
     {
         public const string STRICT_VALIDATOR_REGEX = @"^-?(([1-9][0-9]*)|0)(\.[0-9]+)?([eE][-+]?[0-9]+)?$";
 
@@ -20,8 +20,11 @@ namespace GSR.Jsonic
         } // end JsonNumber
 
 
+        public string ToCompressedString() => ToString();
 
         public override string ToString() => Value;
+
+        
 
 
 

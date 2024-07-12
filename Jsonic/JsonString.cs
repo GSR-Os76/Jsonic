@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace GSR.Jsonic
 {
-    public sealed class JsonString : JsonComponent
+    public sealed class JsonString : IJsonComponent
     {
         public const string STRICT_VALIDATOR_REGEX = @"^""([^\\""]|(\\([""\\/bfnrt]|(u[0-9a-fA-F]{4}))))*""$";
 
@@ -34,10 +34,8 @@ namespace GSR.Jsonic
         public string ToRepresentedString() => Value[1..^1].Replace("\\\"", "\"").Replace("\\/", "/").Replace("\\b", "\b").Replace("\\f", "\f").Replace("\\n", "\n").Replace("\\r", "\r").Replace("\\t", "\t").UnescapeUnicodeCharacters().Replace("\\\\", "\\");
 
 
-        /// <summary>
-        /// Unescapes escaped characters, turning it into the string it represents.
-        /// </summary>
-        /// <returns></returns>
+        public string ToCompressedString() => ToString();
+
         public override string ToString() => Value;
 
 

@@ -2,7 +2,6 @@
 {
     public interface IJsonComponent
     {
-        JsonOptions Options { get; set; }
-
+        string ToCompressedString();
     } // end interface
 } // end namespace

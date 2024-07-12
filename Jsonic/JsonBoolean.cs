@@ -1,6 +1,6 @@
 ﻿namespace GSR.Jsonic
 {
-    public sealed class JsonBoolean : JsonComponent
+    public sealed class JsonBoolean : IJsonComponent
     {
         public bool Value { get; }
 
@@ -12,6 +12,8 @@
         } // end constructor
 
 
+
+        public string ToCompressedString() => ToString();
 
         public override string ToString() => Value ? JsonUtil.JSON_TRUE : JsonUtil.JSON_FALSE;
 
