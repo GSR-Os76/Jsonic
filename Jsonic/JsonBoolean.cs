@@ -1,5 +1,6 @@
 ﻿namespace GSR.Jsonic
 {
+#warning could be two singular instances, as the class is immutable and only has two possible states.
     public sealed class JsonBoolean : IJsonComponent
     {
         public bool Value { get; }

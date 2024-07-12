@@ -24,6 +24,10 @@
 
 
 
+#warning add helper methods for quick casting retrieval?
+
+
+
         public string ToCompressedString() => AsString(true);
 
         public override string ToString() => AsString();
