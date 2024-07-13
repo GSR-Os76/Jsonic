@@ -306,5 +306,73 @@ namespace GSR.Tests.Jsonic
         } //  end TestAsULongInvalid()
         #endregion
 
+
+
+        #region float tests
+        [TestMethod]
+        [DataRow("2004", 2004f)]
+        [DataRow("-8", -8f)]
+        [DataRow("-93e4", -930000f)]
+        [DataRow("2e3", 2000f)]
+        [DataRow("2004.0", 2004f)]
+        [DataRow("-8.0", -8f)]
+        [DataRow("-93.0e4", -930000f)]
+        [DataRow("2.0e3", 2000f)]
+        [DataRow("2000000000000040000000000000000000000000000000000000000000000000000", float.PositiveInfinity)]
+        [DataRow("-8000000000000000000000000000000000000000000000000000000000000000000", float.NegativeInfinity)]
+        [DataRow("-93e267", float.NegativeInfinity)]
+        [DataRow("2e908", float.PositiveInfinity)]
+        public void TestAsFloatValid(string s, float e)
+        {
+            Assert.AreEqual(e, new JsonNumber(s).AsFloat());
+        } //  end TestAsFloatValid()
+        #endregion
+
+        #region double tests
+        [TestMethod]
+        [DataRow("2004", 2004d)]
+        [DataRow("-8", -8d)]
+        [DataRow("-93e4", -930000d)]
+        [DataRow("2e3", 2000d)]
+        [DataRow("2004.0", 2004d)]
+        [DataRow("-8.0", -8d)]
+        [DataRow("-93.0e4", -930000d)]
+        [DataRow("2.0e3", 2000d)]
+        [DataRow("-93e367", double.NegativeInfinity)]
+        [DataRow("2e908", double.PositiveInfinity)]
+        public void TestAsDoubleValid(string s, double e)
+        {
+            Assert.AreEqual(e, new JsonNumber(s).AsDouble());
+        } //  end TestAsDoubleValid()
+        #endregion
+
+        #region double tests
+        [TestMethod]
+        [DataRow(0)]
+        [DataRow(1)]
+        [DataRow(2)]
+        [DataRow(3)]
+        [DataRow(4)]
+        [DataRow(5)]
+        [DataRow(6)]
+        [DataRow(7)]
+        public void TestAsDecimalValid(int i)
+        {
+            Tuple<decimal, string>[] s = new Tuple<decimal, string>[] {Tuple.Create(2004m, "2004"), Tuple.Create(-8m, "-8"), Tuple.Create(-930000m, "-93e4") , Tuple.Create(2000m, "2e3") , Tuple.Create(2004m, "2004.0"), Tuple.Create(-8m, "-8.0"), Tuple.Create(-930000m, "-93.0e4"), Tuple.Create(2000m, "2.0e3") };
+
+            Assert.AreEqual(s[i].Item1, new JsonNumber(s[i].Item2).AsDecimal());
+        } //  end TestAsDecimalValid()
+
+        [TestMethod]
+        [ExpectedException(typeof(OverflowException))]
+        [DataRow(0)]
+        [DataRow(1)]
+        public void TestAsDecimalInvalid(int i)
+        {
+            string[] s = new string[] { "-93e267", "2e908" };
+            new JsonNumber(s[i]).AsDecimal();
+        } //  end TestAsDecimalInvalid()
+        #endregion
+
     }  // end class
 } // end namespace
