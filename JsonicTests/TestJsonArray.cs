@@ -32,14 +32,14 @@ namespace GSR.Tests.Jsonic
         [DataRow("[[false],true,\"are\"]")]
         public void ToCompressedStringNested3(string e)
         {
-            Assert.AreEqual(e, new JsonArray(new(new JsonArray(new JsonElement(false))), new(true), new("\"are\"")).ToCompressedString());
+            Assert.AreEqual(e, new JsonArray(new(new JsonArray(new JsonElement(false))), new(true), new("are")).ToCompressedString());
         } // end ToCompressedStringNested3()
 
         [TestMethod]
         [DataRow("[[false],true,\"are\"]")]
         public void ToCompressedStringNested3_2(string e)
         {
-            Assert.AreEqual(e, new JsonArray().Add(new JsonArray().Add(false)).Add(true).Add("\"are\"").ToCompressedString());
+            Assert.AreEqual(e, new JsonArray().Add(new JsonArray().Add(false)).Add(true).Add("are").ToCompressedString());
 #warning possibly make json string default enquotement agnostic, easier to use, or at least the methods for it in JsonArray and JsonObject
         } // end ToCompressedStringNested3_2()
         #endregion
@@ -70,7 +70,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("[\r\t[\r\t\tfalse\r\t],\r\ttrue,\r\t\"are\"\r]")]
         public void ToStringNested3(string e)
         {
-            Assert.AreEqual(e, new JsonArray(new JsonElement(new JsonArray(new JsonElement(false))), new JsonElement(true), new JsonElement(new JsonString("\"are\""))).ToString());
+            Assert.AreEqual(e, new JsonArray(new JsonElement(new JsonArray(new JsonElement(false))), new JsonElement(true), new JsonElement(new JsonString("are"))).ToString());
         } // end ToStringNested3()
         #endregion
 

@@ -6,6 +6,7 @@ namespace GSR.Tests.Jsonic
     [TestClass]
     public class TestJsonString
     {
+        #region enquoted
         [TestMethod]
         [DataRow("\"\"")]
         [DataRow("\"\\\"\"")]
@@ -33,11 +34,11 @@ namespace GSR.Tests.Jsonic
         [DataRow("\"f\"")]
         [DataRow("\"u98A3\"")]
         [DataRow("\"n\"")]
-        public void TestValid(string s)
+        public void TestValidEnquoted(string s)
         {
-            new JsonString(s);
+            new JsonString(s, true);
             Assert.IsTrue(true);
-        }// end TestValid
+        }// end TestValidEnquoted()
 
         [TestMethod]
         [ExpectedException(typeof(MalformedJsonException))]
@@ -58,11 +59,10 @@ namespace GSR.Tests.Jsonic
         [DataRow("\"\\u\"")]
         [DataRow("\"\\u8A3\"")]
         [DataRow("\"\\8F3\"")]
-        public void TestInvalid(string s)
+        public void TestInvalidEnqouted(string s)
         {
-            new JsonString(s);
-        }// end TestInvalid()
-
+            new JsonString(s, true);
+        }// end TestInvalidEnqouted()
 
         [TestMethod]
         [DataRow("\"\"", "")]
@@ -82,10 +82,27 @@ namespace GSR.Tests.Jsonic
         [DataRow("\":erwojofe\"", ":erwojofe")]
         [DataRow("\"\\\\ge4\\b\"", "\\ge4\b")]
         [DataRow("\"\\\\\\b\"", "\\\b")]
-        public void TestToRepresentedString(string a, string b)
+        public void TestToRepresentedStringEnquoted(string a, string b)
         {
-            Assert.AreEqual(b, new JsonString(a).ToRepresentedString());
-        }// end TestToRepresentedString()
+            Assert.AreEqual(b, new JsonString(a, true).ToRepresentedString());
+        }// end TestToRepresentedStringEnquoted()
+#endregion
+
+
+
+        [TestMethod]
+        [DataRow("", "")]
+        [DataRow("\"", "\\\"")]
+        [DataRow("\"\"", "\\\"\\\"")]
+        [DataRow("A3d_", "A3d_")]
+        [DataRow("\t", "\t")]
+        [DataRow("\\f", "\\\\f")]
+        [DataRow("\t Hi there, \n\rhow're you? \t", "\t Hi there, \n\rhow're you? \t")]
+        [DataRow("j\\bS", "j\\\\bS")]
+        public void TestParse(string a, string b)
+        {
+            Assert.AreEqual(b, JsonString.Parse(a).Value);
+        }// end TestParse()
 
         [TestMethod]
         [DataRow("", "\"\"")]
@@ -96,10 +113,11 @@ namespace GSR.Tests.Jsonic
         [DataRow("\\f", "\"\\\\f\"")]
         [DataRow("\t Hi there, \n\rhow're you? \t", "\"\t Hi there, \n\rhow're you? \t\"")]
         [DataRow("j\\bS", "\"j\\\\bS\"")]
-        public void TestParse(string a, string b)
+        public void TestParseToString(string a, string b)
         {
-            Assert.AreEqual(b, JsonString.Parse(a).Value);
-        }// end TestParse()
+            Assert.AreEqual(b, JsonString.Parse(a).ToString());
+            Assert.AreEqual(b, JsonString.Parse(a).ToCompressedString());
+        }// end TestParseToString()
 
     } // end class
 } // end namespace
