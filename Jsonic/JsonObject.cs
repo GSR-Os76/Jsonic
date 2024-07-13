@@ -36,14 +36,14 @@ namespace GSR.Jsonic
 
         private string AsString(bool compress = false)
         {
-            StringBuilder sb = new('{');
+            StringBuilder sb = new("{");
             if (!compress)
                 sb.Append('\r');
 
             for (int i = 0; i < _elements.Count; i++)
             {
                 if (!compress)
-                    sb.Append('\t');
+                    sb.Append('\t'); 
 
                 KeyValuePair<JsonString, JsonElement> kvp = _elements.ElementAt(i);
                 sb.Append(compress ? kvp.Key.ToCompressedString() : kvp.Key.ToString());

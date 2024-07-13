@@ -29,8 +29,11 @@ namespace GSR.Jsonic
         } // end constructor
 
 
-        // Add 
-        // InsertAt, RemoveAt
+
+        public void Add(JsonElement element) => _elements.Add(element);
+        public void Clear() => _elements.Clear();
+        public void InsertAt(int index, JsonElement element) => _elements.Insert(index, element);
+        public void RemoveAt(int index) => _elements.RemoveAt(index);
 
 
 
@@ -46,19 +49,17 @@ namespace GSR.Jsonic
 
         private string AsString(bool compress = false)
         {
-            StringBuilder sb = new('[');
+            StringBuilder sb = new("[");
             if (!compress)
                 sb.Append('\r');
 
             for (int i = 0; i < _elements.Count; i++)
             {
-                if (!compress)
-                    sb.Append('\t');
+                sb.Append(compress ? _elements[i].ToCompressedString() : _elements[i].ToString().Entabbed());
 
-                sb.Append(compress ? _elements[i].ToCompressedString() : _elements[i].ToString());
-
-                if (i == _elements.Count - 2) 
+                if (i != _elements.Count - 1) 
                 {
+                    // this condition seems all off
                     sb.Append(',');
                     if (!compress)
                         sb.Append('\r');
