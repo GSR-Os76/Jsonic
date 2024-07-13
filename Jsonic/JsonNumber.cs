@@ -12,8 +12,17 @@ namespace GSR.Jsonic
 
 
 
-#warning overloaded constructors for converting numbers into this
-
+        public JsonNumber(sbyte value) : this(value.ToString()) { }
+        public JsonNumber(byte value) : this(value.ToString()) { }
+        public JsonNumber(short value) : this(value.ToString()) { }
+        public JsonNumber(ushort value) : this(value.ToString()) { }
+        public JsonNumber(int value) : this(value.ToString()) { }
+        public JsonNumber(uint value) : this(value.ToString()) { }
+        public JsonNumber(long value) : this(value.ToString()) { }
+        public JsonNumber(ulong value) : this(value.ToString()) { }
+        public JsonNumber(float value) : this(value.ToString()) { }
+        public JsonNumber(double value) : this(value.ToString()) { }
+        public JsonNumber(decimal value) : this(value.ToString()) { }
         public JsonNumber(string json)
         {
             if (!Regex.IsMatch(json, STRICT_VALIDATOR_REGEX))
