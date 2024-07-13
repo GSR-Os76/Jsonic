@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Text;
+using System.Xml.Linq;
 
 namespace GSR.Jsonic
 {
@@ -30,10 +31,47 @@ namespace GSR.Jsonic
 
 
 
-        public void Add(JsonElement element) => _elements.Add(element);
-        public void Clear() => _elements.Clear();
-        public void InsertAt(int index, JsonElement element) => _elements.Insert(index, element);
-        public void RemoveAt(int index) => _elements.RemoveAt(index);
+        public JsonArray Add(bool element) => Add(new JsonElement(element));
+        public JsonArray Add(string element) => Add(new JsonElement(element));
+        public JsonArray Add(sbyte element) => Add(new JsonElement(element));
+        public JsonArray Add(byte element) => Add(new JsonElement(element));
+        public JsonArray Add(short element) => Add(new JsonElement(element));
+        public JsonArray Add(ushort element) => Add(new JsonElement(element));
+        public JsonArray Add(int element) => Add(new JsonElement(element));
+        public JsonArray Add(uint element) => Add(new JsonElement(element));
+        public JsonArray Add(long element) => Add(new JsonElement(element));
+        public JsonArray Add(ulong element) => Add(new JsonElement(element));
+        public JsonArray Add(float element) => Add(new JsonElement(element));
+        public JsonArray Add(double element) => Add(new JsonElement(element));
+        public JsonArray Add(decimal element) => Add(new JsonElement(element));
+        public JsonArray Add(JsonArray? element) => Add(new JsonElement(element));
+        public JsonArray Add(JsonBoolean? element) => Add(new JsonElement(element));
+        public JsonArray Add(JsonNumber? element) => Add(new JsonElement(element));
+        public JsonArray Add(JsonObject? element) => Add(new JsonElement(element));
+        public JsonArray Add(JsonString? element) => Add(new JsonElement(element));
+        public JsonArray Add(JsonElement element) 
+        {
+            _elements.Add(element);
+            return this;
+        } // end Add()
+
+        public JsonArray Clear()
+        {
+            _elements.Clear();
+            return this;
+        } // end Clear()
+
+        public JsonArray InsertAt(int index, JsonElement element)
+        {
+            _elements.Insert(index, element);
+            return this;
+        } // end InsertAt()
+
+        public JsonArray RemoveAt(int index)
+        {
+            _elements.RemoveAt(index);
+            return this;
+        } // end RemoveAt()
 
 
 
