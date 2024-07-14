@@ -5,8 +5,8 @@ namespace GSR.Jsonic
 {
     public sealed class JsonString : IJsonComponent
     {
-        public const string ENQUOTED_VALIDATOR_REGEX = @"^""([^\\""]|(\\([""\\/bfnrt]|(u[0-9a-fA-F]{4}))))*""$";
-        public const string UNENQUOTED_VALIDATOR_REGEX = @"^([^\\""]|(\\([""\\/bfnrt]|(u[0-9a-fA-F]{4}))))*$";
+        public const string ENQUOTED_REGEX = @"^""([^\\""]|(\\([""\\/bfnrt]|(u[0-9a-fA-F]{4}))))*""$";
+        public const string UNENQUOTED_REGEX = @"^([^\\""]|(\\([""\\/bfnrt]|(u[0-9a-fA-F]{4}))))*$";
 
         public string Value { get; }
 
@@ -21,14 +21,14 @@ namespace GSR.Jsonic
         {
             if (expectEnquoted)
             {
-                if (!Regex.IsMatch(json, ENQUOTED_VALIDATOR_REGEX))
+                if (!Regex.IsMatch(json, ENQUOTED_REGEX))
                     throw new MalformedJsonException($"\"{json}\" is not a valid already enquoted json string");
 
                 Value = json[1..^1];
             }
             else
             {
-                if (!Regex.IsMatch(json, UNENQUOTED_VALIDATOR_REGEX))
+                if (!Regex.IsMatch(json, UNENQUOTED_REGEX))
                     throw new MalformedJsonException($"\"{json}\" is not a valid non-enquoted json string");
 
                 Value = json;

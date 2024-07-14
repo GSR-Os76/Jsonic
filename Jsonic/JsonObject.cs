@@ -8,6 +8,8 @@ namespace GSR.Jsonic
 
 
 
+
+
         /*
         /// <summary>
         /// 
@@ -67,6 +69,12 @@ namespace GSR.Jsonic
             sb.Append(']');
             return sb.ToString();
         } // end AsString()
+
+
+        public static JsonObject ParseJsonStart(string parse, out string remainder)
+        {
+            throw new NotImplementedException();
+        } // end ParseJsonStart()
 
     } // end class
 } // end namespace

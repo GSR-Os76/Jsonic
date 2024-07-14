@@ -5,6 +5,8 @@ namespace GSR.Tests.Jsonic
     [TestClass]
     public class TestJsonArray
     {
+#warning test construction a
+
         #region ToCompressedString()
         [TestMethod]
         [DataRow("[]")]
@@ -40,7 +42,6 @@ namespace GSR.Tests.Jsonic
         public void ToCompressedStringNested3_2(string e)
         {
             Assert.AreEqual(e, new JsonArray().Add(new JsonArray().Add(false)).Add(true).Add("are").ToCompressedString());
-#warning possibly make json string default enquotement agnostic, easier to use, or at least the methods for it in JsonArray and JsonObject
         } // end ToCompressedStringNested3_2()
         #endregion
 

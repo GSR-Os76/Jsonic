@@ -5,7 +5,7 @@ namespace GSR.Jsonic
 {
     public sealed class JsonNumber : IJsonComponent
     {
-        public const string STRICT_VALIDATOR_REGEX = @"^-?(([1-9][0-9]*)|0)(\.[0-9]+)?([eE][-+]?[0-9]+)?$";
+        public const string REGEX = @"^-?(([1-9][0-9]*)|0)(\.[0-9]+)?([eE][-+]?[0-9]+)?$";
         private const NumberStyles PARSING_STYLE = NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint;
 
         public string Value { get; }
@@ -25,7 +25,7 @@ namespace GSR.Jsonic
         public JsonNumber(decimal value) : this(value.ToString()) { }
         public JsonNumber(string json)
         {
-            if (!Regex.IsMatch(json, STRICT_VALIDATOR_REGEX))
+            if (!Regex.IsMatch(json, REGEX))
                 throw new MalformedJsonException($"\"{json}\" is not a valid json numeric");
 
             Value = json;
