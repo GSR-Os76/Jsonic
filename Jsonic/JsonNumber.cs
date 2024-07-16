@@ -5,7 +5,8 @@ namespace GSR.Jsonic
 {
     public sealed class JsonNumber : IJsonComponent
     {
-        public const string REGEX = @"^-?(([1-9][0-9]*)|0)(\.[0-9]+)?([eE][-+]?[0-9]+)?$";
+        public const string REGEX = @"-?(([1-9][0-9]*)|0)(\.[0-9]+)?([eE][-+]?[0-9]+)?";
+        public const string ANCHORED_REGEX = @"^" + REGEX + @"$";
         private const NumberStyles PARSING_STYLE = NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint;
 
         public string Value { get; }
@@ -25,7 +26,7 @@ namespace GSR.Jsonic
         public JsonNumber(decimal value) : this(value.ToString()) { }
         public JsonNumber(string json)
         {
-            if (!Regex.IsMatch(json, REGEX))
+            if (!Regex.IsMatch(json, ANCHORED_REGEX))
                 throw new MalformedJsonException($"\"{json}\" is not a valid json numeric");
 
             Value = json;
@@ -56,6 +57,20 @@ namespace GSR.Jsonic
         public string ToCompressedString() => ToString();
 
         public override string ToString() => Value;
+
+        public override int GetHashCode() => Value.GetHashCode();
+
+        // equals. could just simplify both into all their signicant figures, and then find decimal positions, and then if scientific notation shift decimal position based on that
+        /// <summary>
+        /// Compares by string, not by the represented value.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object? obj) => obj is JsonNumber b && b.Value == Value;
+
+        public static bool operator ==(JsonNumber a, JsonNumber b) => a.Equals(b);
+
+        public static bool operator !=(JsonNumber a, JsonNumber b) => !a.Equals(b);
 
     } // end class
 } // end namespace

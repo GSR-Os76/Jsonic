@@ -18,5 +18,14 @@
 
         public override string ToString() => Value ? JsonUtil.JSON_TRUE : JsonUtil.JSON_FALSE;
 
+        public override int GetHashCode() => Value.GetHashCode();
+
+        public override bool Equals(object? obj) => obj is JsonBoolean b && b.Value == Value;
+
+        public static bool operator ==(JsonBoolean a, JsonBoolean b) => a.Equals(b);
+
+        public static bool operator !=(JsonBoolean a, JsonBoolean b) => !a.Equals(b);
+
+
     } // end class
 } // end namespace

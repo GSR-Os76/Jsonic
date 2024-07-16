@@ -4,7 +4,6 @@ namespace GSR.Jsonic
 {
     public sealed class JsonElement : IJsonComponent
     {
-        // public const string REGEX = $@"{(JsonUtil.JSON_NULL)|(JsonBoolean.REGEX)|Json}";
         public IJsonComponent? Value { get; }
 
         public JsonType Type { get; }
@@ -64,8 +63,6 @@ namespace GSR.Jsonic
         // using parse this way is inconsistent with it's meaning in JsonString. Maybe make ParseJson/ParseJsonStart/ParseString(JsonString specific)
         public static JsonElement ParseJsonStart(string parse, out string remainder)
         {
-#warning adjust anchors in individual regexs. 
-#warning add equality overloads
             switch (parse[0])
             {
                 case 'n':

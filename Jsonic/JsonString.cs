@@ -5,8 +5,10 @@ namespace GSR.Jsonic
 {
     public sealed class JsonString : IJsonComponent
     {
-        public const string ENQUOTED_REGEX = @"^""([^\\""]|(\\([""\\/bfnrt]|(u[0-9a-fA-F]{4}))))*""$";
-        public const string UNENQUOTED_REGEX = @"^([^\\""]|(\\([""\\/bfnrt]|(u[0-9a-fA-F]{4}))))*$";
+        public const string UNENQUOTED_REGEX = @"([^\\""]|(\\([""\\/bfnrt]|(u[0-9a-fA-F]{4}))))*";
+        public const string ENQUOTED_REGEX = @"""" + UNENQUOTED_REGEX + @"""";
+        public const string ANCHORED_UNENQUOTED_REGEX = @"^" + UNENQUOTED_REGEX + @"$";
+        public const string ANCHORED_ENQUOTED_REGEX = @"^" + ENQUOTED_REGEX + @"$";
 
         public string Value { get; }
 
@@ -16,19 +18,19 @@ namespace GSR.Jsonic
         /// 
         /// </summary>
         /// <param name="json"></param>
-        /// <exception cref="MalformedJsonException">sString wasn't in valid Json string format.</exception>
+        /// <exception cref="MalformedJsonException">String wasn't in valid Json string format.</exception>
         public JsonString(string json, bool expectEnquoted = false)
         {
             if (expectEnquoted)
             {
-                if (!Regex.IsMatch(json, ENQUOTED_REGEX))
+                if (!Regex.IsMatch(json, ANCHORED_ENQUOTED_REGEX))
                     throw new MalformedJsonException($"\"{json}\" is not a valid already enquoted json string");
 
                 Value = json[1..^1];
             }
             else
             {
-                if (!Regex.IsMatch(json, UNENQUOTED_REGEX))
+                if (!Regex.IsMatch(json, ANCHORED_UNENQUOTED_REGEX))
                     throw new MalformedJsonException($"\"{json}\" is not a valid non-enquoted json string");
 
                 Value = json;
@@ -50,6 +52,13 @@ namespace GSR.Jsonic
 
         public override string ToString() => $"\"{Value}\"";
 
+        public override int GetHashCode() => Value.GetHashCode();
+
+        public override bool Equals(object? obj) => obj is JsonString b && b.Value == Value;
+
+        public static bool operator ==(JsonString a, JsonString b) => a.Equals(b);
+
+        public static bool operator !=(JsonString a, JsonString b) => !a.Equals(b);
 
 
         /// <summary>
