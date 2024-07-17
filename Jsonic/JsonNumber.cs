@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace GSR.Jsonic
@@ -10,6 +11,9 @@ namespace GSR.Jsonic
         private const NumberStyles PARSING_STYLE = NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint;
 
         public string Value { get; }
+
+        public Lazy<string> Significand { get; }
+        public Lazy<int> Exponent { get; }
 
 
 
@@ -30,13 +34,15 @@ namespace GSR.Jsonic
                 throw new MalformedJsonException($"\"{json}\" is not a valid json numeric");
 
             Value = json;
+            Significand = new(() => SignificandOf(json));
+            Exponent = new(() => ExponentOf(json));
         } // end JsonNumber
 
 
 
         public sbyte AsSignedByte() => sbyte.Parse(Value, PARSING_STYLE);
         public byte AsByte() => byte.Parse(Value, PARSING_STYLE);
-        
+
         public short AsShort() => short.Parse(Value, PARSING_STYLE);
         public ushort AsUnsignedShort() => ushort.Parse(Value, PARSING_STYLE);
 
@@ -60,7 +66,6 @@ namespace GSR.Jsonic
 
         public override int GetHashCode() => Value.GetHashCode();
 
-        // equals. could just simplify both into all their signicant figures, and then find decimal positions, and then if scientific notation shift decimal position based on that
         /// <summary>
         /// Compares by string, not by the represented value.
         /// </summary>
@@ -71,6 +76,26 @@ namespace GSR.Jsonic
         public static bool operator ==(JsonNumber a, JsonNumber b) => a.Equals(b);
 
         public static bool operator !=(JsonNumber a, JsonNumber b) => !a.Equals(b);
+
+
+
+        private static string SignificandOf(string number)
+        {
+            string s = number.Split('e', 'E')[0];
+            string[] ss = s.Split('.');
+            return ss[0].Concat(ss.Length == 1 ? "" : WithoutTrailingZeros(ss[1])).Aggregate(new StringBuilder(s.Length), (seed, c) => seed.Append(c)).ToString();
+        } // end SignificandOf()
+
+        private static int ExponentOf(string number)
+        {
+            string[] s = number.Split('e', 'E');
+            string[] ss = s[0].Split('.');
+            int expShift = ss.Length == 1 ? 0 : (-WithoutTrailingZeros(ss[1]).Count());
+            int sciNot = s.Length == 1 ? 0 : int.Parse(s[1]);
+            return sciNot + expShift;
+        } // end ExponentOf()
+
+        private static IEnumerable<char> WithoutTrailingZeros(IEnumerable<char> s) => s.Reverse().Aggregate(new StringBuilder(s.Count()), (seed, c) => seed.Append(seed.Length == 0 && c == '0' ? "" : c)).ToString().Reverse();
 
     } // end class
 } // end namespace

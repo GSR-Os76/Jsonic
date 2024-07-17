@@ -56,6 +56,36 @@ namespace GSR.Tests.Jsonic
         }// end TestInvalidConstruct()
         #endregion
 
+        [TestMethod]
+        [DataRow("3e4", "3")]
+        [DataRow("3", "3")]
+        [DataRow("30", "30")]
+        [DataRow("4.2e4", "42")]
+        [DataRow("7.4560e42", "7456")]
+        [DataRow("0", "0")]
+        [DataRow("-55", "-55")]
+        [DataRow("-9.83", "-983")]
+        [DataRow("-77e2", "-77")]
+        [DataRow("-6.3e4", "-63")]
+        public void TestSignificand(string s, string expectation)
+        {
+            Assert.AreEqual(expectation, new JsonNumber(s).Significand.Value);
+        } // end TestSignificand()
+
+        [TestMethod]
+        [DataRow("3.2e3", 2)]
+        [DataRow("32e2", 2)]
+        [DataRow("3.00002e3", -2)]
+        [DataRow("47.1000", -1)]
+        [DataRow("84", 0)]
+        [DataRow("954.0", 0)]
+        // 3.2e3 == 3200 == 32e2
+        // test trialing zeros
+        public void TestExponent(string s, int expectation)
+        {
+            Assert.AreEqual(expectation, new JsonNumber(s).Exponent.Value);
+        } // end TestExponent()
+
 
 
         #region sbyte tests
@@ -346,7 +376,7 @@ namespace GSR.Tests.Jsonic
         } //  end TestAsDoubleValid()
         #endregion
 
-        #region double tests
+        #region decimal tests
         [TestMethod]
         [DataRow(0)]
         [DataRow(1)]
@@ -358,7 +388,7 @@ namespace GSR.Tests.Jsonic
         [DataRow(7)]
         public void TestAsDecimalValid(int i)
         {
-            Tuple<decimal, string>[] s = new Tuple<decimal, string>[] {Tuple.Create(2004m, "2004"), Tuple.Create(-8m, "-8"), Tuple.Create(-930000m, "-93e4") , Tuple.Create(2000m, "2e3") , Tuple.Create(2004m, "2004.0"), Tuple.Create(-8m, "-8.0"), Tuple.Create(-930000m, "-93.0e4"), Tuple.Create(2000m, "2.0e3") };
+            Tuple<decimal, string>[] s = new Tuple<decimal, string>[] { Tuple.Create(2004m, "2004"), Tuple.Create(-8m, "-8"), Tuple.Create(-930000m, "-93e4"), Tuple.Create(2000m, "2e3"), Tuple.Create(2004m, "2004.0"), Tuple.Create(-8m, "-8.0"), Tuple.Create(-930000m, "-93.0e4"), Tuple.Create(2000m, "2.0e3") };
 
             Assert.AreEqual(s[i].Item1, new JsonNumber(s[i].Item2).AsDecimal());
         } //  end TestAsDecimalValid()
