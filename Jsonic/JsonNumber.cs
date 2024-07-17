@@ -80,7 +80,7 @@ namespace GSR.Jsonic
         private static string SignificandOf(string number)
         {
             string w = WithoutInsignificantZeros(new string(number.Split('e', 'E')[0].Where((c) => c != '.').ToArray()));
-            return (number[0].Equals('-') ? "-" : string.Empty) + (w.Equals(string.Empty) ? "0" : w);
+            return (number[0].Equals('-') && !w.Equals(string.Empty) ? "-" : string.Empty) + (w.Equals(string.Empty) ? "0" : w);
         } // end SignificandOf()
 
         private static int ExponentOf(string number)
@@ -88,9 +88,9 @@ namespace GSR.Jsonic
             string[] s = number.Split('e', 'E');
             string[] ss = s[0].Split('.');
             int decShift = ss.Length == 1 ? 0 : (-WithoutTrailingZeros(ss[1]).Count());
-            int intShift = ss.Length == 1 || decShift == 0 ? (ss[0].Length - WithoutTrailingZeros(ss[0]).Count()) : 0;
+            int intShift = decShift == 0 ? (ss[0].Length - WithoutTrailingZeros(ss[0]).Count()) : 0;
             int sciNot = s.Length == 1 ? 0 : int.Parse(s[1]);
-            return sciNot + decShift + intShift;
+            return decShift == 0 && Regex.IsMatch(ss[0], @"^-?0$") ? 0 : sciNot + decShift + intShift;
         } // end ExponentOf()
 
         private static IEnumerable<char> WithoutTrailingZeros(IEnumerable<char> s) => s.Reverse().Aggregate(new StringBuilder(s.Count()), (seed, c) => seed.Append(seed.Length == 0 && c == '0' ? "" : c)).ToString().Reverse();

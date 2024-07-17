@@ -71,6 +71,9 @@ namespace GSR.Tests.Jsonic
         [DataRow("-390.001", "-390001")]
         [DataRow("0.7e1", "7")]
         [DataRow("-0.7e1", "-7")]
+        [DataRow("-0e100", "0")]
+        [DataRow("-0e12", "0")]
+
         public void TestSignificand(string s, string expectation)
         {
             Assert.AreEqual(expectation, new JsonNumber(s).Significand.Value);
@@ -94,6 +97,12 @@ namespace GSR.Tests.Jsonic
         [DataRow("300", 2)]
         [DataRow("1102", 0)]
         [DataRow("0.07000", -2)]
+        [DataRow("-0e100", 0)]
+        [DataRow("-0e12", 0)]
+        [DataRow("-0e-60", 0)]
+        [DataRow("0e100", 0)]
+        [DataRow("0e12", 0)]
+        [DataRow("0e-60", 0)]
         public void TestExponent(string s, int expectation)
         {
             Assert.AreEqual(expectation, new JsonNumber(s).Exponent.Value);
