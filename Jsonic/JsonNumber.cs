@@ -77,26 +77,25 @@ namespace GSR.Jsonic
 
         public static bool operator !=(JsonNumber a, JsonNumber b) => !a.Equals(b);
 
-#warning remove trailing zeros from significand.
-
-
         private static string SignificandOf(string number)
         {
-            string s = number.Split('e', 'E')[0];
-            string[] ss = s.Split('.');
-            return ss[0].Concat(ss.Length == 1 ? "" : WithoutTrailingZeros(ss[1])).Aggregate(new StringBuilder(s.Length), (seed, c) => seed.Append(c)).ToString();
+            string w = WithoutInsignificantZeros(new string(number.Split('e', 'E')[0].Where((c) => c != '.').ToArray()));
+            return (number[0].Equals('-') ? "-" : string.Empty) + (w.Equals(string.Empty) ? "0" : w);
         } // end SignificandOf()
 
         private static int ExponentOf(string number)
         {
             string[] s = number.Split('e', 'E');
             string[] ss = s[0].Split('.');
-            int expShift = ss.Length == 1 ? 0 : (-WithoutTrailingZeros(ss[1]).Count());
+            int decShift = ss.Length == 1 ? 0 : (-WithoutTrailingZeros(ss[1]).Count());
+            int intShift = ss.Length == 1 || decShift == 0 ? (ss[0].Length - WithoutTrailingZeros(ss[0]).Count()) : 0;
             int sciNot = s.Length == 1 ? 0 : int.Parse(s[1]);
-            return sciNot + expShift;
+            return sciNot + decShift + intShift;
         } // end ExponentOf()
 
         private static IEnumerable<char> WithoutTrailingZeros(IEnumerable<char> s) => s.Reverse().Aggregate(new StringBuilder(s.Count()), (seed, c) => seed.Append(seed.Length == 0 && c == '0' ? "" : c)).ToString().Reverse();
+
+        private static string WithoutInsignificantZeros(string s) => Regex.Match(s, @"[1-9]([0-9]*[1-9])?").Value;
 
     } // end class
 } // end namespace
