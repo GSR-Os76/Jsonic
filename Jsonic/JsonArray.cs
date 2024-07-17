@@ -128,6 +128,24 @@ namespace GSR.Jsonic
             return sb.ToString();
         } // end AsString()
 
+        public override bool Equals(object? obj)
+        {
+            if (obj is not JsonArray b || b.Count != Count)
+                return false;
+
+            for (int i = 0; i < Count; i++)
+                if (b[i] != this[i])
+                    return false;
+
+            return true;
+        } // end Equals()
+
+        public override int GetHashCode() => _elements.GetHashCode();
+
+        public static bool operator ==(JsonArray a, JsonArray b) => a.Equals(b);
+
+        public static bool operator !=(JsonArray a, JsonArray b) => !a.Equals(b);
+
 
 
         private static List<JsonElement> Parse(string json, out string remainder) 

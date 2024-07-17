@@ -49,6 +49,23 @@ namespace GSR.Tests.Jsonic
         // test elements that were parsed are as was expected
         #endregion
 
+        #region equality tests
+        [TestMethod]
+        [DataRow("[]", "[]", true)]
+        [DataRow("[false]", "[\r\tfalse   ]", true)]
+        [DataRow("[true]", "[false]", false)]
+        [DataRow("[\"a\", 0e1]", "[\"a\", 0e3]", true)]
+        [DataRow("[\"a\", 19]", "[\"a\", 1.9e1]", true)]
+        [DataRow("[\"a\", null, \"b\"]", "[\"b\", null, \"a\"]", false)]
+        [DataRow("[[], []]", "[[], []]", true)]
+        [DataRow("[{}, null]", "[{}, null]", true)]
+        [DataRow("[{\"aaaa\":[0]},null]", "[{\"aaaa\" :  [0]}, null ]", true)]
+        public void TestEquality(string a, string b, bool expectation) 
+        {
+            Assert.AreEqual(expectation, new JsonArray(a).Equals(new JsonArray(b)));
+        } // end TestEquality()
+        #endregion
+
         #region ToCompressedString()
         [TestMethod]
         [DataRow("[]")]

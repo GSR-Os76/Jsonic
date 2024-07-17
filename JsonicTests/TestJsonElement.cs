@@ -26,6 +26,17 @@ namespace GSR.Tests.Jsonic
         } // end TestNullValue()
 #warning others
 
+        #region test equality
+        [TestMethod]
+        [DataRow(true, false, false)]
+        [DataRow(false, true, false)]
+        [DataRow(true, true, true)]
+        [DataRow(false, false, true)]
+        public void TestBooleanEquality(bool a, bool b, bool expectation) 
+        {
+            Assert.AreEqual(expectation, new JsonElement(a).Equals(new JsonElement(b)));
+        } // end TestBooleanEquality()
+        #endregion
 
 
         #region test ParseJsonStart valid
@@ -104,8 +115,6 @@ namespace GSR.Tests.Jsonic
             Assert.AreEqual(expectedRemained, r);
         } // end TestParseStartValidArray()
         #endregion
-
-
 
         #region test ParseJsonStart invalid
         [TestMethod]

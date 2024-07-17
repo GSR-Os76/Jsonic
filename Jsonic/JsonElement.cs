@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace GSR.Jsonic
 {
@@ -57,6 +58,14 @@ namespace GSR.Jsonic
 
             return compress ? Value.ToCompressedString() : Value.ToString();
         } // end AsStringC()
+
+        public override bool Equals(object? obj) => obj is JsonElement b && b.Type == Type && (Type == JsonType.Null ||  b.Value.Equals(Value)); // apparently C# == doesn't look up type. using it here, even though overridden in the actual type, fails. Presumably because Value is stored as IJsonComponent? not the realized type?
+
+        public override int GetHashCode() => Tuple.Create(Value, Type).GetHashCode();
+
+        public static bool operator ==(JsonElement a, JsonElement b) => a.Equals(b);
+
+        public static bool operator !=(JsonElement a, JsonElement b) => !a.Equals(b);
 
 
 
