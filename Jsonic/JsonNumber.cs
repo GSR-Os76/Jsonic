@@ -71,12 +71,13 @@ namespace GSR.Jsonic
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public override bool Equals(object? obj) => obj is JsonNumber b && b.Value == Value;
+        public override bool Equals(object? obj) => obj is JsonNumber b && b.Significand.Value.Equals(Significand.Value) && b.Exponent.Value.Equals(Exponent.Value);
 
         public static bool operator ==(JsonNumber a, JsonNumber b) => a.Equals(b);
 
         public static bool operator !=(JsonNumber a, JsonNumber b) => !a.Equals(b);
 
+#warning remove trailing zeros from significand.
 
 
         private static string SignificandOf(string number)

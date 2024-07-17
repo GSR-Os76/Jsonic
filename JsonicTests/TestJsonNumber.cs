@@ -67,6 +67,10 @@ namespace GSR.Tests.Jsonic
         [DataRow("-9.83", "-983")]
         [DataRow("-77e2", "-77")]
         [DataRow("-6.3e4", "-63")]
+
+        [DataRow("-700e-5", "7")]
+        [DataRow("-390.001", "-390001")]
+
         public void TestSignificand(string s, string expectation)
         {
             Assert.AreEqual(expectation, new JsonNumber(s).Significand.Value);
@@ -79,12 +83,37 @@ namespace GSR.Tests.Jsonic
         [DataRow("47.1000", -1)]
         [DataRow("84", 0)]
         [DataRow("954.0", 0)]
+        [DataRow("-3.2e3", 2)]
+        [DataRow("-32e2", 2)]
+        [DataRow("-3.00002e3", -2)]
+        [DataRow("-47.1000", -1)]
+        [DataRow("-84", 0)]
+        [DataRow("-954.0", 0)]
+
+        [DataRow("0.002", -3)]
+        [DataRow("0.1e1", 0)]
+        [DataRow("300", 2)]
+        [DataRow("1102", 0)]
+
+
         // 3.2e3 == 3200 == 32e2
         // test trialing zeros
         public void TestExponent(string s, int expectation)
         {
             Assert.AreEqual(expectation, new JsonNumber(s).Exponent.Value);
         } // end TestExponent()
+
+        [TestMethod]
+        [DataRow("3.2e3", "32e2", true)]
+        [DataRow("1", "-1", false)]
+        [DataRow("-20", "-0.2e2", true)]
+        [DataRow("6.00", "6", true)]
+        [DataRow("19e0", "19.00000000000e0", true)]
+        [DataRow("5", "5", true)]
+        public void TestEquals(string a, string b, bool expectation) 
+        {
+            Assert.AreEqual(expectation, new JsonNumber(a).Equals(new JsonNumber(b)));
+        } // end TestEquals()
 
 
 
