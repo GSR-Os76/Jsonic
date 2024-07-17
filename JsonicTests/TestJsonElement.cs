@@ -87,6 +87,22 @@ namespace GSR.Tests.Jsonic
             Assert.AreEqual(typeof(JsonNumber), JsonElement.ParseJsonStart(input, out string r).Value?.GetType());
             Assert.AreEqual(expectedRemained, r);
         } // end TestParseStartValidNumber()
+
+        [TestMethod]
+        [DataRow("[]", "")]
+        [DataRow("[[],{},[],90,\"\",false,null,true]", "")]
+        [DataRow("[[[0,1,1]],  [],90,\"\" ,false ,null,true]", "")]
+        [DataRow("[\r\t[\r\t]\r]", "")]
+        [DataRow("[]   ", "   ")]
+        [DataRow("[[],{},[],90,\"\",false,null,true] f", " f")]
+        [DataRow("[[[0,1,1]],  [],90,\"\" ,false ,null,true]arbeitnung", "arbeitnung")]
+        [DataRow("[\r\t[\r\t]\r], false", ", false")]
+        [DataRow("[]f", "f")]
+        public void TestParseStartValidArray(string input, string expectedRemained)
+        {
+            Assert.AreEqual(typeof(JsonArray), JsonElement.ParseJsonStart(input, out string r).Value?.GetType());
+            Assert.AreEqual(expectedRemained, r);
+        } // end TestParseStartValidArray()
         #endregion
 
 
@@ -99,7 +115,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("nll ")]
         public void TestParseStartInvalidNull(string input)
         {
-            JsonElement.ParseJsonStart(input, out string _);
+            JsonElement.ParseJsonStart(input, out _);
         } // end TestParseStartInvalidNull()
 
         [TestMethod]
@@ -110,7 +126,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("fals.e,")]
         public void TestParseStartInvalidFalse(string input)
         {
-            JsonElement.ParseJsonStart(input, out string _);
+            JsonElement.ParseJsonStart(input, out _);
         } // end TestParseStartInvalidFalse()
 
         [TestMethod]
@@ -121,7 +137,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("tre,")]
         public void TestParseStartInvalidTrue(string input)
         {
-            JsonElement.ParseJsonStart(input, out string _);
+            JsonElement.ParseJsonStart(input, out _);
         } // end TestParseStartInvalidTrue()
 
         [TestMethod]
@@ -131,21 +147,21 @@ namespace GSR.Tests.Jsonic
         [DataRow("\"   ")]
         public void TestParseStartInvalidString(string input)
         {
-            JsonElement.ParseJsonStart(input, out string _);
+            JsonElement.ParseJsonStart(input, out _);
         } // end TestParseStartInvalidString()
-
-
 
         [TestMethod]
-        [ExpectedException(typeof(NotImplementedException))]
+        [ExpectedException(typeof(MalformedJsonException))]
         [DataRow("[")]
-        [DataRow("[]")]
-        [DataRow("[[],{},[],90,\"\",false,null,true]")]
-        [DataRow("[\r\t[\r\t]\r]")]
-        public void TestParseStartArray(string input)
+        [DataRow("[,{},[],90,\"\",false,null,true")]
+        [DataRow("[-")]
+        [DataRow(" [--[;[]c")]
+        public void TestParseStartInvalidArray(string input)
         {
-            JsonElement.ParseJsonStart(input, out string _);
-        } // end TestParseStartInvalidString()
+            JsonElement.ParseJsonStart(input, out _);
+        } // end TestParseStartInvalidArray()
+
+
 
         [TestMethod]
         [ExpectedException(typeof(NotImplementedException))]

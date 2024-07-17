@@ -5,7 +5,49 @@ namespace GSR.Tests.Jsonic
     [TestClass]
     public class TestJsonArray
     {
-#warning test construction a
+        #region constructor tests
+        [TestMethod]
+        [DataRow("[]")]
+        [DataRow("     []")]
+        [DataRow("[]     ")]
+        [DataRow("[  ]")]
+        [DataRow("[false]")]
+        [DataRow("[true]")]
+        [DataRow("[null]")]
+        [DataRow("[-2.7e4]")]
+        [DataRow("[\"string\"]")]
+        [DataRow("[[]]")]
+        [DataRow("[[0]]")]
+        [DataRow("[{}]")]
+        [DataRow("[{\"k\": \"v\"}]")]
+
+        [DataRow("[false, \"\"]")]
+        [DataRow("[null, null]")]
+        [DataRow("[0, -1]")]
+        // and with values
+        public void TestConstructSuccess(string json) 
+        {
+            new JsonArray(json);
+        } // end TestConstructSuccess()
+
+        [TestMethod]
+        [ExpectedException(typeof(MalformedJsonException))]
+        [DataRow("[")]
+        [DataRow("]")]
+        [DataRow("a[")]
+        [DataRow("_[]")]
+        [DataRow("[]0")]
+        [DataRow("[false,]")]
+        [DataRow("[nil,]")]
+        [DataRow("[nil]")]
+        [DataRow("[93,9,f]")]
+        public void TestConstructFails(string json)
+        {
+            new JsonArray(json);
+        } // end TestConstructFails()
+
+        // test elements that were parsed are as was expected
+        #endregion
 
         #region ToCompressedString()
         [TestMethod]

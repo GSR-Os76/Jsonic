@@ -9,6 +9,41 @@ namespace GSR.Jsonic
 
 
 
+        /*
+            List<JsonElement> elements = new();
+            string parse = json.TrimStart();
+            if (parse.Length < 2 || parse[0] != '[')
+                throw new MalformedJsonException();
+
+            parse = parse[1..].TrimStart();
+            while (parse.Length != 0)
+            {
+                if (parse[0] == ']')
+                {
+                    remainder = parse[1..];
+                    return elements;
+                }
+                string k = Regex.Match(parse, JsonString.ENQUOTED_REGEX).Value; // assure at begining
+                parse = parse[k.Length..^0].TrimStart();
+                JsonString key = new(k);
+
+                if (parse.Length < 1 && parse[0] != ':')
+                    throw new MalformedJsonException();
+
+                parse = parse[1..^0].TrimStart();
+                elements.Add(JsonElement.ParseJsonStart(parse, out string r));
+                parse = r.TrimStart();
+
+                if (parse[0] == ']')
+                {
+                    remainder = parse[1..];
+                    return elements;
+                }
+                else if (parse[0] != ',')
+                    throw new MalformedJsonException();
+            }
+         */
+
 
         /*
         /// <summary>

@@ -25,36 +25,9 @@ namespace GSR.Jsonic
 
         public JsonArray(string json)
         {
-            string parse = json.Trim();
-            if (parse.Length < 2 && parse[0] != '[' && parse[^1] != ']')
+            Parse(json, out string r).Aggregate(this, (seed, e) => seed.Add(e));
+            if (!r.Trim().Equals(string.Empty))
                 throw new MalformedJsonException();
-
-            parse = parse[1..^1].Trim();
-            while (parse.Length != 0)
-            {
-                /*string k = Regex.Match(parse, JsonString.ENQUOTED_REGEX).Value; // assure at begining
-                parse = parse[k.Length..^0].TrimStart();
-                JsonString key = new(k);
-
-                if (parse.Length < 1 && parse[0] != ':')
-                    throw new MalformedJsonException();
-
-                parse = parse[1..^0].TrimStart();*/
-                JsonElement element = JsonElement.ParseJsonStart(parse, out string remainder);
-                parse = remainder;
-
-                // add the kvp, frick this is a array
-
-                if (parse.Length > 0)
-                {
-                    if (parse[0] != ',')
-                        throw new MalformedJsonException();
-
-                    parse = parse[1..^0].TrimStart();
-                    if (parse.Length == 0)
-                        throw new MalformedJsonException();
-                }
-            }
         } // end constructor
 
 
@@ -157,10 +130,40 @@ namespace GSR.Jsonic
 
 
 
-        public static JsonArray ParseJsonStart(string parse, out string remainder)
+        private static List<JsonElement> Parse(string json, out string remainder) 
         {
-            throw new NotImplementedException();
-        } // end ParseJsonStart()
+            List<JsonElement> elements = new();
+            string parse = json.TrimStart();
+            if (parse.Length < 2 || parse[0] != '[')
+                throw new MalformedJsonException();
+
+            parse = parse[1..].TrimStart();
+            if (parse[0] == ']')
+            {
+                remainder = parse[1..];
+                return elements;
+            }
+
+            while (parse.Length != 0)
+            {
+                elements.Add(JsonElement.ParseJsonStart(parse, out string r));
+                parse = r.TrimStart();
+
+
+                if (parse[0] == ']')
+                {
+                    remainder = parse[1..];
+                    return elements;
+                }
+                else if (parse[0] != ',')
+                    throw new MalformedJsonException();
+                else
+                    parse = parse[1..].TrimStart();
+            }
+            throw new MalformedJsonException();
+        } // end Parse()
+
+        public static JsonArray ParseJsonStart(string parse, out string remainder) =>  Parse(parse, out remainder).Aggregate(new JsonArray(), (seed, e) => seed.Add(e));
 
     } // end class
 } // end namespace
