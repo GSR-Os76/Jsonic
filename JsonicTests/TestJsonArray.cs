@@ -20,12 +20,11 @@ namespace GSR.Tests.Jsonic
         [DataRow("[[0]]")]
         [DataRow("[{}]")]
         [DataRow("[{\"k\": \"v\"}]")]
-
         [DataRow("[false, \"\"]")]
         [DataRow("[null, null]")]
         [DataRow("[0, -1]")]
         // and with values
-        public void TestConstructSuccess(string json) 
+        public void TestConstructSuccess(string json)
         {
             new JsonArray(json);
         } // end TestConstructSuccess()
@@ -60,7 +59,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("[[], []]", "[[], []]", true)]
         [DataRow("[{}, null]", "[{}, null]", true)]
         [DataRow("[{\"aaaa\":[0]},null]", "[{\"aaaa\" :  [0]}, null ]", true)]
-        public void TestEquality(string a, string b, bool expectation) 
+        public void TestEquality(string a, string b, bool expectation)
         {
             Assert.AreEqual(expectation, new JsonArray(a).Equals(new JsonArray(b)));
         } // end TestEquality()

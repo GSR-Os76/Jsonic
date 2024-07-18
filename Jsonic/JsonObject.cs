@@ -36,7 +36,10 @@ namespace GSR.Jsonic
 
 
 
-#warning see about indexers for all of theses
+        public JsonObject Add(string key, bool value) => Add(key, new JsonBoolean(value));
+
+#warning add for the other non wrapped types, string and number
+#warning give Add()s specific names here, and in JsonArray
 
         /// <summary>
         /// Adds a null element to the object.
@@ -74,7 +77,7 @@ namespace GSR.Jsonic
 
         public JsonObject Add(JsonString key, JsonString? value) => Add(key, new JsonElement(value));
 
-        public JsonObject Add(JsonString key, JsonElement value) 
+        public JsonObject Add(JsonString key, JsonElement value)
         {
             _elements[key] = value;
             return this;
@@ -98,21 +101,15 @@ namespace GSR.Jsonic
             if (!compress)
                 sb.Append('\r');
 
-            for (int i = 0; i < _elements.Count; i++)
+            JsonString[] keys = _elements.Keys.ToArray();
+            for (int i = 0; i < keys.Length; i++)
             {
-                if (!compress)
-                    sb.Append('\t'); 
+                JsonString key = keys[i];
+                sb.Append(compress
+                    ? $"{key}:{_elements[key].ToCompressedString()}"
+                    : $"{key}: {_elements[key].ToString()}".Entabbed());
 
-                KeyValuePair<JsonString, JsonElement> kvp = _elements.ElementAt(i);
-                sb.Append(compress ? kvp.Key.ToCompressedString() : kvp.Key.ToString());
-
-                sb.Append(':');
-                if (!compress)
-                    sb.Append(' ');
-
-                sb.Append(compress ? kvp.Value.ToCompressedString() : kvp.Value.ToString());
-
-                if (i == _elements.Count - 2)
+                if (i != _elements.Count - 1)
                 {
                     sb.Append(',');
                     if (!compress)
@@ -122,9 +119,10 @@ namespace GSR.Jsonic
             if (!compress)
                 sb.Append('\r');
 
-            sb.Append(']');
+            sb.Append('}');
             return sb.ToString();
         } // end AsString()
+
 
         public override bool Equals(object? obj) => obj is JsonObject b && b.Count == Count && b._elements.Keys.All((x) => ContainsKey(x) && b[x].Equals(this[x]));
 
@@ -136,7 +134,7 @@ namespace GSR.Jsonic
 
 
 
-        private static List<KeyValuePair<JsonString, JsonElement>> Parse(string json, out string remainder) 
+        private static List<KeyValuePair<JsonString, JsonElement>> Parse(string json, out string remainder)
         {
             List<KeyValuePair<JsonString, JsonElement>> elements = new();
             string parse = json.TrimStart();
@@ -180,7 +178,7 @@ namespace GSR.Jsonic
             throw new MalformedJsonException();
         } // end Parse()
 
-        public static JsonObject ParseJsonStart(string parse, out string remainder) =>  Parse(parse, out remainder).Aggregate(new JsonObject(), (seed, kvp) => seed.Add(kvp.Key, kvp.Value));
+        public static JsonObject ParseJsonStart(string parse, out string remainder) => Parse(parse, out remainder).Aggregate(new JsonObject(), (seed, kvp) => seed.Add(kvp.Key, kvp.Value));
 
     } // end class
 } // end namespace

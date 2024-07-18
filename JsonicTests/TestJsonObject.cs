@@ -56,12 +56,63 @@ namespace GSR.Tests.Jsonic
         [DataRow("{\"key\": 3e3}", "{\"key\"   : 0.3e4}", true)]
         [DataRow("{\"9034\": null, \"key\": 3e3}", "{\"key\"   : 0.3e4, \"9034\": null}", true)]
         [DataRow("{\"key\": [0, 1, 0]}", "{\"n\"   : [0, 1, 0]}", false)]
-        public void TestEquality(string a, string b, bool expectation) 
+        public void TestEquality(string a, string b, bool expectation)
         {
             Assert.AreEqual(expectation, new JsonObject(a).Equals(new JsonObject(b)));
         } // end TestEquality()
 
-#warning test ToString writting, compressed and not.
+
+        #region test ToStringCompressed()
+        [TestMethod]
+        public void TestToCompressedStringEmpty()
+        {
+            Assert.AreEqual("{}", new JsonObject().ToCompressedString());
+        } // end TestToCompressedStringEmpty()
+
+        [TestMethod]
+        public void TestToCompressedString2()
+        {
+            Assert.AreEqual("{\"r\":false,\"nrew\":null}", new JsonObject().Add("r", false).Add("nrew").ToCompressedString());
+        } // end TestToCompressedString2()
+
+        [TestMethod]
+        public void TestToCompressedStringNested1()
+        {
+            Assert.AreEqual("{\"Data\":{},\"nrew\":70}", new JsonObject().Add("Data", new JsonObject()).Add("nrew", new JsonNumber(70)).ToCompressedString());
+        } // end TestToCompressedStringNested1()
+
+        [TestMethod]
+        public void TestToCompressedStringNested2()
+        {
+            Assert.AreEqual("{\"position\":[-12,0,403]}", new JsonObject().Add("position", new JsonArray().Add(-12).Add(0).Add(403)).ToCompressedString());
+        } // end TestToCompressedStringNested2()
+        #endregion
+
+        #region test ToString()
+        [TestMethod]
+        public void TestToStringEmpty()
+        {
+            Assert.AreEqual("{\r\r}", new JsonObject().ToString());
+        } // end TestToStringEmpty()
+
+        [TestMethod]
+        public void TestToString2()
+        {
+            Assert.AreEqual("{\r\t\"r\": false,\r\t\"nrew\": null\r}", new JsonObject().Add("r", false).Add("nrew").ToString());
+        } // end TestToString2()
+
+        [TestMethod]
+        public void TestToStringNested1()
+        {
+            Assert.AreEqual("{\r\t\"Data\": {\r\t\r\t},\r\t\"nrew\": 70\r}", new JsonObject().Add("Data", new JsonObject()).Add("nrew", new JsonNumber(70)).ToString());
+        } // end TestToStringNested1()
+
+        [TestMethod]
+        public void TestToStringNested2()
+        {
+            Assert.AreEqual("{\r\t\"position\": [\r\t\t-12,\r\t\t0,\r\t\t403\r\t]\r}", new JsonObject().Add("position", new JsonArray().Add(-12).Add(0).Add(403)).ToString());
+        } // end TestToStringNested2()
+        #endregion
 
     } // end class
 } // end namespace
