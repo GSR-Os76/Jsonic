@@ -41,10 +41,10 @@ namespace GSR.Tests.Jsonic
         [DataRow("[nil,]")]
         [DataRow("[nil]")]
         [DataRow("[93,9,f]")]
-        public void TestConstructFails(string json)
+        public void TestConstructFail(string json)
         {
             new JsonArray(json);
-        } // end TestConstructFails()
+        } // end TestConstructFail()
 
         // test elements that were parsed are as was expected
         #endregion

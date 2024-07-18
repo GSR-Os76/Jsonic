@@ -70,8 +70,18 @@ namespace GSR.Jsonic
 
 
         // using parse this way is inconsistent with it's meaning in JsonString. Maybe make ParseJson/ParseJsonStart/ParseString(JsonString specific)
+        /// <summary>
+        /// Expects no proceeding whitespace characters.
+        /// </summary>
+        /// <param name="parse"></param>
+        /// <param name="remainder"></param>
+        /// <returns></returns>
+        /// <exception cref="MalformedJsonException"></exception>
         public static JsonElement ParseJsonStart(string parse, out string remainder)
         {
+            if (parse.Length < 1)
+                throw new MalformedJsonException();
+
             switch (parse[0])
             {
                 case 'n':

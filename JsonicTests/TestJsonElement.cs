@@ -114,6 +114,19 @@ namespace GSR.Tests.Jsonic
             Assert.AreEqual(typeof(JsonArray), JsonElement.ParseJsonStart(input, out string r).Value?.GetType());
             Assert.AreEqual(expectedRemained, r);
         } // end TestParseStartValidArray()
+
+        [TestMethod]
+        [DataRow("{\"b\": 90}", "")]
+        [DataRow("{}", "")]
+        [DataRow("{\"_\": \"\", \"RunTime\": 9e1}", "")]
+        [DataRow("{\"b\":  90} kl", " kl")]
+        [DataRow("{}, ," ,", ,")]
+        [DataRow("{\"ooo\": null   , \"RunTime \": 9e1}", "")]
+        public void TestParseStartValidObject(string input, string expectedRemained)
+        {
+            Assert.AreEqual(typeof(JsonObject), JsonElement.ParseJsonStart(input, out string r).Value?.GetType());
+            Assert.AreEqual(expectedRemained, r);
+        } // end TestParseStartValidObject()
         #endregion
 
         #region test ParseJsonStart invalid
@@ -170,17 +183,19 @@ namespace GSR.Tests.Jsonic
             JsonElement.ParseJsonStart(input, out _);
         } // end TestParseStartInvalidArray()
 
-
-
         [TestMethod]
-        [ExpectedException(typeof(NotImplementedException))]
+        [ExpectedException(typeof(MalformedJsonException))]
         [DataRow("{")]
-        [DataRow("{\"b\": 90}")]
-        [DataRow("{}")]
-        public void TestParseStartObject(string input)
+        [DataRow("}")]
+        [DataRow("{,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,}")]
+        [DataRow("{\"\\ob\": 90}")]
+        [DataRow("{\"keyThat'sDuplicated\": null, \"keyThat'sDuplicated\": null}")]
+        [DataRow("{\"90_09\": ")]
+
+        public void TestParseStartInvalidObject(string input)
         {
-            JsonElement.ParseJsonStart(input, out string _);
-        } // end TestParseStartObject()
+            JsonElement.ParseJsonStart(input, out _);
+        } // end TestParseStartInvalidObject()
         #endregion
         // invalids including unimplement expection expectation, bad enclosures or too short, etc
 
