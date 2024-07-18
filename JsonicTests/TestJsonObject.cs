@@ -20,7 +20,6 @@ namespace GSR.Tests.Jsonic
         [DataRow("{\"1Ar\": [0]}")]
         [DataRow("{\"_\": {}}")]
         [DataRow("{\"k\": {\"k\": \"v\"}}")]
-
         [DataRow("{\"k\": false, \"k2\": \"\"}")]
         [DataRow("{\"90-uj\": null, \"\\\\fjej\\\\\": null}")]
         [DataRow("{\"k\": 0, \"_\": -1}")]
@@ -50,7 +49,17 @@ namespace GSR.Tests.Jsonic
             new JsonObject(json);
         } // end TestConstructFail()
         #endregion
-#warning test equlity implementation
+
+        [TestMethod]
+        [DataRow("{}", "{}", true)]
+        [DataRow("{}", "{\"op\": false}", false)]
+        [DataRow("{\"key\": 3e3}", "{\"key\"   : 0.3e4}", true)]
+        [DataRow("{\"9034\": null, \"key\": 3e3}", "{\"key\"   : 0.3e4, \"9034\": null}", true)]
+        [DataRow("{\"key\": [0, 1, 0]}", "{\"n\"   : [0, 1, 0]}", false)]
+        public void TestEquality(string a, string b, bool expectation) 
+        {
+            Assert.AreEqual(expectation, new JsonObject(a).Equals(new JsonObject(b)));
+        } // end TestEquality()
 
 #warning test ToString writting, compressed and not.
 

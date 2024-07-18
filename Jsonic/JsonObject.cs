@@ -82,7 +82,9 @@ namespace GSR.Jsonic
 
 
 
-        // ContainsKey()
+        public bool ContainsKey(string key) => ContainsKey(new JsonString(key));
+
+        public bool ContainsKey(JsonString key) => _elements.ContainsKey(key);
 
 
 
@@ -123,6 +125,16 @@ namespace GSR.Jsonic
             sb.Append(']');
             return sb.ToString();
         } // end AsString()
+
+        public override bool Equals(object? obj) => obj is JsonObject b && b.Count == Count && b._elements.Keys.All((x) => ContainsKey(x) && b[x].Equals(this[x]));
+
+        public override int GetHashCode() => _elements.GetHashCode();
+
+        public static bool operator ==(JsonObject a, JsonObject b) => a.Equals(b);
+
+        public static bool operator !=(JsonObject a, JsonObject b) => !a.Equals(b);
+
+
 
         private static List<KeyValuePair<JsonString, JsonElement>> Parse(string json, out string remainder) 
         {
