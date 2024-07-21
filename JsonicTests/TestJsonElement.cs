@@ -6,8 +6,9 @@ namespace GSR.Tests.Jsonic
     [TestClass]
     public class TestJsonElement
     {
+        #region ToString() and ToCompressedString()
         [TestMethod]
-        public void TestNullValue() 
+        public void TestNullValue()
         {
             Assert.AreEqual(JsonUtil.JSON_NULL, new JsonElement((JsonObject?)null).ToString());
             Assert.AreEqual(JsonUtil.JSON_NULL, new JsonElement().ToString());
@@ -24,7 +25,20 @@ namespace GSR.Tests.Jsonic
             Assert.AreEqual(expectation, j.ToString());
             Assert.AreEqual(expectation, j.ToCompressedString());
         } // end TestNullValue()
+
+        [TestMethod]
+        public void TestArrayToString()
+        {
+            JsonElement j = new(new JsonArray());
+            Assert.AreEqual("[\r\r]", j.ToString());
+            Assert.AreEqual("[]", j.ToCompressedString());
+
+            j.AsArray().Add(true).Add(new JsonArray()).Add(90);
+            Assert.AreEqual("[\r\ttrue,\r\t[\r\t\r\t],\r\t90\r]", j.ToString());
+            Assert.AreEqual("[true,[],90]", j.ToCompressedString());
+        } // end TestNullValue()
 #warning others
+        #endregion
 
         #region test equality
         [TestMethod]
@@ -32,7 +46,7 @@ namespace GSR.Tests.Jsonic
         [DataRow(false, true, false)]
         [DataRow(true, true, true)]
         [DataRow(false, false, true)]
-        public void TestBooleanEquality(bool a, bool b, bool expectation) 
+        public void TestBooleanEquality(bool a, bool b, bool expectation)
         {
             Assert.AreEqual(expectation, new JsonElement(a).Equals(new JsonElement(b)));
         } // end TestBooleanEquality()
@@ -45,7 +59,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("nullml3", "ml3")]
         [DataRow("null ", " ")]
         [DataRow("null,", ",")]
-        public void TestParseStartValidNull(string input, string expectedRemained) 
+        public void TestParseStartValidNull(string input, string expectedRemained)
         {
             Assert.AreEqual(null, JsonElement.ParseJsonStart(input, out string r).Value);
             Assert.AreEqual(expectedRemained, r);
@@ -120,7 +134,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("{}", "")]
         [DataRow("{\"_\": \"\", \"RunTime\": 9e1}", "")]
         [DataRow("{\"b\":  90} kl", " kl")]
-        [DataRow("{}, ," ,", ,")]
+        [DataRow("{}, ,", ", ,")]
         [DataRow("{\"ooo\": null   , \"RunTime \": 9e1}", "")]
         public void TestParseStartValidObject(string input, string expectedRemained)
         {

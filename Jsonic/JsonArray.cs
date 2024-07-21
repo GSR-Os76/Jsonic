@@ -148,7 +148,7 @@ namespace GSR.Jsonic
 
 
 
-        private static List<JsonElement> Parse(string json, out string remainder) 
+        private static List<JsonElement> Parse(string json, out string remainder)
         {
             List<JsonElement> elements = new();
             string parse = json.TrimStart();
@@ -181,7 +181,7 @@ namespace GSR.Jsonic
             throw new MalformedJsonException();
         } // end Parse()
 
-        public static JsonArray ParseJsonStart(string parse, out string remainder) =>  Parse(parse, out remainder).Aggregate(new JsonArray(), (seed, e) => seed.Add(e));
+        public static JsonArray ParseJsonStart(string parse, out string remainder) => Parse(parse, out remainder).Aggregate(new JsonArray(), (seed, e) => seed.Add(e));
 
     } // end class
 } // end namespace

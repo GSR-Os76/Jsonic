@@ -1,5 +1,4 @@
 ﻿using GSR.Jsonic;
-using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 
 namespace GSR.Tests.Jsonic
 {
@@ -86,7 +85,7 @@ namespace GSR.Tests.Jsonic
         {
             Assert.AreEqual(b, new JsonString(a, true).ToRepresentedString());
         }// end TestToRepresentedStringEnquoted()
-#endregion
+        #endregion
 
 
 

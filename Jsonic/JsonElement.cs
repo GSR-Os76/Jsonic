@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using System.Xml.Linq;
 
 namespace GSR.Jsonic
 {
@@ -39,11 +38,16 @@ namespace GSR.Jsonic
 
 
 
-        public JsonArray? AsArray() => (JsonArray?)Value;
-        public JsonBoolean? AsBoolean() => (JsonBoolean?)Value;
-        public JsonNumber? AsNumber() => (JsonNumber?)Value;
-        public JsonObject? AsObject() => (JsonObject?)Value;
-        public JsonString? AsString() => (JsonString?)Value;
+        public object? AsNull => Type == JsonType.Null ? null : throw new InvalidJsonCastException(Type, JsonType.Null);
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable value
+#pragma warning disable CS8603 // Possible null reference return.
+        public JsonArray AsArray() => Type == JsonType.Array ? (JsonArray)Value : throw new InvalidJsonCastException(Type, JsonType.Array);
+        public JsonBoolean AsBoolean() => Type == JsonType.Boolean ? (JsonBoolean)Value : throw new InvalidJsonCastException(Type, JsonType.Boolean);
+        public JsonNumber AsNumber() => Type == JsonType.Number ? (JsonNumber)Value : throw new InvalidJsonCastException(Type, JsonType.Number);
+        public JsonObject AsObject() => Type == JsonType.Object ? (JsonObject)Value : throw new InvalidJsonCastException(Type, JsonType.Object);
+        public JsonString AsString() => Type == JsonType.String ? (JsonString)Value : throw new InvalidJsonCastException(Type, JsonType.String);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable value
+#pragma warning restore CS8603 // Possible null reference return.
 
 
 
@@ -56,10 +60,15 @@ namespace GSR.Jsonic
             if (Type == JsonType.Null)
                 return JsonUtil.JSON_NULL;
 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8603 // Possible null reference return.
             return compress ? Value.ToCompressedString() : Value.ToString();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8603 // Possible null reference return.
+
         } // end AsStringC()
 
-        public override bool Equals(object? obj) => obj is JsonElement b && b.Type == Type && (Type == JsonType.Null ||  b.Value.Equals(Value)); // apparently C# == doesn't look up type. using it here, even though overridden in the actual type, fails. Presumably because Value is stored as IJsonComponent? not the realized type?
+        public override bool Equals(object? obj) => obj is JsonElement b && b.Type == Type && (Type == JsonType.Null || b.Value.Equals(Value)); // apparently C# == doesn't look up type. using it here, even though overridden in the actual type, fails. Presumably because Value is stored as IJsonComponent? not the realized type?
 
         public override int GetHashCode() => Tuple.Create(Value, Type).GetHashCode();
 
@@ -104,7 +113,7 @@ namespace GSR.Jsonic
                     return new(true);
                 case '"':
                     Match m = new Regex(JsonString.ENQUOTED_REGEX).Match(parse, 0);
-                    if(!m.Success)
+                    if (!m.Success)
                         throw new MalformedJsonException($"Couldn't read element at the start of \"{parse}\".");
 
                     string s = m.Value;

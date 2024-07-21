@@ -310,14 +310,14 @@ namespace GSR.Tests.Jsonic
 
         #region long tests
         [TestMethod]
-        [DataRow("2004", 2004l)]
-        [DataRow("-8", -8l)]
-        [DataRow("-93e4", -930000l)]
-        [DataRow("2e3", 2000l)]
-        [DataRow("2004.0", 2004l)]
-        [DataRow("-8.0", -8l)]
-        [DataRow("-93.0e4", -930000l)]
-        [DataRow("2.0e3", 2000l)]
+        [DataRow("2004", 2004L)]
+        [DataRow("-8", -8L)]
+        [DataRow("-93e4", -930000L)]
+        [DataRow("2e3", 2000L)]
+        [DataRow("2004.0", 2004L)]
+        [DataRow("-8.0", -8L)]
+        [DataRow("-93.0e4", -930000L)]
+        [DataRow("2.0e3", 2000L)]
         public void TestAsLongValid(string s, long e)
         {
             Assert.AreEqual(e, new JsonNumber(s).AsLong());

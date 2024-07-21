@@ -7,7 +7,7 @@ namespace GSR.Tests.Jsonic
     {
 
         [TestMethod]
-        public void TestDifferentInstanceMethodEquality() 
+        public void TestDifferentInstanceMethodEquality()
         {
             Assert.IsTrue(new JsonBoolean(false).Equals(new JsonBoolean(false)));
             Assert.IsTrue(new JsonBoolean(true).Equals(new JsonBoolean(true)));
@@ -40,8 +40,10 @@ namespace GSR.Tests.Jsonic
         {
             JsonBoolean f = new(false);
             JsonBoolean t = new(true);
+#pragma warning disable CS1718 // Comparison made to same variable
             Assert.IsTrue(f == f);
             Assert.IsTrue(t == t);
+#pragma warning restore CS1718 // Comparison made to same variable
             Assert.IsFalse(f == t);
             Assert.IsFalse(t == f);
         } // end TestSameInstanceOperatorEquality()
@@ -60,8 +62,10 @@ namespace GSR.Tests.Jsonic
         {
             JsonBoolean f = new(false);
             JsonBoolean t = new(true);
+#pragma warning disable CS1718 // Comparison made to same variable
             Assert.IsFalse(f != f);
             Assert.IsFalse(t != t);
+#pragma warning restore CS1718 // Comparison made to same variable
             Assert.IsTrue(f != t);
             Assert.IsTrue(t != f);
         } // end TestSameInstanceOperatorDisequality()
