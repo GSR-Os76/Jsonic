@@ -36,6 +36,8 @@ namespace GSR.Jsonic
 
 
 
+        public JsonString[] GetKeySet() => _elements.Keys.ToArray();
+
         /// <summary>
         /// Adds a null element to the object.
         /// </summary>
