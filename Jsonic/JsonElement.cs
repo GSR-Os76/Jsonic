@@ -105,7 +105,7 @@ namespace GSR.Jsonic
                 case '"':
                     return new(JsonString.ParseJson(parse, out remainder));
                 case '[':
-                    return new(JsonArray.ParseJsonStart(parse, out remainder));
+                    return new(JsonArray.ParseJson(parse, out remainder));
                 case '{':
                     return new(JsonObject.ParseJsonStart(parse, out remainder));
                 default:
@@ -117,7 +117,7 @@ namespace GSR.Jsonic
         /// Reads all of a string as a single Json value with no superfluous non-whitespace characters.
         /// </summary>
         /// <param name="json">The input string.</param>
-        /// <returns>A JsonElement containing the parse Json value.</returns>
+        /// <returns>A JsonElement containing the parsed Json value.</returns>
         /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
         public static JsonElement ParseJson(string json) 
         {
