@@ -28,14 +28,14 @@ namespace GSR.Jsonic
         public JsonNumber(float value) : this(value.ToString()) { }
         public JsonNumber(double value) : this(value.ToString()) { }
         public JsonNumber(decimal value) : this(value.ToString()) { }
-        public JsonNumber(string json)
+        public JsonNumber(string value)
         {
-            if (!Regex.IsMatch(json, ANCHORED_REGEX))
-                throw new MalformedJsonException($"\"{json}\" is not a valid json numeric");
+            if (!Regex.IsMatch(value, ANCHORED_REGEX))
+                throw new MalformedJsonException($"\"{value}\" is not a valid json numeric");
 
-            Value = json;
-            Significand = new(() => SignificandOf(json));
-            Exponent = new(() => ExponentOf(json));
+            Value = value;
+            Significand = new(() => SignificandOf(value));
+            Exponent = new(() => ExponentOf(value));
         } // end JsonNumber
 
 
@@ -60,6 +60,7 @@ namespace GSR.Jsonic
 
 
 
+        /// <inheritdoc/>
         public string ToCompressedString() => ToString();
 
         public override string ToString() => Value;
@@ -96,6 +97,46 @@ namespace GSR.Jsonic
         private static IEnumerable<char> WithoutTrailingZeros(IEnumerable<char> s) => s.Reverse().Aggregate(new StringBuilder(s.Count()), (seed, c) => seed.Append(seed.Length == 0 && c == '0' ? "" : c)).ToString().Reverse();
 
         private static string WithoutInsignificantZeros(string s) => Regex.Match(s, @"[1-9]([0-9]*[1-9])?").Value;
+
+
+
+        /// <summary>
+        /// Parse the number at the beginning of a string.
+        /// </summary>
+        /// <param name="json">The input string.</param>
+        /// <param name="remainder">The unmodified section of string trailing the leading value.</param>
+        /// <returns>A JsonNumber containing the parsed Json value.</returns>
+        /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
+        public static JsonNumber ParseJson(string json, out string remainder)
+        {
+            string parse = json.TrimStart();
+            if (parse.Length < 1)
+                throw new MalformedJsonException();
+
+            Match m = new Regex(REGEX).Match(parse, 0);
+            if (!m.Success)
+                throw new MalformedJsonException($"Couldn't read element at the start of \"{parse}\".");
+
+            string s = m.Value;
+            remainder = parse[s.Length..^0];
+            return new JsonNumber(s);
+        } // end ParseJson()
+
+        /// <summary>
+        /// Reads all of a string as a single Json value with no superfluous non-whitespace characters.
+        /// </summary>
+        /// <param name="json">The input string.</param>
+        /// <returns>A JsonNumber containing the parse Json value.</returns>
+        /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
+        public static JsonNumber ParseJson(string json)
+        {
+            JsonNumber n = ParseJson(json, out string r);
+            if (!r.Trim().Equals(string.Empty))
+                throw new MalformedJsonException();
+
+            return n;
+        } // end ParseJson()
+
 
     } // end class
 } // end namespace

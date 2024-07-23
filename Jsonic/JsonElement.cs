@@ -119,13 +119,7 @@ namespace GSR.Jsonic
                 case '{':
                     return new(JsonObject.ParseJsonStart(parse, out remainder));
                 default:
-                    Match m = new Regex(JsonNumber.REGEX).Match(parse, 0);
-                    if (!m.Success)
-                        throw new MalformedJsonException($"Couldn't read element at the start of \"{parse}\".");
-
-                    String s = m.Value;
-                    remainder = parse[s.Length..^0];
-                    return new(new JsonNumber(s));
+                    return new(JsonNumber.ParseJson(parse, out remainder));
             }
         } // end ParseJson()
 
