@@ -169,8 +169,8 @@ namespace GSR.Jsonic
             while (parse.Length != 0)
             {
                 string k = Regex.Match(parse, JsonString.ENQUOTED_REGEX).Value;
+                JsonString key = JsonString.Parse(k);
                 parse = parse[k.Length..].TrimStart();
-                JsonString key = new(k, true);
 
                 if (elements.Where((x) => x.Key.Equals(key)).Any())
                     throw new MalformedJsonException($"Duplicate key encountered: {key}");

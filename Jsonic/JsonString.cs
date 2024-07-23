@@ -10,44 +10,53 @@ namespace GSR.Jsonic
         public const string ANCHORED_UNENQUOTED_REGEX = @"^" + UNENQUOTED_REGEX + @"$";
         public const string ANCHORED_ENQUOTED_REGEX = @"^" + ENQUOTED_REGEX + @"$";
 
+        public static readonly JsonString EMPTY = new();
+
         public string Value { get; }
 
 
 
+        public JsonString() : this(string.Empty) { }
+
         /// <summary>
-        /// 
+        /// Constructs a JsonString with a given value.
         /// </summary>
-        /// <param name="json"></param>
+        /// <param name="value">The Json compatibly formatted string the Json string represents.</param>
         /// <exception cref="MalformedJsonException">String wasn't in valid Json string format.</exception>
-        public JsonString(string json, bool expectEnquoted = false)
+        public JsonString(string value)
         {
-            if (expectEnquoted)
-            {
-                if (!Regex.IsMatch(json, ANCHORED_ENQUOTED_REGEX))
-                    throw new MalformedJsonException($"\"{json}\" is not a valid already enquoted json string");
+            if (!Regex.IsMatch(value, ANCHORED_UNENQUOTED_REGEX))
+                throw new MalformedJsonException($"Couldn't construct a Json string with the of value: \"{value}\", maybe try using: \"{nameof(FromEscapedString)}\"");
 
-                Value = json[1..^1];
-            }
-            else
-            {
-                if (!Regex.IsMatch(json, ANCHORED_UNENQUOTED_REGEX))
-                    throw new MalformedJsonException($"\"{json}\" is not a valid non-enquoted json string");
-
-                Value = json;
-            }
+            Value = value;
         } // end constructor()
 
 
 
 
         /// <summary>
-        /// Unescapes escaped characters, and remove enquotement, turning it into the string it represents.
+        /// Unescapes escaped characters, turning the Json string into the string it represents.
         /// </summary>
         /// <returns></returns>
-        public string ToRepresentedString() => Value.Replace("\\\"", "\"").Replace("\\/", "/").Replace("\\b", "\b").Replace("\\f", "\f").Replace("\\n", "\n").Replace("\\r", "\r").Replace("\\t", "\t").UnescapeUnicodeCharacters().Replace("\\\\", "\\");
+        public string ToUnescapedString() => Value.Replace("\\\"", "\"").Replace("\\/", "/").Replace("\\b", "\b").Replace("\\f", "\f").Replace("\\n", "\n").Replace("\\r", "\r").Replace("\\t", "\t").UnescapeUnicodeCharacters().Replace("\\\\", "\\");
+
+        /// <summary>
+        /// Escapes all unescaped characters necessary, turning it into an equivalent string that represents it.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static JsonString FromEscapedString(string s)
+        {
+            StringBuilder sb = new(s.Length + 2);
+            foreach (char c in s)
+                sb.Append(c == '"' ? "\\\"" : c == '\\' ? "\\\\" : c);
+
+            return new(sb.ToString());
+        } // end Parse()
 
 
 
+        /// <inheritdoc/>
         public string ToCompressedString() => ToString();
 
         public override string ToString() => $"\"{Value}\"";
@@ -61,19 +70,20 @@ namespace GSR.Jsonic
         public static bool operator !=(JsonString a, JsonString b) => !a.Equals(b);
 
 
+
         /// <summary>
-        /// Escapes all unescaped characters necessary, turning it into an equivalent string that represents it.
+        /// Parses a Json string string into a JsonString representation of it.
         /// </summary>
-        /// <param name="s"></param>
+        /// <param name="json"></param>
         /// <returns></returns>
-        public static JsonString Parse(string s)
+        /// <exception cref="MalformedJsonException"></exception>
+        public static JsonString Parse(string json)
         {
-            StringBuilder sb = new(s.Length + 2);
-            foreach (char c in s)
-                sb.Append(c == '"' ? "\\\"" : c == '\\' ? "\\\\" : c);
+            string parse = json.Trim();
+            if (!Regex.IsMatch(parse, ANCHORED_ENQUOTED_REGEX))
+                throw new MalformedJsonException($"Could read JsonString from value: \"{parse}\"");
 
-            return new(sb.ToString());
+            return new(parse[1..^1]);
         } // end Parse()
-
     } // end class
 } // end namespace

@@ -12,7 +12,7 @@ namespace GSR.Jsonic
 
         public JsonElement() : this(null, JsonType.Null) { } // end constructor
         public JsonElement(bool value) : this(new JsonBoolean(value)) { } // end constructor
-        public JsonElement(string value, bool expectEnquoted = false) : this(new JsonString(value, expectEnquoted)) { } // end constructor
+        public JsonElement(string value) : this(new JsonString(value)) { } // end constructor
         public JsonElement(sbyte value) : this(new JsonNumber(value)) { } // end constructor
         public JsonElement(byte value) : this(new JsonNumber(value)) { } // end constructor
         public JsonElement(short value) : this(new JsonNumber(value)) { } // end constructor
@@ -119,7 +119,7 @@ namespace GSR.Jsonic
 
                     string s = m.Value;
                     remainder = parse[s.Length..^0];
-                    return new(s, true);
+                    return new(JsonString.Parse(s));
                 case '[':
                     return new(JsonArray.ParseJsonStart(parse, out remainder));
                 case '{':
