@@ -51,6 +51,7 @@ namespace GSR.Jsonic
 
 
 
+        /// <inheritdoc/>
         public string ToCompressedString() => AsStringC(true);
 
         public override string ToString() => AsStringC();
@@ -78,16 +79,16 @@ namespace GSR.Jsonic
 
 
 
-        // using parse this way is inconsistent with it's meaning in JsonString. Maybe make ParseJson/ParseJsonStart/ParseString(JsonString specific)
         /// <summary>
-        /// Expects no proceeding whitespace characters.
+        /// Parse the element at the beginning of a string.
         /// </summary>
-        /// <param name="parse"></param>
-        /// <param name="remainder"></param>
-        /// <returns></returns>
-        /// <exception cref="MalformedJsonException"></exception>
-        public static JsonElement ParseJsonStart(string parse, out string remainder)
+        /// <param name="json">The input string.</param>
+        /// <param name="remainder">The unmodified section of string trailing the leading value.</param>
+        /// <returns>A JsonElement containing the parse Json value.</returns>
+        /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
+        public static JsonElement ParseJson(string json, out string remainder)
         {
+            string parse = json.TrimStart();
             if (parse.Length < 1)
                 throw new MalformedJsonException();
 
@@ -134,9 +135,15 @@ namespace GSR.Jsonic
             }
         } // end ParseJsonStart()
 
-        public static JsonElement Parse(string parse) 
+        /// <summary>
+        /// Reads all of a string as a single Json value with no superfluous non-whitespace characters.
+        /// </summary>
+        /// <param name="json">The input string.</param>
+        /// <returns>A JsonElement containing the parse Json value.</returns>
+        /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
+        public static JsonElement ParseJson(string json) 
         {
-            JsonElement e = ParseJsonStart(parse, out string r);
+            JsonElement e = ParseJson(json, out string r);
             if (!r.Trim().Equals(string.Empty))
                 throw new MalformedJsonException();
 

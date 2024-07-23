@@ -180,7 +180,7 @@ namespace GSR.Jsonic
 
                 parse = parse[1..].TrimStart();
 
-                elements.Add(KeyValuePair.Create(key, JsonElement.ParseJsonStart(parse, out string r)));
+                elements.Add(KeyValuePair.Create(key, JsonElement.ParseJson(parse, out string r)));
                 parse = r.TrimStart();
 
                 if (parse[0] == '}')

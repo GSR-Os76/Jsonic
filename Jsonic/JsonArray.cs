@@ -164,7 +164,7 @@ namespace GSR.Jsonic
 
             while (parse.Length != 0)
             {
-                elements.Add(JsonElement.ParseJsonStart(parse, out string r));
+                elements.Add(JsonElement.ParseJson(parse, out string r));
                 parse = r.TrimStart();
 
                 if (parse.Length == 0)
