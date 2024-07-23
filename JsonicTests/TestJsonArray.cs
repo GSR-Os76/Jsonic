@@ -48,6 +48,21 @@ namespace GSR.Tests.Jsonic
         // test elements that were parsed are as was expected
         #endregion
 
+        #region ParseTests
+        [TestMethod]
+        [ExpectedException(typeof(MalformedJsonException))]
+        [DataRow("[0,0.0,0e3")]
+        [DataRow("[{]")]
+        [DataRow("[--0e3]")]
+        [DataRow("[[00], \"\"]")]
+        [DataRow("[null,")]
+        [DataRow("[6.3, false, false,]")]
+        public void TestParseInvalid(string json) 
+        {
+            new JsonArray(json);
+        } // end TestParseInvalid()
+        #endregion
+
         #region equality tests
         [TestMethod]
         [DataRow("[]", "[]", true)]
