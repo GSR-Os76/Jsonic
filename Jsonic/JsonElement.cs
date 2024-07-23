@@ -134,5 +134,14 @@ namespace GSR.Jsonic
             }
         } // end ParseJsonStart()
 
+        public static JsonElement Parse(string parse) 
+        {
+            JsonElement e = ParseJsonStart(parse, out string r);
+            if (!r.Trim().Equals(string.Empty))
+                throw new MalformedJsonException();
+
+            return e;
+        } // end Parse()
+
     } // end record class
 } // end namespace
