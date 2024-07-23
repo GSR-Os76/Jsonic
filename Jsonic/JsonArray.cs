@@ -167,6 +167,8 @@ namespace GSR.Jsonic
                 elements.Add(JsonElement.ParseJsonStart(parse, out string r));
                 parse = r.TrimStart();
 
+                if (parse.Length == 0)
+                    throw new MalformedJsonException();
 
                 if (parse[0] == ']')
                 {
