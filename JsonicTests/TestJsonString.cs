@@ -35,7 +35,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("\"n\"")]
         public void TestParseValid(string s)
         {
-            JsonString.Parse(s);
+            JsonString.ParseJson(s);
             Assert.IsTrue(true);
         }// end TestParseValid()
 
@@ -60,7 +60,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("\"\\8F3\"")]
         public void TestParseInvalid(string s)
         {
-            JsonString.Parse(s);
+            JsonString.ParseJson(s);
         }// end TestParseInvalid()
 
         [TestMethod]
@@ -83,7 +83,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("\"\\\\\\b\"", "\\\b")]
         public void TestToUnescapedStringThroughParse(string a, string b)
         {
-            Assert.AreEqual(b, JsonString.Parse(a).ToUnescapedString());
+            Assert.AreEqual(b, JsonString.ParseJson(a).ToUnescapedString());
         }// end TestToUnescapedStringThroughParse()
         #endregion
 

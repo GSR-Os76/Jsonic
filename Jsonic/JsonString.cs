@@ -72,12 +72,34 @@ namespace GSR.Jsonic
 
 
         /// <summary>
+        /// Parse the element at the beginning of a string.
+        /// </summary>
+        /// <param name="json">The input string.</param>
+        /// <param name="remainder">The unmodified section of string trailing the leading value.</param>
+        /// <returns>A JsonString containing the parsed Json value.</returns>
+        /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
+        public static JsonString ParseJson(string json, out string remainder)
+        {
+            string parse = json.TrimStart();
+            if (parse.Length < 1 || !parse[0].Equals('"'))
+                throw new MalformedJsonException();
+
+            Match m = new Regex(ENQUOTED_REGEX).Match(parse, 0);
+            if (!m.Success)
+                throw new MalformedJsonException($"Couldn't read string at the start of: \"{parse}\".");
+
+            string s = m.Value;
+            remainder = parse[s.Length..^0];
+            return ParseJson(s);
+        } // end ParseJson()
+
+        /// <summary>
         /// Parses a Json string string into a JsonString representation of it.
         /// </summary>
         /// <param name="json"></param>
         /// <returns></returns>
         /// <exception cref="MalformedJsonException"></exception>
-        public static JsonString Parse(string json)
+        public static JsonString ParseJson(string json)
         {
             string parse = json.Trim();
             if (!Regex.IsMatch(parse, ANCHORED_ENQUOTED_REGEX))

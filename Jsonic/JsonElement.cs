@@ -84,7 +84,7 @@ namespace GSR.Jsonic
         /// </summary>
         /// <param name="json">The input string.</param>
         /// <param name="remainder">The unmodified section of string trailing the leading value.</param>
-        /// <returns>A JsonElement containing the parse Json value.</returns>
+        /// <returns>A JsonElement containing the parsed Json value.</returns>
         /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
         public static JsonElement ParseJson(string json, out string remainder)
         {
@@ -113,27 +113,21 @@ namespace GSR.Jsonic
                     remainder = parse[JsonUtil.JSON_TRUE.Length..^0];
                     return new(true);
                 case '"':
-                    Match m = new Regex(JsonString.ENQUOTED_REGEX).Match(parse, 0);
-                    if (!m.Success)
-                        throw new MalformedJsonException($"Couldn't read element at the start of \"{parse}\".");
-
-                    string s = m.Value;
-                    remainder = parse[s.Length..^0];
-                    return new(JsonString.Parse(s));
+                    return new(JsonString.ParseJson(parse, out remainder));
                 case '[':
                     return new(JsonArray.ParseJsonStart(parse, out remainder));
                 case '{':
                     return new(JsonObject.ParseJsonStart(parse, out remainder));
                 default:
-                    m = new Regex(JsonNumber.REGEX).Match(parse, 0);  // why is this variable still in scope? that seems curious, but very valuable
+                    Match m = new Regex(JsonNumber.REGEX).Match(parse, 0);
                     if (!m.Success)
                         throw new MalformedJsonException($"Couldn't read element at the start of \"{parse}\".");
 
-                    s = m.Value;
+                    String s = m.Value;
                     remainder = parse[s.Length..^0];
                     return new(new JsonNumber(s));
             }
-        } // end ParseJsonStart()
+        } // end ParseJson()
 
         /// <summary>
         /// Reads all of a string as a single Json value with no superfluous non-whitespace characters.
@@ -148,7 +142,7 @@ namespace GSR.Jsonic
                 throw new MalformedJsonException();
 
             return e;
-        } // end Parse()
+        } // end ParseJson()
 
     } // end record class
 } // end namespace
