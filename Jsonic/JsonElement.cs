@@ -107,7 +107,7 @@ namespace GSR.Jsonic
                 case '[':
                     return new(JsonArray.ParseJson(parse, out remainder));
                 case '{':
-                    return new(JsonObject.ParseJsonStart(parse, out remainder));
+                    return new(JsonObject.ParseJson(parse, out remainder));
                 default:
                     return new(JsonNumber.ParseJson(parse, out remainder));
             }

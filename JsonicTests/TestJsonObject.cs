@@ -26,7 +26,7 @@ namespace GSR.Tests.Jsonic
         // and with values
         public void TestConstructSuccess(string json)
         {
-            new JsonObject(json);
+            JsonObject.ParseJson(json);
         } // end TestConstructSuccess()
 
         [TestMethod]
@@ -46,7 +46,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("{\"v\": 9, \"v\": 0}")]
         public void TestConstructFail(string json)
         {
-            new JsonObject(json);
+            JsonObject.ParseJson(json);
         } // end TestConstructFail()
         #endregion
 
@@ -58,7 +58,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("{\"key\": [0, 1, 0]}", "{\"n\"   : [0, 1, 0]}", false)]
         public void TestEquality(string a, string b, bool expectation)
         {
-            Assert.AreEqual(expectation, new JsonObject(a).Equals(new JsonObject(b)));
+            Assert.AreEqual(expectation, JsonObject.ParseJson(a).Equals(JsonObject.ParseJson(b)));
         } // end TestEquality()
 
 
