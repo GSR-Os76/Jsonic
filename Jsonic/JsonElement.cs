@@ -101,17 +101,8 @@ namespace GSR.Jsonic
                     remainder = parse[JsonUtil.JSON_NULL.Length..^0];
                     return new();
                 case 'f':
-                    if (parse.Length < JsonUtil.JSON_FALSE.Length || !parse[0..JsonUtil.JSON_FALSE.Length].Equals(JsonUtil.JSON_FALSE))
-                        throw new MalformedJsonException($"Couldn't read element at the start of \"{parse}\".");
-
-                    remainder = parse[JsonUtil.JSON_FALSE.Length..^0];
-                    return new(false);
                 case 't':
-                    if (parse.Length < JsonUtil.JSON_TRUE.Length || !parse[0..JsonUtil.JSON_TRUE.Length].Equals(JsonUtil.JSON_TRUE))
-                        throw new MalformedJsonException($"Couldn't read element at the start of \"{parse}\".");
-
-                    remainder = parse[JsonUtil.JSON_TRUE.Length..^0];
-                    return new(true);
+                    return new(JsonBoolean.ParseJson(parse, out remainder));
                 case '"':
                     return new(JsonString.ParseJson(parse, out remainder));
                 case '[':
