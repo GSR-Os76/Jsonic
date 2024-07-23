@@ -1,3 +1,27 @@
 ﻿# Jsonic
 
 Simple clean literal Json representation in C#. Adheres to json.org's Json standard.
+
+## Versioning
+
+### Scheme
+
+**W.X.Y.Z**
+
+- W:
+	- Increased by one after a complete rewrite redesign. 
+	- Starts at one.
+- X:
+	- Increased by one after any revision in existing contract. 
+	- Starts at zero.
+- Y:
+	- Increased by one after any expansion of existing contract. 
+	- Starts at zero.
+- Z:
+	- Increased by one after fixing any misadherence to contract, fixing any typo, or improving documentation. 
+	- Starts at zero.
+	
+
+### Practices
+- A version number, (X, Y, Z), must increase once for every pull request, and only once.
+- Increases to a higher number reset all lower numbers.
