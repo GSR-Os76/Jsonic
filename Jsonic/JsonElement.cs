@@ -25,11 +25,12 @@ namespace GSR.Jsonic
         public JsonElement(double value) : this(new JsonNumber(value)) { } // end constructor
         public JsonElement(decimal value) : this(new JsonNumber(value)) { } // end constructor
 
-        public JsonElement(JsonArray? value) : this(value, JsonType.Array) { } // end constructor
-        public JsonElement(JsonBoolean? value) : this(value, JsonType.Boolean) { } // end constructor
-        public JsonElement(JsonNumber? value) : this(value, JsonType.Number) { } // end constructor
-        public JsonElement(JsonObject? value) : this(value, JsonType.Object) { } // end constructor
-        public JsonElement(JsonString? value) : this(value, JsonType.String) { } // end constructor
+        public JsonElement(JsonNull? value) : this(value, JsonType.Null) { } // end constructor
+        public JsonElement(JsonArray value) : this(value, JsonType.Array) { } // end constructor
+        public JsonElement(JsonBoolean value) : this(value, JsonType.Boolean) { } // end constructor
+        public JsonElement(JsonNumber value) : this(value, JsonType.Number) { } // end constructor
+        public JsonElement(JsonObject value) : this(value, JsonType.Object) { } // end constructor
+        public JsonElement(JsonString value) : this(value, JsonType.String) { } // end constructor
         private JsonElement(IJsonComponent? value, JsonType type)
         {
             Value = value;
@@ -38,7 +39,7 @@ namespace GSR.Jsonic
 
 
 
-        public object? AsNull => Type == JsonType.Null ? null : throw new InvalidJsonCastException(Type, JsonType.Null);
+        public JsonNull? AsNull => Type == JsonType.Null ? (JsonNull?)Value : throw new InvalidJsonCastException(Type, JsonType.Null);
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable value
 #pragma warning disable CS8603 // Possible null reference return.
         public JsonArray AsArray() => Type == JsonType.Array ? (JsonArray)Value : throw new InvalidJsonCastException(Type, JsonType.Array);
@@ -59,7 +60,7 @@ namespace GSR.Jsonic
         private string AsStringC(bool compress = false)
         {
             if (Type == JsonType.Null)
-                return JsonUtil.JSON_NULL;
+                return JsonNull.JSON_NULL;
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8603 // Possible null reference return.
@@ -69,7 +70,9 @@ namespace GSR.Jsonic
 
         } // end AsStringC()
 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
         public override bool Equals(object? obj) => obj is JsonElement b && b.Type == Type && (Type == JsonType.Null || b.Value.Equals(Value)); // apparently C# == doesn't look up type. using it here, even though overridden in the actual type, fails. Presumably because Value is stored as IJsonComponent? not the realized type?
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
         public override int GetHashCode() => Tuple.Create(Value, Type).GetHashCode();
 
@@ -95,11 +98,7 @@ namespace GSR.Jsonic
             switch (parse[0])
             {
                 case 'n':
-                    if (parse.Length < JsonUtil.JSON_NULL.Length || !parse[0..JsonUtil.JSON_NULL.Length].Equals(JsonUtil.JSON_NULL))
-                        throw new MalformedJsonException($"Couldn't read element at the start of \"{parse}\".");
-
-                    remainder = parse[JsonUtil.JSON_NULL.Length..^0];
-                    return new();
+                    return new(JsonNull.ParseJson(parse, out remainder));
                 case 'f':
                 case 't':
                     return new(JsonBoolean.ParseJson(parse, out remainder));

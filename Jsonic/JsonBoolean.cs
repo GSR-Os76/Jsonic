@@ -2,6 +2,9 @@
 {
     public sealed class JsonBoolean : IJsonComponent
     {
+        public const string JSON_TRUE = "true";
+        public const string JSON_FALSE = "false";
+
         public static readonly JsonBoolean TRUE = new(true);
         public static readonly JsonBoolean FALSE = new(false);
 
@@ -19,7 +22,7 @@
         /// <inheritdoc/>
         public string ToCompressedString() => ToString();
 
-        public override string ToString() => Value ? JsonUtil.JSON_TRUE : JsonUtil.JSON_FALSE;
+        public override string ToString() => Value ? JSON_TRUE : JSON_FALSE;
 
         public override int GetHashCode() => Value.GetHashCode();
 
@@ -47,16 +50,16 @@
             switch (parse[0])
             {
                 case 'f':
-                    if (parse.Length < JsonUtil.JSON_FALSE.Length || !parse[0..JsonUtil.JSON_FALSE.Length].Equals(JsonUtil.JSON_FALSE))
+                    if (parse.Length < JSON_FALSE.Length || !parse[0..JSON_FALSE.Length].Equals(JSON_FALSE))
                         throw new MalformedJsonException($"Couldn't read element at the start of \"{parse}\".");
 
-                    remainder = parse[JsonUtil.JSON_FALSE.Length..^0];
+                    remainder = parse[JSON_FALSE.Length..^0];
                     return new(false);
                 case 't':
-                    if (parse.Length < JsonUtil.JSON_TRUE.Length || !parse[0..JsonUtil.JSON_TRUE.Length].Equals(JsonUtil.JSON_TRUE))
+                    if (parse.Length < JSON_TRUE.Length || !parse[0..JSON_TRUE.Length].Equals(JSON_TRUE))
                         throw new MalformedJsonException($"Couldn't read element at the start of \"{parse}\".");
 
-                    remainder = parse[JsonUtil.JSON_TRUE.Length..^0];
+                    remainder = parse[JSON_TRUE.Length..^0];
                     return new(true);
                 default:
                     throw new MalformedJsonException();
@@ -67,7 +70,7 @@
         /// Reads all of a string as a single Json value with no superfluous non-whitespace characters.
         /// </summary>
         /// <param name="json">The input string.</param>
-        /// <returns>A JsonBoolean containing the parse Json value.</returns>
+        /// <returns>A JsonBoolean containing the parsed Json value.</returns>
         /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
         public static JsonBoolean ParseJson(string json)
         {

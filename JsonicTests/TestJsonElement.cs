@@ -10,15 +10,15 @@ namespace GSR.Tests.Jsonic
         [TestMethod]
         public void TestNullValue()
         {
-            Assert.AreEqual(JsonUtil.JSON_NULL, new JsonElement((JsonObject?)null).ToString());
-            Assert.AreEqual(JsonUtil.JSON_NULL, new JsonElement().ToString());
-            Assert.AreEqual(JsonUtil.JSON_NULL, new JsonElement((JsonObject?)null).ToCompressedString());
-            Assert.AreEqual(JsonUtil.JSON_NULL, new JsonElement().ToCompressedString());
+            Assert.AreEqual(JsonNull.JSON_NULL, new JsonElement(JsonNull.NULL).ToString());
+            Assert.AreEqual(JsonNull.JSON_NULL, new JsonElement().ToString());
+            Assert.AreEqual(JsonNull.JSON_NULL, new JsonElement(JsonNull.NULL).ToCompressedString());
+            Assert.AreEqual(JsonNull.JSON_NULL, new JsonElement().ToCompressedString());
         } // end TestNullValue()
 
         [TestMethod]
-        [DataRow(false, JsonUtil.JSON_FALSE)]
-        [DataRow(true, JsonUtil.JSON_TRUE)]
+        [DataRow(false, JsonBoolean.JSON_FALSE)]
+        [DataRow(true, JsonBoolean.JSON_TRUE)]
         public void TestBooleanValue(bool b, string expectation)
         {
             JsonElement j = new(b);
