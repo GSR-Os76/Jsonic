@@ -27,6 +27,8 @@ namespace GSR.Jsonic
 
         public JsonObject() { } // end constructor
 
+        public JsonObject(IEnumerable<KeyValuePair<JsonString, JsonElement>> elements) => _elements = new Dictionary<JsonString, JsonElement>(elements); 
+
 
 
         public JsonString[] GetKeySet() => _elements.Keys.ToArray();

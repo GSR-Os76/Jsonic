@@ -48,6 +48,33 @@ namespace GSR.Tests.Jsonic
         {
             JsonObject.ParseJson(json);
         } // end TestConstructFail()
+
+        [TestMethod]
+        public void TestKVPConstructSuccess() 
+        {
+            JsonObject a = new (new List<KeyValuePair<JsonString, JsonElement>>() {
+                KeyValuePair.Create(new JsonString("A"), new JsonElement()),
+                KeyValuePair.Create(new JsonString("BetaCapionssr3gwty"), new JsonElement(false)),
+                KeyValuePair.Create(new JsonString(""), new JsonElement(new JsonArray())),
+                KeyValuePair.Create(new JsonString("_"), new JsonElement())
+            });
+            Assert.AreEqual(JsonNull.NULL, a["A"].Value);
+            Assert.AreEqual(new JsonArray(), a[""].Value);
+            Assert.AreEqual(JsonNull.NULL, a["A"].Value);
+            Assert.AreEqual(JsonNull.NULL, a["_"].Value);
+            Assert.AreEqual(JsonBoolean.FALSE, a["BetaCapionssr3gwty"].Value);
+        } // end TestKVPConstructSuccess()
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void TestKVPConstructDuplicateFail()
+        {
+            new JsonObject(new List<KeyValuePair<JsonString, JsonElement>>() { 
+                KeyValuePair.Create(new JsonString("A"), new JsonElement()), 
+                KeyValuePair.Create(new JsonString("BetaCapionssr3gwty"), new JsonElement()),
+                KeyValuePair.Create(new JsonString("A"), new JsonElement(new JsonArray()))
+            });
+        } // end TestKVPConstructDuplicateFail()
         #endregion
 
         [TestMethod]
