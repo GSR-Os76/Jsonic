@@ -119,14 +119,7 @@ namespace GSR.Jsonic
         /// <param name="json">The input string.</param>
         /// <returns>A JsonElement containing the parsed Json value.</returns>
         /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
-        public static JsonElement ParseJson(string json) 
-        {
-            JsonElement e = ParseJson(json, out string r);
-            if (!r.Trim().Equals(string.Empty))
-                throw new MalformedJsonException();
-
-            return e;
-        } // end ParseJson()
+        public static JsonElement ParseJson(string json) => JsonUtil.RequiredEmptyRemainder(ParseJson, json);
 
     } // end record class
 } // end namespace

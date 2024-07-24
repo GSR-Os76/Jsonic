@@ -193,14 +193,7 @@ namespace GSR.Jsonic
         /// <param name="json">The input string.</param>
         /// <returns>A JsonArray containing the parsed Json value.</returns>
         /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
-        public static JsonArray ParseJson(string json)
-        {
-            JsonArray x = ParseJson(json, out string r);
-            if (!r.Trim().Equals(string.Empty))
-                throw new MalformedJsonException();
-
-            return x;
-        } // end ParseJson()
+        public static JsonArray ParseJson(string json) => JsonUtil.RequiredEmptyRemainder(ParseJson, json);
 
     } // end class
 } // end namespace

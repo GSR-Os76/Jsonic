@@ -22,7 +22,7 @@
         /// </summary>
         /// <param name="json">The input string.</param>
         /// <param name="remainder">The unmodified section of string trailing the leading value.</param>
-        /// <returns>A JsonNUll containing the parsed Json value.</returns>
+        /// <returns>A JsonNull containing the parsed Json value.</returns>
         /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
         public static JsonNull? ParseJson(string json, out string remainder)
         {
@@ -44,14 +44,7 @@
         /// <param name="json">The input string.</param>
         /// <returns>A JsonNull containing the parsed Json value.</returns>
         /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
-        public static JsonNull? ParseJson(string json)
-        {
-            JsonNull? x = ParseJson(json, out string r);
-            if (!r.Trim().Equals(string.Empty))
-                throw new MalformedJsonException();
-
-            return x;
-        } // end ParseJson()
+        public static JsonNull? ParseJson(string json) => JsonUtil.RequiredEmptyRemainder(ParseJson, json);
 
     } // end class
 } // end namespace

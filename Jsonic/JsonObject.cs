@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Reflection.Metadata;
+using System.Text;
 
 namespace GSR.Jsonic
 {
@@ -144,7 +145,7 @@ namespace GSR.Jsonic
 
         public static bool operator !=(JsonObject a, JsonObject b) => !a.Equals(b);
 
-
+#warning Document, including checking -ds, simplify and consistenify ParseJson methods
 
         private static List<KeyValuePair<JsonString, JsonElement>> Parse(string json, out string remainder)
         {
@@ -204,14 +205,7 @@ namespace GSR.Jsonic
         /// <param name="json">The input string.</param>
         /// <returns>A JsonObject containing the parsed Json value.</returns>
         /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
-        public static JsonObject ParseJson(string json)
-        {
-            JsonObject e = ParseJson(json, out string r);
-            if (!r.Trim().Equals(string.Empty))
-                throw new MalformedJsonException();
-
-            return e;
-        } // end ParseJson()
+        public static JsonObject ParseJson(string json) => JsonUtil.RequiredEmptyRemainder(ParseJson, json);
 
     } // end class
 } // end namespace

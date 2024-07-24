@@ -91,22 +91,16 @@ namespace GSR.Jsonic
 
             string s = m.Value;
             remainder = parse[s.Length..^0];
-            return ParseJson(s);
+            return new(s[1..^1]);
         } // end ParseJson()
 
         /// <summary>
-        /// Parses a Json string string into a JsonString representation of it.
+        /// Reads all of a string as a single Json value with no superfluous non-whitespace characters.
         /// </summary>
-        /// <param name="json"></param>
-        /// <returns></returns>
-        /// <exception cref="MalformedJsonException"></exception>
-        public static JsonString ParseJson(string json)
-        {
-            string parse = json.Trim();
-            if (!Regex.IsMatch(parse, ANCHORED_ENQUOTED_REGEX))
-                throw new MalformedJsonException($"Could read JsonString from value: \"{parse}\"");
+        /// <param name="json">The input string.</param>
+        /// <returns>A JsonString containing the parsed Json value.</returns>
+        /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
+        public static JsonString ParseJson(string json) => JsonUtil.RequiredEmptyRemainder(ParseJson, json);
 
-            return new(parse[1..^1]);
-        } // end Parse()
     } // end class
 } // end namespace

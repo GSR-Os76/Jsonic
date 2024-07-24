@@ -126,17 +126,9 @@ namespace GSR.Jsonic
         /// Reads all of a string as a single Json value with no superfluous non-whitespace characters.
         /// </summary>
         /// <param name="json">The input string.</param>
-        /// <returns>A JsonNumber containing the parse Json value.</returns>
+        /// <returns>A JsonNumber containing the parsed Json value.</returns>
         /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
-        public static JsonNumber ParseJson(string json)
-        {
-            JsonNumber n = ParseJson(json, out string r);
-            if (!r.Trim().Equals(string.Empty))
-                throw new MalformedJsonException();
-
-            return n;
-        } // end ParseJson()
-
+        public static JsonNumber ParseJson(string json) => JsonUtil.RequiredEmptyRemainder(ParseJson, json);
 
     } // end class
 } // end namespace

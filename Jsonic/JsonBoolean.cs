@@ -72,14 +72,7 @@
         /// <param name="json">The input string.</param>
         /// <returns>A JsonBoolean containing the parsed Json value.</returns>
         /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
-        public static JsonBoolean ParseJson(string json)
-        {
-            JsonBoolean b = ParseJson(json, out string r);
-            if (!r.Trim().Equals(string.Empty))
-                throw new MalformedJsonException();
-
-            return b;
-        } // end ParseJson()
+        public static JsonBoolean ParseJson(string json) => JsonUtil.RequiredEmptyRemainder(ParseJson, json);
 
     } // end class
 } // end namespace
