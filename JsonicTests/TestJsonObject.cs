@@ -26,7 +26,7 @@ namespace GSR.Tests.Jsonic
         // and with values
         public void TestConstructSuccess(string json)
         {
-            new JsonObject(json);
+            JsonObject.ParseJson(json);
         } // end TestConstructSuccess()
 
         [TestMethod]
@@ -46,8 +46,35 @@ namespace GSR.Tests.Jsonic
         [DataRow("{\"v\": 9, \"v\": 0}")]
         public void TestConstructFail(string json)
         {
-            new JsonObject(json);
+            JsonObject.ParseJson(json);
         } // end TestConstructFail()
+
+        [TestMethod]
+        public void TestKVPConstructSuccess() 
+        {
+            JsonObject a = new (new List<KeyValuePair<JsonString, JsonElement>>() {
+                KeyValuePair.Create(new JsonString("A"), new JsonElement()),
+                KeyValuePair.Create(new JsonString("BetaCapionssr3gwty"), new JsonElement(false)),
+                KeyValuePair.Create(new JsonString(""), new JsonElement(new JsonArray())),
+                KeyValuePair.Create(new JsonString("_"), new JsonElement())
+            });
+            Assert.AreEqual(JsonNull.NULL, a["A"].Value);
+            Assert.AreEqual(new JsonArray(), a[""].Value);
+            Assert.AreEqual(JsonNull.NULL, a["A"].Value);
+            Assert.AreEqual(JsonNull.NULL, a["_"].Value);
+            Assert.AreEqual(JsonBoolean.FALSE, a["BetaCapionssr3gwty"].Value);
+        } // end TestKVPConstructSuccess()
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void TestKVPConstructDuplicateFail()
+        {
+            new JsonObject(new List<KeyValuePair<JsonString, JsonElement>>() { 
+                KeyValuePair.Create(new JsonString("A"), new JsonElement()), 
+                KeyValuePair.Create(new JsonString("BetaCapionssr3gwty"), new JsonElement()),
+                KeyValuePair.Create(new JsonString("A"), new JsonElement(new JsonArray()))
+            });
+        } // end TestKVPConstructDuplicateFail()
         #endregion
 
         [TestMethod]
@@ -58,7 +85,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("{\"key\": [0, 1, 0]}", "{\"n\"   : [0, 1, 0]}", false)]
         public void TestEquality(string a, string b, bool expectation)
         {
-            Assert.AreEqual(expectation, new JsonObject(a).Equals(new JsonObject(b)));
+            Assert.AreEqual(expectation, JsonObject.ParseJson(a).Equals(JsonObject.ParseJson(b)));
         } // end TestEquality()
 
 

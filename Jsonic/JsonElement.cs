@@ -12,7 +12,7 @@ namespace GSR.Jsonic
 
         public JsonElement() : this(null, JsonType.Null) { } // end constructor
         public JsonElement(bool value) : this(new JsonBoolean(value)) { } // end constructor
-        public JsonElement(string value, bool expectEnquoted = false) : this(new JsonString(value, expectEnquoted)) { } // end constructor
+        public JsonElement(string value) : this(new JsonString(value)) { } // end constructor
         public JsonElement(sbyte value) : this(new JsonNumber(value)) { } // end constructor
         public JsonElement(byte value) : this(new JsonNumber(value)) { } // end constructor
         public JsonElement(short value) : this(new JsonNumber(value)) { } // end constructor
@@ -25,11 +25,12 @@ namespace GSR.Jsonic
         public JsonElement(double value) : this(new JsonNumber(value)) { } // end constructor
         public JsonElement(decimal value) : this(new JsonNumber(value)) { } // end constructor
 
-        public JsonElement(JsonArray? value) : this(value, JsonType.Array) { } // end constructor
-        public JsonElement(JsonBoolean? value) : this(value, JsonType.Boolean) { } // end constructor
-        public JsonElement(JsonNumber? value) : this(value, JsonType.Number) { } // end constructor
-        public JsonElement(JsonObject? value) : this(value, JsonType.Object) { } // end constructor
-        public JsonElement(JsonString? value) : this(value, JsonType.String) { } // end constructor
+        public JsonElement(JsonNull? value) : this(value, JsonType.Null) { } // end constructor
+        public JsonElement(JsonArray value) : this(value, JsonType.Array) { } // end constructor
+        public JsonElement(JsonBoolean value) : this(value, JsonType.Boolean) { } // end constructor
+        public JsonElement(JsonNumber value) : this(value, JsonType.Number) { } // end constructor
+        public JsonElement(JsonObject value) : this(value, JsonType.Object) { } // end constructor
+        public JsonElement(JsonString value) : this(value, JsonType.String) { } // end constructor
         private JsonElement(IJsonComponent? value, JsonType type)
         {
             Value = value;
@@ -38,7 +39,7 @@ namespace GSR.Jsonic
 
 
 
-        public object? AsNull => Type == JsonType.Null ? null : throw new InvalidJsonCastException(Type, JsonType.Null);
+        public JsonNull? AsNull => Type == JsonType.Null ? (JsonNull?)Value : throw new InvalidJsonCastException(Type, JsonType.Null);
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable value
 #pragma warning disable CS8603 // Possible null reference return.
         public JsonArray AsArray() => Type == JsonType.Array ? (JsonArray)Value : throw new InvalidJsonCastException(Type, JsonType.Array);
@@ -51,6 +52,7 @@ namespace GSR.Jsonic
 
 
 
+        /// <inheritdoc/>
         public string ToCompressedString() => AsStringC(true);
 
         public override string ToString() => AsStringC();
@@ -58,7 +60,7 @@ namespace GSR.Jsonic
         private string AsStringC(bool compress = false)
         {
             if (Type == JsonType.Null)
-                return JsonUtil.JSON_NULL;
+                return JsonNull.JSON_NULL;
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8603 // Possible null reference return.
@@ -68,7 +70,9 @@ namespace GSR.Jsonic
 
         } // end AsStringC()
 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
         public override bool Equals(object? obj) => obj is JsonElement b && b.Type == Type && (Type == JsonType.Null || b.Value.Equals(Value)); // apparently C# == doesn't look up type. using it here, even though overridden in the actual type, fails. Presumably because Value is stored as IJsonComponent? not the realized type?
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
         public override int GetHashCode() => Tuple.Create(Value, Type).GetHashCode();
 
@@ -78,70 +82,44 @@ namespace GSR.Jsonic
 
 
 
-        // using parse this way is inconsistent with it's meaning in JsonString. Maybe make ParseJson/ParseJsonStart/ParseString(JsonString specific)
         /// <summary>
-        /// Expects no proceeding whitespace characters.
+        /// Parse the element at the beginning of a string.
         /// </summary>
-        /// <param name="parse"></param>
-        /// <param name="remainder"></param>
-        /// <returns></returns>
-        /// <exception cref="MalformedJsonException"></exception>
-        public static JsonElement ParseJsonStart(string parse, out string remainder)
+        /// <param name="json">The input string.</param>
+        /// <param name="remainder">The unmodified section of string trailing the leading value.</param>
+        /// <returns>A JsonElement containing the parsed Json value.</returns>
+        /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
+        public static JsonElement ParseJson(string json, out string remainder)
         {
+            string parse = json.TrimStart();
             if (parse.Length < 1)
                 throw new MalformedJsonException();
 
             switch (parse[0])
             {
                 case 'n':
-                    if (parse.Length < JsonUtil.JSON_NULL.Length || !parse[0..JsonUtil.JSON_NULL.Length].Equals(JsonUtil.JSON_NULL))
-                        throw new MalformedJsonException($"Couldn't read element at the start of \"{parse}\".");
-
-                    remainder = parse[JsonUtil.JSON_NULL.Length..^0];
-                    return new();
+                    return new(JsonNull.ParseJson(parse, out remainder));
                 case 'f':
-                    if (parse.Length < JsonUtil.JSON_FALSE.Length || !parse[0..JsonUtil.JSON_FALSE.Length].Equals(JsonUtil.JSON_FALSE))
-                        throw new MalformedJsonException($"Couldn't read element at the start of \"{parse}\".");
-
-                    remainder = parse[JsonUtil.JSON_FALSE.Length..^0];
-                    return new(false);
                 case 't':
-                    if (parse.Length < JsonUtil.JSON_TRUE.Length || !parse[0..JsonUtil.JSON_TRUE.Length].Equals(JsonUtil.JSON_TRUE))
-                        throw new MalformedJsonException($"Couldn't read element at the start of \"{parse}\".");
-
-                    remainder = parse[JsonUtil.JSON_TRUE.Length..^0];
-                    return new(true);
+                    return new(JsonBoolean.ParseJson(parse, out remainder));
                 case '"':
-                    Match m = new Regex(JsonString.ENQUOTED_REGEX).Match(parse, 0);
-                    if (!m.Success)
-                        throw new MalformedJsonException($"Couldn't read element at the start of \"{parse}\".");
-
-                    string s = m.Value;
-                    remainder = parse[s.Length..^0];
-                    return new(s, true);
+                    return new(JsonString.ParseJson(parse, out remainder));
                 case '[':
-                    return new(JsonArray.ParseJsonStart(parse, out remainder));
+                    return new(JsonArray.ParseJson(parse, out remainder));
                 case '{':
-                    return new(JsonObject.ParseJsonStart(parse, out remainder));
+                    return new(JsonObject.ParseJson(parse, out remainder));
                 default:
-                    m = new Regex(JsonNumber.REGEX).Match(parse, 0);  // why is this variable still in scope? that seems curious, but very valuable
-                    if (!m.Success)
-                        throw new MalformedJsonException($"Couldn't read element at the start of \"{parse}\".");
-
-                    s = m.Value;
-                    remainder = parse[s.Length..^0];
-                    return new(new JsonNumber(s));
+                    return new(JsonNumber.ParseJson(parse, out remainder));
             }
-        } // end ParseJsonStart()
+        } // end ParseJson()
 
-        public static JsonElement Parse(string parse) 
-        {
-            JsonElement e = ParseJsonStart(parse, out string r);
-            if (!r.Trim().Equals(string.Empty))
-                throw new MalformedJsonException();
-
-            return e;
-        } // end Parse()
+        /// <summary>
+        /// Reads all of a string as a single Json value with no superfluous non-whitespace characters.
+        /// </summary>
+        /// <param name="json">The input string.</param>
+        /// <returns>A JsonElement containing the parsed Json value.</returns>
+        /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
+        public static JsonElement ParseJson(string json) => JsonUtil.RequiredEmptyRemainder(ParseJson, json);
 
     } // end record class
 } // end namespace

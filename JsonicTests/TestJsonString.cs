@@ -22,22 +22,22 @@ namespace GSR.Tests.Jsonic
         [DataRow("\"\\u1234\"")]
         [DataRow("\"\\uffff\"")]
         [DataRow("\"\\uaaaa\"")]
-        [DataRow("\"\\uA6f9\"")]
-        [DataRow("\"\\uaB7C\"")]
+        [DataRow("\"\\uA6f9\"\t")]
+        [DataRow("\"\\uaB7C\""  )]
         [DataRow("\"\\u463D\"")]
         [DataRow("\"\\uABCD\"")]
-        [DataRow("\"/\"")]
+        [DataRow("  \"/\"")]
         [DataRow("\"Just some test\"")]
         [DataRow("\"-==fjeiwo8njuvg\"")]
         [DataRow("\"b\"")]
         [DataRow("\"f\"")]
         [DataRow("\"u98A3\"")]
         [DataRow("\"n\"")]
-        public void TestValidEnquoted(string s)
+        public void TestParseValid(string s)
         {
-            new JsonString(s, true);
+            JsonString.ParseJson(s);
             Assert.IsTrue(true);
-        }// end TestValidEnquoted()
+        }// end TestParseValid()
 
         [TestMethod]
         [ExpectedException(typeof(MalformedJsonException))]
@@ -58,10 +58,10 @@ namespace GSR.Tests.Jsonic
         [DataRow("\"\\u\"")]
         [DataRow("\"\\u8A3\"")]
         [DataRow("\"\\8F3\"")]
-        public void TestInvalidEnqouted(string s)
+        public void TestParseInvalid(string s)
         {
-            new JsonString(s, true);
-        }// end TestInvalidEnqouted()
+            JsonString.ParseJson(s);
+        }// end TestParseInvalid()
 
         [TestMethod]
         [DataRow("\"\"", "")]
@@ -81,10 +81,10 @@ namespace GSR.Tests.Jsonic
         [DataRow("\":erwojofe\"", ":erwojofe")]
         [DataRow("\"\\\\ge4\\b\"", "\\ge4\b")]
         [DataRow("\"\\\\\\b\"", "\\\b")]
-        public void TestToRepresentedStringEnquoted(string a, string b)
+        public void TestToUnescapedStringThroughParse(string a, string b)
         {
-            Assert.AreEqual(b, new JsonString(a, true).ToRepresentedString());
-        }// end TestToRepresentedStringEnquoted()
+            Assert.AreEqual(b, JsonString.ParseJson(a).ToUnescapedString());
+        }// end TestToUnescapedStringThroughParse()
         #endregion
 
 
@@ -98,10 +98,10 @@ namespace GSR.Tests.Jsonic
         [DataRow("\\f", "\\\\f")]
         [DataRow("\t Hi there, \n\rhow're you? \t", "\t Hi there, \n\rhow're you? \t")]
         [DataRow("j\\bS", "j\\\\bS")]
-        public void TestParse(string a, string b)
+        public void TestFromEscapedString(string a, string b)
         {
-            Assert.AreEqual(b, JsonString.Parse(a).Value);
-        }// end TestParse()
+            Assert.AreEqual(b, JsonString.FromEscapedString(a).Value);
+        }// end TestFromEscapedString()
 
         [TestMethod]
         [DataRow("", "\"\"")]
@@ -112,11 +112,11 @@ namespace GSR.Tests.Jsonic
         [DataRow("\\f", "\"\\\\f\"")]
         [DataRow("\t Hi there, \n\rhow're you? \t", "\"\t Hi there, \n\rhow're you? \t\"")]
         [DataRow("j\\bS", "\"j\\\\bS\"")]
-        public void TestParseToString(string a, string b)
+        public void TestFromEscapedStringToString(string a, string b)
         {
-            Assert.AreEqual(b, JsonString.Parse(a).ToString());
-            Assert.AreEqual(b, JsonString.Parse(a).ToCompressedString());
-        }// end TestParseToString()
+            Assert.AreEqual(b, JsonString.FromEscapedString(a).ToString());
+            Assert.AreEqual(b, JsonString.FromEscapedString(a).ToCompressedString());
+        }// end TestFromEscapedStringToString()
 
     } // end class
 } // end namespace

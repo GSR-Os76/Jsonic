@@ -10,15 +10,15 @@ namespace GSR.Tests.Jsonic
         [TestMethod]
         public void TestNullValue()
         {
-            Assert.AreEqual(JsonUtil.JSON_NULL, new JsonElement((JsonObject?)null).ToString());
-            Assert.AreEqual(JsonUtil.JSON_NULL, new JsonElement().ToString());
-            Assert.AreEqual(JsonUtil.JSON_NULL, new JsonElement((JsonObject?)null).ToCompressedString());
-            Assert.AreEqual(JsonUtil.JSON_NULL, new JsonElement().ToCompressedString());
+            Assert.AreEqual(JsonNull.JSON_NULL, new JsonElement(JsonNull.NULL).ToString());
+            Assert.AreEqual(JsonNull.JSON_NULL, new JsonElement().ToString());
+            Assert.AreEqual(JsonNull.JSON_NULL, new JsonElement(JsonNull.NULL).ToCompressedString());
+            Assert.AreEqual(JsonNull.JSON_NULL, new JsonElement().ToCompressedString());
         } // end TestNullValue()
 
         [TestMethod]
-        [DataRow(false, JsonUtil.JSON_FALSE)]
-        [DataRow(true, JsonUtil.JSON_TRUE)]
+        [DataRow(false, JsonBoolean.JSON_FALSE)]
+        [DataRow(true, JsonBoolean.JSON_TRUE)]
         public void TestBooleanValue(bool b, string expectation)
         {
             JsonElement j = new(b);
@@ -58,10 +58,10 @@ namespace GSR.Tests.Jsonic
         [DataRow("null", "")]
         [DataRow("nullml3", "ml3")]
         [DataRow("null ", " ")]
-        [DataRow("null,", ",")]
+        [DataRow(" null,", ",")]
         public void TestParseStartValidNull(string input, string expectedRemained)
         {
-            Assert.AreEqual(null, JsonElement.ParseJsonStart(input, out string r).Value);
+            Assert.AreEqual(null, JsonElement.ParseJson(input, out string r).Value);
             Assert.AreEqual(expectedRemained, r);
         } // end TestParseStartValidNull()
 
@@ -72,7 +72,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("false,", ",")]
         public void TestParseStartValidFalse(string input, string expectedRemained)
         {
-            Assert.AreEqual(new JsonBoolean(false), JsonElement.ParseJsonStart(input, out string r).Value);
+            Assert.AreEqual(new JsonBoolean(false), JsonElement.ParseJson(input, out string r).Value);
             Assert.AreEqual(expectedRemained, r);
         } // end TestParseStartValidFalse()
 
@@ -83,22 +83,22 @@ namespace GSR.Tests.Jsonic
         [DataRow("true,87", ",87")]
         public void TestParseStartValidTrue(string input, string expectedRemained)
         {
-            Assert.AreEqual(new JsonBoolean(true), JsonElement.ParseJsonStart(input, out string r).Value);
+            Assert.AreEqual(new JsonBoolean(true), JsonElement.ParseJson(input, out string r).Value);
             Assert.AreEqual(expectedRemained, r);
         } // end TestParseStartValidTrue()
 
         [TestMethod]
         [DataRow("\"\"", "", "")]
         [DataRow("\"\\\"390432\"", "\\\"390432", "")]
-        [DataRow("\"\\\"390432\"\"", "\\\"390432", "\"")]
+        [DataRow("   \"\\\"390432\"\"", "\\\"390432", "\"")]
         [DataRow("\"   \"", "   ", "")]
         [DataRow("\"\"e;l3Opd-=_", "", "e;l3Opd-=_")]
         [DataRow("\"\"\"falsetrue ", "", "\"falsetrue ")]
-        [DataRow("\"\"true,87", "", "true,87")]
+        [DataRow("\r\t\"\"true,87", "", "true,87")]
         [DataRow("\"\",", "", ",")]
         public void TestParseStartValidString(string input, string expectedString, string expectedRemained)
         {
-            Assert.AreEqual(new JsonString(expectedString), JsonElement.ParseJsonStart(input, out string r).Value);
+            Assert.AreEqual(new JsonString(expectedString), JsonElement.ParseJson(input, out string r).Value);
             Assert.AreEqual(expectedRemained, r);
         } // end TestParseStartValidString()
 
@@ -109,7 +109,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("0,", ",")]
         public void TestParseStartValidNumber(string input, string expectedRemained)
         {
-            Assert.AreEqual(typeof(JsonNumber), JsonElement.ParseJsonStart(input, out string r).Value?.GetType());
+            Assert.AreEqual(typeof(JsonNumber), JsonElement.ParseJson(input, out string r).Value?.GetType());
             Assert.AreEqual(expectedRemained, r);
         } // end TestParseStartValidNumber()
 
@@ -125,7 +125,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("[]f", "f")]
         public void TestParseStartValidArray(string input, string expectedRemained)
         {
-            Assert.AreEqual(typeof(JsonArray), JsonElement.ParseJsonStart(input, out string r).Value?.GetType());
+            Assert.AreEqual(typeof(JsonArray), JsonElement.ParseJson(input, out string r).Value?.GetType());
             Assert.AreEqual(expectedRemained, r);
         } // end TestParseStartValidArray()
 
@@ -138,7 +138,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("{\"ooo\": null   , \"RunTime \": 9e1}", "")]
         public void TestParseStartValidObject(string input, string expectedRemained)
         {
-            Assert.AreEqual(typeof(JsonObject), JsonElement.ParseJsonStart(input, out string r).Value?.GetType());
+            Assert.AreEqual(typeof(JsonObject), JsonElement.ParseJson(input, out string r).Value?.GetType());
             Assert.AreEqual(expectedRemained, r);
         } // end TestParseStartValidObject()
         #endregion
@@ -151,7 +151,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("nll ")]
         public void TestParseStartInvalidNull(string input)
         {
-            JsonElement.ParseJsonStart(input, out _);
+            JsonElement.ParseJson(input, out _);
         } // end TestParseStartInvalidNull()
 
         [TestMethod]
@@ -162,18 +162,18 @@ namespace GSR.Tests.Jsonic
         [DataRow("fals.e,")]
         public void TestParseStartInvalidFalse(string input)
         {
-            JsonElement.ParseJsonStart(input, out _);
+            JsonElement.ParseJson(input, out _);
         } // end TestParseStartInvalidFalse()
 
         [TestMethod]
         [ExpectedException(typeof(MalformedJsonException))]
         [DataRow("tue")]
-        [DataRow("trud-=_")]
+        [DataRow(" trud-=_")]
         [DataRow("tue ")]
         [DataRow("tre,")]
         public void TestParseStartInvalidTrue(string input)
         {
-            JsonElement.ParseJsonStart(input, out _);
+            JsonElement.ParseJson(input, out _);
         } // end TestParseStartInvalidTrue()
 
         [TestMethod]
@@ -183,7 +183,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("\"   ")]
         public void TestParseStartInvalidString(string input)
         {
-            JsonElement.ParseJsonStart(input, out _);
+            JsonElement.ParseJson(input, out _);
         } // end TestParseStartInvalidString()
 
         [TestMethod]
@@ -194,24 +194,34 @@ namespace GSR.Tests.Jsonic
         [DataRow(" [--[;[]c")]
         public void TestParseStartInvalidArray(string input)
         {
-            JsonElement.ParseJsonStart(input, out _);
+            JsonElement.ParseJson(input, out _);
         } // end TestParseStartInvalidArray()
 
         [TestMethod]
         [ExpectedException(typeof(MalformedJsonException))]
         [DataRow("{")]
-        [DataRow("}")]
+        [DataRow(" } ")]
         [DataRow("{,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,}")]
         [DataRow("{\"\\ob\": 90}")]
-        [DataRow("{\"keyThat'sDuplicated\": null, \"keyThat'sDuplicated\": null}")]
+        [DataRow("  {\"keyThat'sDuplicated\": null, \"keyThat'sDuplicated\": null}")]
         [DataRow("{\"90_09\": ")]
 
         public void TestParseStartInvalidObject(string input)
         {
-            JsonElement.ParseJsonStart(input, out _);
+            JsonElement.ParseJson(input, out _);
         } // end TestParseStartInvalidObject()
         #endregion
-        // invalids including unimplement expection expectation, bad enclosures or too short, etc
 
+        #region Parse
+
+        [TestMethod]
+        [DataRow(" false")]
+        [DataRow("\r null")]
+        public void TestParseStartCanBeWhiteSpace(string json) 
+        {
+            JsonElement.ParseJson(json);
+            Assert.IsTrue(true);
+        } // end TestParseStartCanBeWhiteSpace()
+        #endregion
     } // end class
 } // end namespace

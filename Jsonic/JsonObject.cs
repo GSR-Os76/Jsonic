@@ -1,5 +1,5 @@
-﻿using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Reflection.Metadata;
+using System.Text;
 
 namespace GSR.Jsonic
 {
@@ -11,28 +11,23 @@ namespace GSR.Jsonic
 
         public int Count => _elements.Count;
 
-        public JsonElement this[string index]
+        public JsonElement this[string key]
         {
-            get => _elements[new JsonString(index)];
-            set => _elements[new JsonString(index)] = value;
+            get => _elements[new JsonString(key)];
+            set => _elements[new JsonString(key)] = value;
         } // end indexer
 
-        public JsonElement this[JsonString index]
+        public JsonElement this[JsonString key]
         {
-            get => _elements[index];
-            set => _elements[index] = value;
+            get => _elements[key];
+            set => _elements[key] = value;
         } // end indexer
 
 
 
         public JsonObject() { } // end constructor
 
-        public JsonObject(string json)
-        {
-            Parse(json, out string r).Aggregate(this, (seed, kvp) => seed.Add(kvp.Key, kvp.Value));
-            if (!r.Trim().Equals(string.Empty))
-                throw new MalformedJsonException();
-        } // end constructor
+        public JsonObject(IEnumerable<KeyValuePair<JsonString, JsonElement>> elements) => _elements = new Dictionary<JsonString, JsonElement>(elements); 
 
 
 
@@ -57,11 +52,12 @@ namespace GSR.Jsonic
         public JsonObject Add(string key, float element) => Add(key, new JsonElement(element));
         public JsonObject Add(string key, double element) => Add(key, new JsonElement(element));
         public JsonObject Add(string key, decimal element) => Add(key, new JsonElement(element));
-        public JsonObject Add(string key, JsonArray? value) => Add(key, new JsonElement(value));
-        public JsonObject Add(string key, JsonBoolean? value) => Add(key, new JsonElement(value));
-        public JsonObject Add(string key, JsonNumber? value) => Add(key, new JsonElement(value));
-        public JsonObject Add(string key, JsonObject? value) => Add(key, new JsonElement(value));
-        public JsonObject Add(string key, JsonString? value) => Add(key, new JsonElement(value));
+        public JsonObject Add(string key, JsonNull? value) => Add(key, new JsonElement(value));
+        public JsonObject Add(string key, JsonArray value) => Add(key, new JsonElement(value));
+        public JsonObject Add(string key, JsonBoolean value) => Add(key, new JsonElement(value));
+        public JsonObject Add(string key, JsonNumber value) => Add(key, new JsonElement(value));
+        public JsonObject Add(string key, JsonObject value) => Add(key, new JsonElement(value));
+        public JsonObject Add(string key, JsonString value) => Add(key, new JsonElement(value));
         public JsonObject Add(string key, JsonElement value) => Add(new JsonString(key), value);
         /// <summary>
         /// Adds a null element to the object.
@@ -82,11 +78,12 @@ namespace GSR.Jsonic
         public JsonObject Add(JsonString key, float element) => Add(key, new JsonElement(element));
         public JsonObject Add(JsonString key, double element) => Add(key, new JsonElement(element));
         public JsonObject Add(JsonString key, decimal element) => Add(key, new JsonElement(element));
-        public JsonObject Add(JsonString key, JsonArray? value) => Add(key, new JsonElement(value));
-        public JsonObject Add(JsonString key, JsonBoolean? value) => Add(key, new JsonElement(value));
-        public JsonObject Add(JsonString key, JsonNumber? value) => Add(key, new JsonElement(value));
-        public JsonObject Add(JsonString key, JsonObject? value) => Add(key, new JsonElement(value));
-        public JsonObject Add(JsonString key, JsonString? value) => Add(key, new JsonElement(value));
+        public JsonObject Add(JsonString key, JsonNull? value) => Add(key, new JsonElement(value));
+        public JsonObject Add(JsonString key, JsonArray value) => Add(key, new JsonElement(value));
+        public JsonObject Add(JsonString key, JsonBoolean value) => Add(key, new JsonElement(value));
+        public JsonObject Add(JsonString key, JsonNumber value) => Add(key, new JsonElement(value));
+        public JsonObject Add(JsonString key, JsonObject value) => Add(key, new JsonElement(value));
+        public JsonObject Add(JsonString key, JsonString value) => Add(key, new JsonElement(value));
         public JsonObject Add(JsonString key, JsonElement value)
         {
             _elements[key] = value;
@@ -152,9 +149,16 @@ namespace GSR.Jsonic
 
 
 
-        private static List<KeyValuePair<JsonString, JsonElement>> Parse(string json, out string remainder)
+        /// <summary>
+        /// Parse the element at the beginning of a string.
+        /// </summary>
+        /// <param name="json">The input string.</param>
+        /// <param name="remainder">The unmodified section of string trailing the leading value.</param>
+        /// <returns>A JsonObject containing the parsed Json value.</returns>
+        /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
+        public static JsonObject ParseJson(string json, out string remainder) 
         {
-            List<KeyValuePair<JsonString, JsonElement>> elements = new();
+            JsonObject obj = new();
             string parse = json.TrimStart();
             if (parse.Length < 2 || parse[0] != '{')
                 throw new MalformedJsonException();
@@ -163,16 +167,15 @@ namespace GSR.Jsonic
             if (parse[0] == '}')
             {
                 remainder = parse[1..];
-                return elements;
+                return obj;
             }
 
             while (parse.Length != 0)
             {
-                string k = Regex.Match(parse, JsonString.ENQUOTED_REGEX).Value;
-                parse = parse[k.Length..].TrimStart();
-                JsonString key = new(k, true);
+                JsonString key = JsonString.ParseJson(parse, out parse);
+                parse = parse.TrimStart();
 
-                if (elements.Where((x) => x.Key.Equals(key)).Any())
+                if (obj.ContainsKey(key))
                     throw new MalformedJsonException($"Duplicate key encountered: {key}");
 
                 if (parse[0] != ':')
@@ -180,13 +183,13 @@ namespace GSR.Jsonic
 
                 parse = parse[1..].TrimStart();
 
-                elements.Add(KeyValuePair.Create(key, JsonElement.ParseJsonStart(parse, out string r)));
+                obj.Add(key, JsonElement.ParseJson(parse, out string r));
                 parse = r.TrimStart();
 
                 if (parse[0] == '}')
                 {
                     remainder = parse[1..];
-                    return elements;
+                    return obj;
                 }
                 else if (parse[0] != ',')
                     throw new MalformedJsonException();
@@ -194,9 +197,15 @@ namespace GSR.Jsonic
                     parse = parse[1..].TrimStart();
             }
             throw new MalformedJsonException();
-        } // end Parse()
+        } // end ParseJson()
 
-        public static JsonObject ParseJsonStart(string parse, out string remainder) => Parse(parse, out remainder).Aggregate(new JsonObject(), (seed, kvp) => seed.Add(kvp.Key, kvp.Value));
+        /// <summary>
+        /// Reads all of a string as a single Json value with no superfluous non-whitespace characters.
+        /// </summary>
+        /// <param name="json">The input string.</param>
+        /// <returns>A JsonObject containing the parsed Json value.</returns>
+        /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
+        public static JsonObject ParseJson(string json) => JsonUtil.RequiredEmptyRemainder(ParseJson, json);
 
     } // end class
 } // end namespace

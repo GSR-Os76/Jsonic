@@ -5,7 +5,7 @@ namespace GSR.Jsonic
 {
     public sealed class JsonArray : IJsonComponent, IEnumerable<JsonElement>
     {
-        private readonly List<JsonElement> _elements = new List<JsonElement>();
+        private readonly List<JsonElement> _elements = new();
 
 
 
@@ -23,13 +23,6 @@ namespace GSR.Jsonic
 
         public JsonArray(params JsonElement[] elements) => _elements.AddRange(elements);
 
-        public JsonArray(string json)
-        {
-            Parse(json, out string r).Aggregate(this, (seed, e) => seed.Add(e));
-            if (!r.Trim().Equals(string.Empty))
-                throw new MalformedJsonException();
-        } // end constructor
-
 
 
         public JsonArray Add(bool element) => Add(new JsonElement(element));
@@ -45,11 +38,12 @@ namespace GSR.Jsonic
         public JsonArray Add(float element) => Add(new JsonElement(element));
         public JsonArray Add(double element) => Add(new JsonElement(element));
         public JsonArray Add(decimal element) => Add(new JsonElement(element));
-        public JsonArray Add(JsonArray? element) => Add(new JsonElement(element));
-        public JsonArray Add(JsonBoolean? element) => Add(new JsonElement(element));
-        public JsonArray Add(JsonNumber? element) => Add(new JsonElement(element));
-        public JsonArray Add(JsonObject? element) => Add(new JsonElement(element));
-        public JsonArray Add(JsonString? element) => Add(new JsonElement(element));
+        public JsonArray Add(JsonNull element) => Add(new JsonElement(element));
+        public JsonArray Add(JsonArray element) => Add(new JsonElement(element));
+        public JsonArray Add(JsonBoolean element) => Add(new JsonElement(element));
+        public JsonArray Add(JsonNumber element) => Add(new JsonElement(element));
+        public JsonArray Add(JsonObject element) => Add(new JsonElement(element));
+        public JsonArray Add(JsonString element) => Add(new JsonElement(element));
         public JsonArray Add(JsonElement element)
         {
             _elements.Add(element);
@@ -75,11 +69,12 @@ namespace GSR.Jsonic
         public JsonArray InsertAt(int index, float element) => InsertAt(index, new JsonElement(element));
         public JsonArray InsertAt(int index, double element) => InsertAt(index, new JsonElement(element));
         public JsonArray InsertAt(int index, decimal element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, JsonArray? element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, JsonBoolean? element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, JsonNumber? element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, JsonObject? element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, JsonString? element) => InsertAt(index, new JsonElement(element));
+        public JsonArray InsertAt(int index, JsonNull? element) => InsertAt(index, new JsonElement(element));
+        public JsonArray InsertAt(int index, JsonArray element) => InsertAt(index, new JsonElement(element));
+        public JsonArray InsertAt(int index, JsonBoolean element) => InsertAt(index, new JsonElement(element));
+        public JsonArray InsertAt(int index, JsonNumber element) => InsertAt(index, new JsonElement(element));
+        public JsonArray InsertAt(int index, JsonObject element) => InsertAt(index, new JsonElement(element));
+        public JsonArray InsertAt(int index, JsonString element) => InsertAt(index, new JsonElement(element));
         public JsonArray InsertAt(int index, JsonElement element)
         {
             _elements.Insert(index, element);
@@ -99,7 +94,7 @@ namespace GSR.Jsonic
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 
-
+        /// <inheritdoc/>
         public string ToCompressedString() => AsString(true);
 
         public override string ToString() => AsString();
@@ -148,9 +143,16 @@ namespace GSR.Jsonic
 
 
 
-        private static List<JsonElement> Parse(string json, out string remainder)
+        /// <summary>
+        /// Parse the element at the beginning of a string.
+        /// </summary>
+        /// <param name="json">The input string.</param>
+        /// <param name="remainder">The unmodified section of string trailing the leading value.</param>
+        /// <returns>A JsonArray containing the parsed Json value.</returns>
+        /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
+        public static JsonArray ParseJson(string json, out string remainder)
         {
-            List<JsonElement> elements = new();
+            JsonArray array = new();
             string parse = json.TrimStart();
             if (parse.Length < 2 || parse[0] != '[')
                 throw new MalformedJsonException();
@@ -159,12 +161,12 @@ namespace GSR.Jsonic
             if (parse[0] == ']')
             {
                 remainder = parse[1..];
-                return elements;
+                return array;
             }
 
             while (parse.Length != 0)
             {
-                elements.Add(JsonElement.ParseJsonStart(parse, out string r));
+                array.Add(JsonElement.ParseJson(parse, out string r));
                 parse = r.TrimStart();
 
                 if (parse.Length == 0)
@@ -173,7 +175,7 @@ namespace GSR.Jsonic
                 if (parse[0] == ']')
                 {
                     remainder = parse[1..];
-                    return elements;
+                    return array;
                 }
                 else if (parse[0] != ',')
                     throw new MalformedJsonException();
@@ -181,9 +183,15 @@ namespace GSR.Jsonic
                     parse = parse[1..].TrimStart();
             }
             throw new MalformedJsonException();
-        } // end Parse()
+        } // end ParseJson()
 
-        public static JsonArray ParseJsonStart(string parse, out string remainder) => Parse(parse, out remainder).Aggregate(new JsonArray(), (seed, e) => seed.Add(e));
+        /// <summary>
+        /// Reads all of a string as a single Json value with no superfluous non-whitespace characters.
+        /// </summary>
+        /// <param name="json">The input string.</param>
+        /// <returns>A JsonArray containing the parsed Json value.</returns>
+        /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
+        public static JsonArray ParseJson(string json) => JsonUtil.RequiredEmptyRemainder(ParseJson, json);
 
     } // end class
 } // end namespace
