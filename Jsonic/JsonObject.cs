@@ -145,50 +145,7 @@ namespace GSR.Jsonic
 
         public static bool operator !=(JsonObject a, JsonObject b) => !a.Equals(b);
 
-#warning Document, including checking -ds, simplify and consistenify ParseJson methods
 
-        private static List<KeyValuePair<JsonString, JsonElement>> Parse(string json, out string remainder)
-        {
-            List<KeyValuePair<JsonString, JsonElement>> elements = new();
-            string parse = json.TrimStart();
-            if (parse.Length < 2 || parse[0] != '{')
-                throw new MalformedJsonException();
-
-            parse = parse[1..].TrimStart();
-            if (parse[0] == '}')
-            {
-                remainder = parse[1..];
-                return elements;
-            }
-
-            while (parse.Length != 0)
-            {
-                JsonString key = JsonString.ParseJson(parse, out parse);
-                parse = parse.TrimStart();
-
-                if (elements.Where((x) => x.Key.Equals(key)).Any())
-                    throw new MalformedJsonException($"Duplicate key encountered: {key}");
-
-                if (parse[0] != ':')
-                    throw new MalformedJsonException();
-
-                parse = parse[1..].TrimStart();
-
-                elements.Add(KeyValuePair.Create(key, JsonElement.ParseJson(parse, out string r)));
-                parse = r.TrimStart();
-
-                if (parse[0] == '}')
-                {
-                    remainder = parse[1..];
-                    return elements;
-                }
-                else if (parse[0] != ',')
-                    throw new MalformedJsonException();
-                else
-                    parse = parse[1..].TrimStart();
-            }
-            throw new MalformedJsonException();
-        } // end Parse()
 
         /// <summary>
         /// Parse the element at the beginning of a string.
@@ -197,7 +154,48 @@ namespace GSR.Jsonic
         /// <param name="remainder">The unmodified section of string trailing the leading value.</param>
         /// <returns>A JsonObject containing the parsed Json value.</returns>
         /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
-        public static JsonObject ParseJson(string parse, out string remainder) => Parse(parse, out remainder).Aggregate(new JsonObject(), (seed, kvp) => seed.Add(kvp.Key, kvp.Value));
+        public static JsonObject ParseJson(string json, out string remainder) 
+        {
+            JsonObject obj = new();
+            string parse = json.TrimStart();
+            if (parse.Length < 2 || parse[0] != '{')
+                throw new MalformedJsonException();
+
+            parse = parse[1..].TrimStart();
+            if (parse[0] == '}')
+            {
+                remainder = parse[1..];
+                return obj;
+            }
+
+            while (parse.Length != 0)
+            {
+                JsonString key = JsonString.ParseJson(parse, out parse);
+                parse = parse.TrimStart();
+
+                if (obj.ContainsKey(key))
+                    throw new MalformedJsonException($"Duplicate key encountered: {key}");
+
+                if (parse[0] != ':')
+                    throw new MalformedJsonException();
+
+                parse = parse[1..].TrimStart();
+
+                obj.Add(key, JsonElement.ParseJson(parse, out string r));
+                parse = r.TrimStart();
+
+                if (parse[0] == '}')
+                {
+                    remainder = parse[1..];
+                    return obj;
+                }
+                else if (parse[0] != ',')
+                    throw new MalformedJsonException();
+                else
+                    parse = parse[1..].TrimStart();
+            }
+            throw new MalformedJsonException();
+        } // end ParseJson()
 
         /// <summary>
         /// Reads all of a string as a single Json value with no superfluous non-whitespace characters.

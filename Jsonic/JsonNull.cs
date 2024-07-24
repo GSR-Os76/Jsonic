@@ -17,6 +17,7 @@
         public override string ToString() => JSON_NULL;
 
 
+
         /// <summary>
         /// Parse the element at the beginning of a string.
         /// </summary>
@@ -30,12 +31,8 @@
             if (parse.Length < 1 || !parse[0].Equals('n'))
                 throw new MalformedJsonException();
 
-            if (parse.Length < JSON_NULL.Length || !parse[0..JSON_NULL.Length].Equals(JSON_NULL))
-                throw new MalformedJsonException($"Couldn't read element at the start of \"{parse}\".");
-
-            remainder = parse[JSON_NULL.Length..^0];
+            JsonUtil.RequireAtStart(JSON_NULL, parse, out remainder);
             return NULL;
-
         } // end ParseJson()
 
         /// <summary>

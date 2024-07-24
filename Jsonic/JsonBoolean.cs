@@ -50,16 +50,10 @@
             switch (parse[0])
             {
                 case 'f':
-                    if (parse.Length < JSON_FALSE.Length || !parse[0..JSON_FALSE.Length].Equals(JSON_FALSE))
-                        throw new MalformedJsonException($"Couldn't read element at the start of \"{parse}\".");
-
-                    remainder = parse[JSON_FALSE.Length..^0];
+                    JsonUtil.RequireAtStart(JSON_FALSE, parse, out remainder);
                     return new(false);
                 case 't':
-                    if (parse.Length < JSON_TRUE.Length || !parse[0..JSON_TRUE.Length].Equals(JSON_TRUE))
-                        throw new MalformedJsonException($"Couldn't read element at the start of \"{parse}\".");
-
-                    remainder = parse[JSON_TRUE.Length..^0];
+                    JsonUtil.RequireAtStart(JSON_TRUE, parse, out remainder);
                     return new(true);
                 default:
                     throw new MalformedJsonException();

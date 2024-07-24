@@ -115,7 +115,7 @@ namespace GSR.Jsonic
 
             Match m = new Regex(REGEX).Match(parse, 0);
             if (!m.Success)
-                throw new MalformedJsonException($"Couldn't read element at the start of \"{parse}\".");
+                throw new MalformedJsonException($"Couldn't read element at the start of: \"{parse}\".");
 
             string s = m.Value;
             remainder = parse[s.Length..^0];

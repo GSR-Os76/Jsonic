@@ -20,5 +20,13 @@ namespace GSR.Jsonic
             return t;
         } // end RequiredEmptyRemainder()
 
+        internal static void RequireAtStart(string value, string input, out string remainder)
+        {
+            if (input.Length < value.Length || !input[0..value.Length].Equals(value))
+                throw new MalformedJsonException($"Couldn't read element at the start of: \"{input}\".");
+
+            remainder = input[value.Length..^0];
+        } // end RequireAtStart()
+
     } // end class
 } // end namespace

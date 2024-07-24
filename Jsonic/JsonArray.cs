@@ -143,9 +143,16 @@ namespace GSR.Jsonic
 
 
 
-        private static List<JsonElement> Parse(string json, out string remainder)
+        /// <summary>
+        /// Parse the element at the beginning of a string.
+        /// </summary>
+        /// <param name="json">The input string.</param>
+        /// <param name="remainder">The unmodified section of string trailing the leading value.</param>
+        /// <returns>A JsonArray containing the parsed Json value.</returns>
+        /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
+        public static JsonArray ParseJson(string json, out string remainder)
         {
-            List<JsonElement> elements = new();
+            JsonArray array = new();
             string parse = json.TrimStart();
             if (parse.Length < 2 || parse[0] != '[')
                 throw new MalformedJsonException();
@@ -154,12 +161,12 @@ namespace GSR.Jsonic
             if (parse[0] == ']')
             {
                 remainder = parse[1..];
-                return elements;
+                return array;
             }
 
             while (parse.Length != 0)
             {
-                elements.Add(JsonElement.ParseJson(parse, out string r));
+                array.Add(JsonElement.ParseJson(parse, out string r));
                 parse = r.TrimStart();
 
                 if (parse.Length == 0)
@@ -168,7 +175,7 @@ namespace GSR.Jsonic
                 if (parse[0] == ']')
                 {
                     remainder = parse[1..];
-                    return elements;
+                    return array;
                 }
                 else if (parse[0] != ',')
                     throw new MalformedJsonException();
@@ -176,16 +183,7 @@ namespace GSR.Jsonic
                     parse = parse[1..].TrimStart();
             }
             throw new MalformedJsonException();
-        } // end Parse()
-
-        /// <summary>
-        /// Parse the element at the beginning of a string.
-        /// </summary>
-        /// <param name="json">The input string.</param>
-        /// <param name="remainder">The unmodified section of string trailing the leading value.</param>
-        /// <returns>A JsonArray containing the parsed Json value.</returns>
-        /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
-        public static JsonArray ParseJson(string json, out string remainder) => Parse(json, out remainder).Aggregate(new JsonArray(), (seed, e) => seed.Add(e));
+        } // end ParseJson()
 
         /// <summary>
         /// Reads all of a string as a single Json value with no superfluous non-whitespace characters.

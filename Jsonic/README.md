@@ -18,7 +18,7 @@ Simple clean literal Json representation in C#. Adheres to json.org's Json stand
 	- Increased by one after any expansion of existing contract. 
 	- Starts at zero.
 - Z:
-	- Increased by one after fixing any misadherence to contract, fixing any typo, or improving documentation. 
+	- Increased by one after fixing any misadherence to contract, fixing any typo, or improving documentation, as well as when making any other change to the flow of control even if it isn't outwardly detectable. 
 	- Starts at zero.
 	
 
