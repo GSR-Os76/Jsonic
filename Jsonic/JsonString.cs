@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
 
 namespace GSR.Jsonic
@@ -27,7 +26,7 @@ namespace GSR.Jsonic
         public JsonString(string value)
         {
             if (!Regex.IsMatch(value, ANCHORED_UNENQUOTED_REGEX))
-                throw new MalformedJsonException($"Couldn't construct a Json string with the of value: \"{value}\", maybe try using: \"{nameof(FromEscapedString)}\"");
+                throw new MalformedJsonException($"Couldn't construct a Json string with the of value: \"{value}\", maybe try using: \"{nameof(FromUnescapedString)}\"");
 
             Value = value;
         } // end constructor()
@@ -46,7 +45,7 @@ namespace GSR.Jsonic
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static JsonString FromEscapedString(string s)
+        public static JsonString FromUnescapedString(string s)
         {
             StringBuilder sb = new(s.Length + 2);
             foreach (char c in s)

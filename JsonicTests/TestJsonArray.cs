@@ -57,7 +57,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("[[00], \"\"]")]
         [DataRow("[null,")]
         [DataRow("[6.3, false, false,]")]
-        public void TestParseInvalid(string json) 
+        public void TestParseInvalid(string json)
         {
             JsonArray.ParseJson(json);
         } // end TestParseInvalid()

@@ -217,7 +217,7 @@ namespace GSR.Tests.Jsonic
         [TestMethod]
         [DataRow(" false")]
         [DataRow("\r null")]
-        public void TestParseStartCanBeWhiteSpace(string json) 
+        public void TestParseStartCanBeWhiteSpace(string json)
         {
             JsonElement.ParseJson(json);
             Assert.IsTrue(true);

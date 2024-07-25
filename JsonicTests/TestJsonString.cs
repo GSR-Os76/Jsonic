@@ -23,7 +23,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("\"\\uffff\"")]
         [DataRow("\"\\uaaaa\"")]
         [DataRow("\"\\uA6f9\"\t")]
-        [DataRow("\"\\uaB7C\""  )]
+        [DataRow("\"\\uaB7C\"")]
         [DataRow("\"\\u463D\"")]
         [DataRow("\"\\uABCD\"")]
         [DataRow("  \"/\"")]
@@ -100,7 +100,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("j\\bS", "j\\\\bS")]
         public void TestFromEscapedString(string a, string b)
         {
-            Assert.AreEqual(b, JsonString.FromEscapedString(a).Value);
+            Assert.AreEqual(b, JsonString.FromUnescapedString(a).Value);
         }// end TestFromEscapedString()
 
         [TestMethod]
@@ -114,8 +114,8 @@ namespace GSR.Tests.Jsonic
         [DataRow("j\\bS", "\"j\\\\bS\"")]
         public void TestFromEscapedStringToString(string a, string b)
         {
-            Assert.AreEqual(b, JsonString.FromEscapedString(a).ToString());
-            Assert.AreEqual(b, JsonString.FromEscapedString(a).ToCompressedString());
+            Assert.AreEqual(b, JsonString.FromUnescapedString(a).ToString());
+            Assert.AreEqual(b, JsonString.FromUnescapedString(a).ToCompressedString());
         }// end TestFromEscapedStringToString()
 
     } // end class
