@@ -1,5 +1,4 @@
-﻿using System.Reflection.Metadata;
-using System.Text;
+﻿using System.Text;
 
 namespace GSR.Jsonic
 {
@@ -27,7 +26,7 @@ namespace GSR.Jsonic
 
         public JsonObject() { } // end constructor
 
-        public JsonObject(IEnumerable<KeyValuePair<JsonString, JsonElement>> elements) => _elements = new Dictionary<JsonString, JsonElement>(elements); 
+        public JsonObject(IEnumerable<KeyValuePair<JsonString, JsonElement>> elements) => _elements = new Dictionary<JsonString, JsonElement>(elements);
 
 
 
@@ -156,7 +155,7 @@ namespace GSR.Jsonic
         /// <param name="remainder">The unmodified section of string trailing the leading value.</param>
         /// <returns>A JsonObject containing the parsed Json value.</returns>
         /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
-        public static JsonObject ParseJson(string json, out string remainder) 
+        public static JsonObject ParseJson(string json, out string remainder)
         {
             JsonObject obj = new();
             string parse = json.TrimStart();

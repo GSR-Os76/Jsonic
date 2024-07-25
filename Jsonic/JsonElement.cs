@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-namespace GSR.Jsonic
+﻿namespace GSR.Jsonic
 {
     public sealed class JsonElement : IJsonComponent
     {

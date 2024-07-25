@@ -50,9 +50,9 @@ namespace GSR.Tests.Jsonic
         } // end TestConstructFail()
 
         [TestMethod]
-        public void TestKVPConstructSuccess() 
+        public void TestKVPConstructSuccess()
         {
-            JsonObject a = new (new List<KeyValuePair<JsonString, JsonElement>>() {
+            JsonObject a = new(new List<KeyValuePair<JsonString, JsonElement>>() {
                 KeyValuePair.Create(new JsonString("A"), new JsonElement()),
                 KeyValuePair.Create(new JsonString("BetaCapionssr3gwty"), new JsonElement(false)),
                 KeyValuePair.Create(new JsonString(""), new JsonElement(new JsonArray())),
@@ -69,8 +69,8 @@ namespace GSR.Tests.Jsonic
         [ExpectedException(typeof(ArgumentException))]
         public void TestKVPConstructDuplicateFail()
         {
-            new JsonObject(new List<KeyValuePair<JsonString, JsonElement>>() { 
-                KeyValuePair.Create(new JsonString("A"), new JsonElement()), 
+            new JsonObject(new List<KeyValuePair<JsonString, JsonElement>>() {
+                KeyValuePair.Create(new JsonString("A"), new JsonElement()),
                 KeyValuePair.Create(new JsonString("BetaCapionssr3gwty"), new JsonElement()),
                 KeyValuePair.Create(new JsonString("A"), new JsonElement(new JsonArray()))
             });
