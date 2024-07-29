@@ -50,6 +50,24 @@ namespace GSR.Tests.Jsonic
         {
             Assert.AreEqual(expectation, new JsonElement(a).Equals(new JsonElement(b)));
         } // end TestBooleanEquality()
+
+        [TestMethod]
+        [DataRow("null")]
+        [DataRow("false")]
+        [DataRow("true")]
+        [DataRow("\"\"")]
+        [DataRow("\"d\"")]
+        [DataRow("0")]
+        [DataRow("819864")]
+        [DataRow("[]")]
+        [DataRow("[20E0]")]
+        [DataRow("{}")]
+        [DataRow("{\"e\": \"e\"}")]
+        public void TestNullEquality(string json)
+        {
+            Assert.IsFalse(JsonElement.ParseJson(json).Equals(null));
+        } // end TestBooleanEquality()
+
         #endregion
 
 

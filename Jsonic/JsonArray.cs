@@ -25,8 +25,8 @@ namespace GSR.Jsonic
 
         public JsonArray(IEnumerable<JsonElement> elements)
         {
-            foreach (JsonElement element in elements.RequireNotNull())
-                element.RequireNotNull();
+            foreach (JsonElement element in elements.IsNotNull())
+                element.IsNotNull();
 
             _elements.AddRange(elements);
         } // end constructor()
@@ -54,7 +54,7 @@ namespace GSR.Jsonic
         public JsonArray Add(JsonString element) => Add(new JsonElement(element));
         public JsonArray Add(JsonElement element)
         {
-            _elements.Add(element.RequireNotNull());
+            _elements.Add(element.IsNotNull());
             return this;
         } // end Add()
 
@@ -85,7 +85,7 @@ namespace GSR.Jsonic
         public JsonArray InsertAt(int index, JsonString element) => InsertAt(index, new JsonElement(element));
         public JsonArray InsertAt(int index, JsonElement element)
         {
-            _elements.Insert(index, element.RequireNotNull());
+            _elements.Insert(index, element.IsNotNull());
             return this;
         } // end InsertAt()
 
@@ -160,7 +160,7 @@ namespace GSR.Jsonic
         /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
         public static JsonArray ParseJson(string json, out string remainder)
         {            
-            string parse = json.RequireNotNull().TrimStart();
+            string parse = json.IsNotNull().TrimStart();
             JsonArray array = new();
             if (parse.Length < 2 || parse[0] != '[')
                 throw new MalformedJsonException();
