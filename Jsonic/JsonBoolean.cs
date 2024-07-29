@@ -43,7 +43,7 @@
         /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
         public static JsonBoolean ParseJson(string json, out string remainder)
         {
-            string parse = json.TrimStart();
+            string parse = json.IsNotNull().TrimStart();
             if (parse.Length < 1)
                 throw new MalformedJsonException();
 

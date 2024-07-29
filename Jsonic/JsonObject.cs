@@ -12,22 +12,27 @@ namespace GSR.Jsonic
 
         public JsonElement this[string key]
         {
-            get => _elements[new JsonString(key)];
-            set => _elements[new JsonString(key)] = value;
+            get => _elements[new JsonString(key.IsNotNull())];
+            set => _elements[new JsonString(key.IsNotNull())] = value.IsNotNull();
         } // end indexer
 
         public JsonElement this[JsonString key]
         {
-            get => _elements[key];
-            set => _elements[key] = value;
+            get => _elements[key.IsNotNull()];
+            set => _elements[key.IsNotNull()] = value.IsNotNull();
         } // end indexer
 
 
 
         public JsonObject() { } // end constructor
 
-        public JsonObject(IEnumerable<KeyValuePair<JsonString, JsonElement>> elements) => _elements = new Dictionary<JsonString, JsonElement>(elements);
+        public JsonObject(params KeyValuePair<JsonString, JsonElement>[] elements) : this((IEnumerable<KeyValuePair<JsonString, JsonElement>>)elements) { } // end constructor
 
+        public JsonObject(IEnumerable<KeyValuePair<JsonString, JsonElement>> elements)
+        {
+            foreach (KeyValuePair<JsonString, JsonElement> kvp in elements.IsNotNull())
+                _elements.Add(kvp.Key.IsNotNull(), kvp.Value.IsNotNull());
+        } // end constructor
 
 
         public JsonString[] GetKeySet() => _elements.Keys.ToArray();
@@ -64,7 +69,7 @@ namespace GSR.Jsonic
         /// <param name="key"></param>
         /// <returns></returns>
         public JsonObject AddNull(JsonString key) => Add(key, new JsonElement());
-        public JsonObject Add(JsonString key, bool value) => Add(key, new JsonBoolean(value));
+        public JsonObject Add(JsonString key, bool value) => Add(key, new JsonElement(value));
         public JsonObject Add(JsonString key, string element) => Add(key, new JsonElement(element));
         public JsonObject Add(JsonString key, sbyte element) => Add(key, new JsonElement(element));
         public JsonObject Add(JsonString key, byte element) => Add(key, new JsonElement(element));
@@ -85,12 +90,12 @@ namespace GSR.Jsonic
         public JsonObject Add(JsonString key, JsonString value) => Add(key, new JsonElement(value));
         public JsonObject Add(JsonString key, JsonElement value)
         {
-            _elements[key] = value;
+            _elements.Add(key.IsNotNull(), value.IsNotNull());
             return this;
         } // end Add()
 
         public bool ContainsKey(string key) => ContainsKey(new JsonString(key));
-        public bool ContainsKey(JsonString key) => _elements.ContainsKey(key);
+        public bool ContainsKey(JsonString key) => _elements.ContainsKey(key.IsNotNull());
 
         public JsonObject Remove(string key) => Remove(new JsonString(key));
         /// <summary>
@@ -100,7 +105,7 @@ namespace GSR.Jsonic
         /// <returns></returns>
         public JsonObject Remove(JsonString key)
         {
-            _elements.Remove(key);
+            _elements.Remove(key.IsNotNull());
             return this;
         } // end Remove()
 
@@ -157,8 +162,8 @@ namespace GSR.Jsonic
         /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
         public static JsonObject ParseJson(string json, out string remainder)
         {
+            string parse = json.IsNotNull().TrimStart();
             JsonObject obj = new();
-            string parse = json.TrimStart();
             if (parse.Length < 2 || parse[0] != '{')
                 throw new MalformedJsonException();
 

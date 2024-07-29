@@ -87,7 +87,13 @@ namespace GSR.Tests.Jsonic
         }// end TestToUnescapedStringThroughParse()
         #endregion
 
-
+        [TestMethod]
+        [DataRow("\"\"")]
+        [DataRow("\"hnjmkwjn4nbhy5uenj nhjby\"")]
+        public void TestNullEquality(string json)
+        {
+            Assert.IsFalse(JsonString.ParseJson(json).Equals(null));
+        }// end TestNullEquality()
 
         [TestMethod]
         [DataRow("", "")]
@@ -98,10 +104,10 @@ namespace GSR.Tests.Jsonic
         [DataRow("\\f", "\\\\f")]
         [DataRow("\t Hi there, \n\rhow're you? \t", "\t Hi there, \n\rhow're you? \t")]
         [DataRow("j\\bS", "j\\\\bS")]
-        public void TestFromEscapedString(string a, string b)
+        public void TestFromUnescapedString(string a, string b)
         {
             Assert.AreEqual(b, JsonString.FromUnescapedString(a).Value);
-        }// end TestFromEscapedString()
+        }// end TestFromUnescapedString()
 
         [TestMethod]
         [DataRow("", "\"\"")]
@@ -112,11 +118,11 @@ namespace GSR.Tests.Jsonic
         [DataRow("\\f", "\"\\\\f\"")]
         [DataRow("\t Hi there, \n\rhow're you? \t", "\"\t Hi there, \n\rhow're you? \t\"")]
         [DataRow("j\\bS", "\"j\\\\bS\"")]
-        public void TestFromEscapedStringToString(string a, string b)
+        public void TestFromUnescapedStringToString(string a, string b)
         {
             Assert.AreEqual(b, JsonString.FromUnescapedString(a).ToString());
             Assert.AreEqual(b, JsonString.FromUnescapedString(a).ToCompressedString());
-        }// end TestFromEscapedStringToString()
+        }// end TestFromUnescapedStringToString()
 
     } // end class
 } // end namespace

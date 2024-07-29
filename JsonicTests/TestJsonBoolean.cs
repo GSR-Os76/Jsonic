@@ -70,5 +70,13 @@ namespace GSR.Tests.Jsonic
             Assert.IsTrue(t != f);
         } // end TestSameInstanceOperatorDisequality()
 
+        [TestMethod]
+        [DataRow(false)]
+        [DataRow(true)]
+        public void TestNullEquality(bool value)
+        {
+            Assert.IsFalse(new JsonBoolean(value).Equals(null));
+        } // end TestDifferentInstanceOperatorDisequality()
+
     } // end class
 } // end namespace
