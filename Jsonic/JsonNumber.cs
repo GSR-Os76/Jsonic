@@ -30,7 +30,7 @@ namespace GSR.Jsonic
         public JsonNumber(decimal value) : this(value.ToString()) { }
         public JsonNumber(string value)
         {
-            if (!Regex.IsMatch(value, ANCHORED_REGEX))
+            if (!Regex.IsMatch(value.IsNotNull(), ANCHORED_REGEX))
                 throw new MalformedJsonException($"\"{value}\" is not a valid json numeric");
 
             Value = value;
@@ -109,7 +109,7 @@ namespace GSR.Jsonic
         /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
         public static JsonNumber ParseJson(string json, out string remainder)
         {
-            string parse = json.TrimStart();
+            string parse = json.IsNotNull().TrimStart();
             if (parse.Length < 1)
                 throw new MalformedJsonException();
 
