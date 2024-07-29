@@ -78,6 +78,12 @@ namespace GSR.Tests.Jsonic
         {
             Assert.AreEqual(expectation, JsonArray.ParseJson(a).Equals(JsonArray.ParseJson(b)));
         } // end TestEquality()
+
+        [TestMethod]
+        public void TestNullEquality()
+        {
+            Assert.AreEqual(false, new JsonArray().Equals(null));
+        } // end TestEquality()
         #endregion
 
         #region ToCompressedString()
