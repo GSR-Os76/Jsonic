@@ -14,14 +14,14 @@ namespace GSR.Jsonic
         public JsonElement this[int index]
         {
             get => _elements[index];
-            set => _elements[index] = value;
+            set => _elements[index] = value.IsNotNull();
         } // end indexer
 
 
 
         public JsonArray() { } // end constructor
 
-        public JsonArray(params JsonElement[] elements) : this((IEnumerable<JsonElement>)elements) { }
+        public JsonArray(params JsonElement[] elements) : this((IEnumerable<JsonElement>)elements) { } // end constructor
 
         public JsonArray(IEnumerable<JsonElement> elements)
         {

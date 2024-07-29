@@ -88,6 +88,13 @@ namespace GSR.Tests.Jsonic
             Assert.AreEqual(expectation, JsonObject.ParseJson(a).Equals(JsonObject.ParseJson(b)));
         } // end TestEquality()
 
+        [TestMethod]
+        [DataRow("{}")]
+        [DataRow("{\"\": false}")]
+        public void TestNullEquality(string json)
+        {
+            Assert.IsFalse(JsonObject.ParseJson(json).Equals(null));
+        } // end TestNullEquality()
 
         #region test ToStringCompressed()
         [TestMethod]
@@ -140,6 +147,16 @@ namespace GSR.Tests.Jsonic
             Assert.AreEqual("{\r\t\"position\": [\r\t\t-12,\r\t\t0,\r\t\t403\r\t]\r}", new JsonObject().Add("position", new JsonArray().Add(-12).Add(0).Add(403)).ToString());
         } // end TestToStringNested2()
         #endregion
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void TestAddDuplicateFail()
+        {
+            new JsonObject()
+                .Add(new JsonString("A"), new JsonElement())
+                .Add(new JsonString("BetaCapionssr3gwty"), new JsonElement())
+                .Add("A", new JsonElement(new JsonArray()));
+        } // end TestAddDuplicateFail()
 
     } // end class
 } // end namespace

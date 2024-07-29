@@ -7,6 +7,14 @@ namespace GSR.Tests.Jsonic
     {
 #pragma warning disable CS8625
 #pragma warning disable CS8600
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void TestIndexerSet1()
+        {
+            new JsonArray()[0] = (JsonElement)null;
+        } // end TestIndexerSet1()
+
         #region Constructor Tests
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
