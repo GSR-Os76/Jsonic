@@ -159,7 +159,7 @@ namespace GSR.Jsonic
         /// <returns>A JsonArray containing the parsed Json value.</returns>
         /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
         public static JsonArray ParseJson(string json, out string remainder)
-        {            
+        {
             string parse = json.IsNotNull().TrimStart();
             JsonArray array = new();
             if (parse.Length < 2 || parse[0] != '[')

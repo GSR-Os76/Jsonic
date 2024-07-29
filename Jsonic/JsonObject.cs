@@ -162,7 +162,7 @@ namespace GSR.Jsonic
         /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
         public static JsonObject ParseJson(string json, out string remainder)
         {
-            string parse = json.IsNotNull().TrimStart(); 
+            string parse = json.IsNotNull().TrimStart();
             JsonObject obj = new();
             if (parse.Length < 2 || parse[0] != '{')
                 throw new MalformedJsonException();

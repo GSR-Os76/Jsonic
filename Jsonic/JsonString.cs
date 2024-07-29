@@ -25,7 +25,7 @@ namespace GSR.Jsonic
         /// <exception cref="MalformedJsonException">String wasn't in valid Json string format.</exception>
         public JsonString(string value)
         {
-            if (!Regex.IsMatch(value, ANCHORED_UNENQUOTED_REGEX))
+            if (!Regex.IsMatch(value.IsNotNull(), ANCHORED_UNENQUOTED_REGEX))
                 throw new MalformedJsonException($"Couldn't construct a Json string with the of value: \"{value}\", maybe try using: \"{nameof(FromUnescapedString)}\"");
 
             Value = value;
@@ -47,7 +47,7 @@ namespace GSR.Jsonic
         /// <returns></returns>
         public static JsonString FromUnescapedString(string s)
         {
-            StringBuilder sb = new(s.Length + 2);
+            StringBuilder sb = new(s.IsNotNull().Length + 2);
             foreach (char c in s)
                 sb.Append(c == '"' ? "\\\"" : c == '\\' ? "\\\\" : c);
 
@@ -80,7 +80,7 @@ namespace GSR.Jsonic
         /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
         public static JsonString ParseJson(string json, out string remainder)
         {
-            string parse = json.TrimStart();
+            string parse = json.IsNotNull().TrimStart();
             if (parse.Length < 1 || !parse[0].Equals('"'))
                 throw new MalformedJsonException();
 
