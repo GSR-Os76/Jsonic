@@ -1,8 +1,9 @@
-﻿using System.Text;
+﻿using System.Collections;
+using System.Text;
 
 namespace GSR.Jsonic
 {
-    public sealed class JsonObject : IJsonComponent
+    public sealed class JsonObject : IJsonComponent, IEnumerable<KeyValuePair<JsonString, JsonElement>>
     {
         private readonly Dictionary<JsonString, JsonElement> _elements = new();
 
@@ -211,5 +212,11 @@ namespace GSR.Jsonic
         /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
         public static JsonObject ParseJson(string json) => JsonUtil.RequiredEmptyRemainder(ParseJson, json);
 
+
+
+        /// <inheritdoc/>
+        public IEnumerator<KeyValuePair<JsonString, JsonElement>> GetEnumerator() => _elements.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     } // end class
 } // end namespace
