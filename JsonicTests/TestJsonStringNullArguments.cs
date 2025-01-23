@@ -15,13 +15,6 @@ namespace GSR.Tests.Jsonic
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void TestFromUnescapedString()
-        {
-            JsonString.FromUnescapedString(null);
-        } // end TestFromUnescapedString()
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void TestParseJson1()
         {
             JsonString.ParseJson(null, out _);

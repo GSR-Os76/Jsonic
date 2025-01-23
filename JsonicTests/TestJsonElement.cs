@@ -107,8 +107,8 @@ namespace GSR.Tests.Jsonic
 
         [TestMethod]
         [DataRow("\"\"", "", "")]
-        [DataRow("\"\\\"390432\"", "\\\"390432", "")]
-        [DataRow("   \"\\\"390432\"\"", "\\\"390432", "\"")]
+        [DataRow("\"\\\"390432\"", "\"390432", "")]
+        [DataRow("   \"\\\"390432\"\"", "\"390432", "\"")]
         [DataRow("\"   \"", "   ", "")]
         [DataRow("\"\"e;l3Opd-=_", "", "e;l3Opd-=_")]
         [DataRow("\"\"\"falsetrue ", "", "\"falsetrue ")]

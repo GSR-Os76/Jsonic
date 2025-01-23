@@ -13,9 +13,10 @@ namespace GSR.Jsonic
         private const string ANCHORED_UNENQUOTED_REGEX = @"^" + UNENQUOTED_REGEX + @"$";
         private const string ANCHORED_ENQUOTED_REGEX = @"^" + ENQUOTED_REGEX + @"$";
 
-#warning how should escapes be handled? should they be left as is when object is created? should all be unescaped or escaped. should minimal be unescaped?
+        private const OptionalEscapeCharacters DEFUALT_ESCAPES = OptionalEscapeCharacters.BACKSPACE | OptionalEscapeCharacters.FORMFEED | OptionalEscapeCharacters.LINEFEED | OptionalEscapeCharacters.CARRIAGE_RETURN | OptionalEscapeCharacters.HORIZONTAL_TAB;
+
         /// <summary>
-        /// The value of the string in escaped json format, to get the value without escapes see <see cref="ToUnescapedString"/>.
+        /// The value of the string, without any escaping.
         /// </summary>
         public string Value { get; }
 
@@ -29,39 +30,16 @@ namespace GSR.Jsonic
         /// <summary>
         /// Constructs a JsonString with a given value.
         /// </summary>
-        /// <param name="value">The Json compatibly formatted string the Json string represents.</param>
+        /// <param name="value">The value to be represented by the <see cref="JsonString"/>, understood as having no escape codes.</param>
         /// <exception cref="MalformedJsonException">String wasn't in valid Json string format.</exception>
         public JsonString(string value)
         {
-            if (!Regex.IsMatch(value.IsNotNull(), ANCHORED_UNENQUOTED_REGEX))
-                throw new MalformedJsonException($"Couldn't construct a Json string with the of value: \"{value}\", maybe try using: \"{nameof(FromUnescapedString)}\"");
-
+#if DEBUG
+            value.IsNotNull();
+#endif
             Value = value;
         } // end constructor()
 
-
-
-
-        /// <summary>
-        /// Unescapes escaped characters, turning the Json string into the string it represents.
-        /// </summary>
-        /// <returns></returns>
-        public string ToUnescapedString() => Value.Replace("\\\"", "\"").Replace("\\/", "/").Replace("\\b", "\b").Replace("\\f", "\f").Replace("\\n", "\n").Replace("\\r", "\r").Replace("\\t", "\t").UnescapeUnicodeCharacters().Replace("\\\\", "\\");
-
-#warning this has always be an unintuive way to create, flip with ctor
-        /// <summary>
-        /// Escapes all unescaped characters necessary, turning it into an equivalent string that represents it.
-        /// </summary>
-        /// <param name="s"></param>
-        /// <returns></returns>
-        public static JsonString FromUnescapedString(string s)
-        {
-            StringBuilder sb = new(s.IsNotNull().Length + 2);
-            foreach (char c in s)
-                sb.Append(c == '"' ? "\\\"" : c == '\\' ? "\\\\" : c);
-
-            return new(sb.ToString());
-        } // end Parse()
 
 
 
@@ -69,26 +47,72 @@ namespace GSR.Jsonic
         public string ToCompressedString() => ToString();
 
         /// <inheritdoc/>
-        public override string ToString() => $"\"{Value}\"";
+        public override string ToString() => ToString(DEFUALT_ESCAPES);
+
+        public string ToString(OptionalEscapeCharacters escapes)
+        {
+            StringBuilder sb = new(Value.Length + 2);
+            sb.Append('"');
+            foreach (char c in Value)
+            {
+                if (c == '\\')
+                    sb.Append("\\\\");
+                else if (c == '"')
+                    sb.Append("\\\"");
+                else if (c == '/' && (escapes & OptionalEscapeCharacters.SOLIDUS) != 0)
+                    sb.Append("\\/");
+                else if (c == '\b' && (escapes & OptionalEscapeCharacters.BACKSPACE) != 0)
+                    sb.Append("\\b");
+                else if (c == '\f' && (escapes & OptionalEscapeCharacters.FORMFEED) != 0)
+                    sb.Append("\\f");
+                else if (c == '\n' && (escapes & OptionalEscapeCharacters.LINEFEED) != 0)
+                    sb.Append("\\n");
+                else if (c == '\r' && (escapes & OptionalEscapeCharacters.CARRIAGE_RETURN) != 0)
+                    sb.Append("\\r");
+                else if (c == '\t' && (escapes & OptionalEscapeCharacters.HORIZONTAL_TAB) != 0)
+                    sb.Append("\\t");
+                else
+                    sb.Append(c);
+            }
+            sb.Append('"');
+            return sb.ToString();
+        } // end ToString()
 
         /// <inheritdoc/>
         public override int GetHashCode() => Value.GetHashCode();
 
         /// <inheritdoc/>
-        public override bool Equals(object? obj) => obj is JsonString b && b.Value == Value;
+        public override bool Equals(object? obj) 
+        {
+            if (obj is JsonString other1)
+                return other1.Value == Value;
+            else if (obj is string other2)
+                return other2 == Value;
+
+            return false;
+        } // end Equals()
+            
 
         /// <inheritdoc/>
         public static bool operator ==(JsonString a, JsonString b) => a.Equals(b);
+        /// <inheritdoc/>
+        public static bool operator ==(string a, JsonString b) => b.Equals(a);
+        /// <inheritdoc/>
+        public static bool operator ==(JsonString a, string b) => a.Equals(b);
 
         /// <inheritdoc/>
         public static bool operator !=(JsonString a, JsonString b) => !a.Equals(b);
+        /// <inheritdoc/>
+        public static bool operator !=(string a, JsonString b) => !b.Equals(a);
+        /// <inheritdoc/>
+        public static bool operator !=(JsonString a, string b) => !a.Equals(b);
 
 
 
         /// <inheritdoc/>
         public static implicit operator JsonString(string value) => new(value);
         /// <inheritdoc/>
-        public static implicit operator string(JsonString value) => value.ToUnescapedString();
+        public static implicit operator string(JsonString value) => value.Value;
 
 
 
@@ -111,7 +135,58 @@ namespace GSR.Jsonic
 
             string s = m.Value;
             remainder = parse[s.Length..^0];
-            return new(s[1..^1]);
+            /*string v = s[1..^1];
+
+            StringBuilder result = new(v.Length);
+            int i = -1;
+            while (i < v.Length)
+            {
+                i += 1;
+                char c = v[i];
+                if (c == '\\')
+                {
+                    switch (v[i+1])
+                    {
+                        case '"':
+                            c = '"';
+                            i += 1;
+                            break;
+                        case '\\':
+                            c = '\\';
+                            i += 1;
+                            break;
+                        case 'b':
+                            c = '\b';
+                            i += 1;
+                            break;
+                        case 'f':
+                            c = '\f';
+                            i += 1;
+                            break;
+                        case 'n':
+                            c = '\n';
+                            i += 1;
+                            break;
+                        case 'r':
+                            c = '\r';
+                            i += 1;
+                            break;
+                        case 't':
+                            c = '\t';
+                            i += 1;
+                            break;
+                        case 'u':
+                            c = Regex.Unescape(v[1..5]);
+                            i += 5;
+                            break;
+                        default:
+                            throw new InvalidOperationException("Shouldn't've been possible, regex presumably broken."),;
+                    }
+                    result.Append(c);
+                }
+                result.Append(c);
+            }*/
+            return Regex.Unescape(s[1..^1]);//v[1..5]); //result.ToString();
         } // end ParseJson()
 
         /// <summary>
@@ -122,5 +197,54 @@ namespace GSR.Jsonic
         /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
         public static JsonString ParseJson(string json) => JsonUtil.RequiredEmptyRemainder(ParseJson, json);
 
+
+
+
+        /// <summary>
+        /// Flag style enum representation of characters that may or may not be escaped.
+        /// </summary>
+        public enum OptionalEscapeCharacters 
+        {
+            /// <summary>
+            /// No flags set.
+            /// </summary>
+            NONE = 0b0000_0000,
+            /// <summary>
+            /// All flags set.
+            /// </summary>
+            ALL = 0b0011_1111,
+
+
+/*          QUOTATION_MARK,
+            REVERSE_SOLIDUS,*/
+            /// <summary>
+            /// Forward slash: '\/' 
+            /// </summary>
+            SOLIDUS = 0b0000_0001,
+            /// <summary>
+            /// Backspace: '\b'
+            /// </summary>
+            BACKSPACE = 0b0000_0010,
+            /// <summary>
+            /// Form feed: '\f'
+            /// </summary>
+            FORMFEED = 0b0000_0100,
+            /// <summary>
+            /// Line feed, or newline: '\n'
+            /// </summary>
+            LINEFEED = 0b0000_1000,
+            /// <summary>
+            /// Carriage return: '\r'
+            /// </summary>
+            CARRIAGE_RETURN = 0b0001_0000,
+            /// <summary>
+            /// Horizontal tab: '\t'
+            /// </summary>
+            HORIZONTAL_TAB = 0b0010_0000,
+            ///// <summary>
+            ///// Utf-16 codepoint: '\u[a-fA-F]{4}'
+            ///// </summary>
+            //UNICODE = 0b0100_0000
+        } // end EscapeCharacters
     } // end class
 } // end namespace

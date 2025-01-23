@@ -5,124 +5,171 @@ namespace GSR.Tests.Jsonic
     [TestClass]
     public class TestJsonString
     {
-        #region enquoted
-        [TestMethod]
-        [DataRow("\"\"")]
-        [DataRow("\"\\\"\"")]
-        [DataRow("\"\\\\\"")]
-        [DataRow("\"\\/\"")]
-        [DataRow("\"\\b\"")]
-        [DataRow("\"\\f\"")]
-        [DataRow("\"\\n\"")]
-        [DataRow("\"\\r\"")]
-        [DataRow("\"\\t\"")]
-        [DataRow("\"\\u0000\"")]
-        [DataRow("\"\\u9999\"")]
-        [DataRow("\"\\u6038\"")]
-        [DataRow("\"\\u1234\"")]
-        [DataRow("\"\\uffff\"")]
-        [DataRow("\"\\uaaaa\"")]
-        [DataRow("\"\\uA6f9\"\t")]
-        [DataRow("\"\\uaB7C\"")]
-        [DataRow("\"\\u463D\"")]
-        [DataRow("\"\\uABCD\"")]
-        [DataRow("  \"/\"")]
-        [DataRow("\"Just some test\"")]
-        [DataRow("\"-==fjeiwo8njuvg\"")]
-        [DataRow("\"b\"")]
-        [DataRow("\"f\"")]
-        [DataRow("\"u98A3\"")]
-        [DataRow("\"n\"")]
-        public void TestParseValid(string s)
+        [TestClass]
+        public class Valid 
         {
-            JsonString.ParseJson(s);
-            Assert.IsTrue(true);
-        }// end TestParseValid()
+            [TestMethod]
+            [DataRow("\"\"", "")]
+            [DataRow("\"\\\"\"", "\"")]
+            [DataRow("\"\\\\\"", "\\")]
+            [DataRow("\"\\/\"", "/")]
+            [DataRow("\"\\b\"", "\b")]
+            [DataRow("\"\\f\"", "\f")]
+            [DataRow("\"\\n\"", "\n")]
+            [DataRow("\"\\r\"", "\r")]
+            [DataRow("\"\\t\"", "\t")]
+            [DataRow("\"\\u0000\"", "\0")]
+            [DataRow("\"\\u9999\"", "香")]
+            [DataRow("\"\\u6038\"", "怸")]
+            [DataRow("\"\\u1234\"", "ሴ")]
+            [DataRow("\"\\uaFaa\"", "꾪")]
+            [DataRow("\"\\uA6f9\"\t", "꛹")]
+            [DataRow("\"\\uaB7C\"", "ꭼ")]
+            [DataRow("\"\\u463D\"", "䘽")]
+            [DataRow("\"\\u463DF\"", "䘽F")]
+            [DataRow("\"\\u463DF001\"", "䘽F001")]
+            [DataRow("\"Char \\\\\\u463DF001\"", "Char \\䘽F001")]
+            [DataRow("  \"/\"", "/")]
+            [DataRow("\"Just some text\"", "Just some text")]
+            [DataRow("\"-==fjeiwo8njuvg\"", "-==fjeiwo8njuvg")]
+            [DataRow("\"b\"", "b")]
+            [DataRow("\"f\"", "f")]
+            [DataRow("\"u98A3\"", "u98A3")]
+            [DataRow("\"n\"", "n")]
+            public void TestParseJson(string toParse, string expectation)
+            {
+                Assert.AreEqual(expectation, JsonString.ParseJson(toParse).Value);
+            }// end TestParseJson()
 
-        [TestMethod]
-        [ExpectedException(typeof(MalformedJsonException))]
-        [DataRow("")]
-        [DataRow("mkjw;rw\"")]
-        [DataRow("\"sfakl")]
-        [DataRow("\"")]
-        [DataRow("\"\"\"")]
-        [DataRow("\"\\\"")]
-        [DataRow("\"\\]\"")]
-        [DataRow("\"\\y\"")]
-        [DataRow("\"\\U78A3\"")]
-        [DataRow("\"\\U78A\"")]
-        [DataRow("\"\\U734F8A3\"")]
-        [DataRow("\"\\U04-=\"")]
-        [DataRow("\"\\u000-\"")]
-        [DataRow("\"\\uL\"")]
-        [DataRow("\"\\u\"")]
-        [DataRow("\"\\u8A3\"")]
-        [DataRow("\"\\8F3\"")]
-        public void TestParseInvalid(string s)
+            [TestMethod]
+
+            [DataRow("\"\"", "", "")]
+            [DataRow("\"\\\"\"", "\"", "")]
+            [DataRow("\"\\\\\"", "\\", "")]
+            [DataRow("\"\\/\"", "/", "")]
+            [DataRow("\"\\b\"", "\b", "")]
+            [DataRow("\"\\f\"", "\f", "")]
+            [DataRow("\"\\n\"", "\n", "")]
+            [DataRow("\"\\r\"", "\r", "")]
+            [DataRow("\"\\t\"", "\t", "")]
+            [DataRow("\"\\u0000\"", "\0", "")]
+            [DataRow("\"\\u9999\"", "香", "")]
+            [DataRow("\"\\u6038\"", "怸", "")]
+            [DataRow("\"\\u1234\"", "ሴ", "")]
+            [DataRow("\"\\uaFaa\"", "꾪", "")]
+            [DataRow("\"\\uA6f9\"\t", "꛹", "")]
+            [DataRow("\"\\uaB7C\"", "ꭼ", "")]
+            [DataRow("\"\\u463D\"", "䘽", "")]
+            [DataRow("\"\\u463DF\"", "䘽F", "")]
+            [DataRow("\"\\u463DF001\"", "䘽F001", "")]
+            [DataRow("\"Char \\\\\\u463DF001\"", "Char \\䘽F001", "")]
+            [DataRow("  \"/\"", "/", "")]
+            [DataRow("\"Just some text\"", "Just some text", "")]
+            [DataRow("\"-==fjeiwo8njuvg\"", "-==fjeiwo8njuvg", "")]
+            [DataRow("\"b\"", "b", "")]
+            [DataRow("\"f\"", "f", "")]
+            [DataRow("\"u98A3\"", "u98A3", "")]
+            [DataRow("\"n\"", "n", "")]
+            [DataRow("\"n\": value }", "n", ": value }")]
+            [DataRow("\"n\"n", "n", "n")]
+            [DataRow("\"n\"\"", "n", "\"")]
+            public void TestParseJsonRemainder(string toParse, string expectation, string expectedRemainder) 
+            {
+                Assert.AreEqual(expectation, JsonString.ParseJson(toParse, out string remainder).Value);
+            } // end TestParseJsonRemainder()
+
+            [TestMethod]
+            [DataRow("", "")]
+            [DataRow("\r", "\\r")]
+            [DataRow("\n", "\\n")]
+            [DataRow("\t", "\\t")]
+            [DataRow("\f", "\\f")]
+            [DataRow("\b", "\\b")]
+            [DataRow("\"", "\\\"")]
+            [DataRow("\\", "\\\\")]
+            [DataRow("afdsafd", "afdsafd")]
+            [DataRow("afdsa\rfd", "afdsa\\rfd")]
+            [DataRow("afd怸sa\rfd", "afd怸sa\\rfd")]
+            public void TestToString(string value, string expectation) 
+            {
+                JsonString v = new(value);
+                Assert.AreEqual(value, v.Value);
+                Assert.AreEqual(value, (string)v);
+                Assert.AreEqual($"\"{expectation}\"", v.ToString());
+            } // end TestToString()
+            
+            [TestMethod]
+            [DataRow("", "", JsonString.OptionalEscapeCharacters.NONE)]
+            [DataRow("\"", "\\\"", JsonString.OptionalEscapeCharacters.NONE)]
+            [DataRow("\"", "\\\"", JsonString.OptionalEscapeCharacters.ALL)]
+            [DataRow("\\", "\\\\", JsonString.OptionalEscapeCharacters.NONE)]
+            [DataRow("\\", "\\\\", JsonString.OptionalEscapeCharacters.ALL)]
+            [DataRow("/", "\\/", JsonString.OptionalEscapeCharacters.SOLIDUS)]
+            [DataRow("\r", "\\r", JsonString.OptionalEscapeCharacters.CARRIAGE_RETURN)]
+            [DataRow("\n", "\\n", JsonString.OptionalEscapeCharacters.LINEFEED)]
+            [DataRow("\t", "\\t", JsonString.OptionalEscapeCharacters.HORIZONTAL_TAB)]
+            [DataRow("\f", "\\f", JsonString.OptionalEscapeCharacters.FORMFEED)]
+            [DataRow("\b", "\\b", JsonString.OptionalEscapeCharacters.BACKSPACE)]
+            [DataRow("/", "\\/", JsonString.OptionalEscapeCharacters.ALL)]
+            [DataRow("\r", "\\r", JsonString.OptionalEscapeCharacters.ALL)]
+            [DataRow("\n", "\\n", JsonString.OptionalEscapeCharacters.ALL)]
+            [DataRow("\t", "\\t", JsonString.OptionalEscapeCharacters.ALL)]
+            [DataRow("\f", "\\f", JsonString.OptionalEscapeCharacters.ALL)]
+            [DataRow("\b", "\\b", JsonString.OptionalEscapeCharacters.ALL)]
+            [DataRow("/", "/", JsonString.OptionalEscapeCharacters.NONE)]
+            [DataRow("\r", "\r", JsonString.OptionalEscapeCharacters.NONE)]
+            [DataRow("\n", "\n", JsonString.OptionalEscapeCharacters.NONE)]
+            [DataRow("\t", "\t", JsonString.OptionalEscapeCharacters.NONE)]
+            [DataRow("\f", "\f", JsonString.OptionalEscapeCharacters.NONE)]
+            [DataRow("\b", "\b", JsonString.OptionalEscapeCharacters.NONE)]
+            [DataRow("afdsafd", "afdsafd", JsonString.OptionalEscapeCharacters.ALL)]
+            public void TestFormattedToString(string value, string expectation, JsonString.OptionalEscapeCharacters escaping) 
+            {
+                JsonString v = new(value);
+                Assert.AreEqual(value, v.Value);
+                Assert.AreEqual(value, (string)v);
+                Assert.AreEqual($"\"{expectation}\"", v.ToString(escaping));
+            } // end TestFormattedToString()
+
+            [TestMethod]
+            [DataRow("\"\"")]
+            [DataRow("\"hnjmkwjn4nbhy5uenj nhjby\"")]
+            public void TestNullEquality(string json)
+            {
+                Assert.IsFalse(JsonString.ParseJson(json).Equals(null));
+            }// end TestNullEquality()
+        } // end inner class Valid
+
+        public class Invalid 
         {
-            JsonString.ParseJson(s);
-        }// end TestParseInvalid()
-
-        [TestMethod]
-        [DataRow("\"\"", "")]
-        [DataRow("\"fd\"", "fd")]
-        [DataRow("\"\\\"\"", "\"")]
-        [DataRow("\"\\\\\"", "\\")]
-        [DataRow("\"\\/\"", "/")]
-        [DataRow("\"\\b\"", "\b")]
-        [DataRow("\"\\f\"", "\f")]
-        [DataRow("\"\\n\"", "\n")]
-        [DataRow("\"\\r\"", "\r")]
-        [DataRow("\"\\t\"", "\t")]
-        [DataRow("\"\\u0021\"", "!")]
-        [DataRow("\"\\u00A9\"", "©")]
-        [DataRow("\"\\u0152\"", "Œ")]
-        [DataRow("\"\\u0489\"", "҉")]
-        [DataRow("\":erwojofe\"", ":erwojofe")]
-        [DataRow("\"\\\\ge4\\b\"", "\\ge4\b")]
-        [DataRow("\"\\\\\\b\"", "\\\b")]
-        public void TestToUnescapedStringThroughParse(string a, string b)
-        {
-            Assert.AreEqual(b, JsonString.ParseJson(a).ToUnescapedString());
-        }// end TestToUnescapedStringThroughParse()
-        #endregion
-
-        [TestMethod]
-        [DataRow("\"\"")]
-        [DataRow("\"hnjmkwjn4nbhy5uenj nhjby\"")]
-        public void TestNullEquality(string json)
-        {
-            Assert.IsFalse(JsonString.ParseJson(json).Equals(null));
-        }// end TestNullEquality()
-
-        [TestMethod]
-        [DataRow("", "")]
-        [DataRow("\"", "\\\"")]
-        [DataRow("\"\"", "\\\"\\\"")]
-        [DataRow("A3d_", "A3d_")]
-        [DataRow("\t", "\t")]
-        [DataRow("\\f", "\\\\f")]
-        [DataRow("\t Hi there, \n\rhow're you? \t", "\t Hi there, \n\rhow're you? \t")]
-        [DataRow("j\\bS", "j\\\\bS")]
-        public void TestFromUnescapedString(string a, string b)
-        {
-            Assert.AreEqual(b, JsonString.FromUnescapedString(a).Value);
-        }// end TestFromUnescapedString()
-
-        [TestMethod]
-        [DataRow("", "\"\"")]
-        [DataRow("\"", "\"\\\"\"")]
-        [DataRow("\"\"", "\"\\\"\\\"\"")]
-        [DataRow("A3d_", "\"A3d_\"")]
-        [DataRow("\t", "\"\t\"")]
-        [DataRow("\\f", "\"\\\\f\"")]
-        [DataRow("\t Hi there, \n\rhow're you? \t", "\"\t Hi there, \n\rhow're you? \t\"")]
-        [DataRow("j\\bS", "\"j\\\\bS\"")]
-        public void TestFromUnescapedStringToString(string a, string b)
-        {
-            Assert.AreEqual(b, JsonString.FromUnescapedString(a).ToString());
-            Assert.AreEqual(b, JsonString.FromUnescapedString(a).ToCompressedString());
-        }// end TestFromUnescapedStringToString()
-
+            [TestMethod]
+            [ExpectedException(typeof(MalformedJsonException))]
+            [DataRow("")]
+            [DataRow("mkjw;rw\"")]
+            [DataRow("\"sfakl")]
+            [DataRow("\"")]
+            [DataRow("\"\"\"")]
+            [DataRow("\"\\\"")]
+            [DataRow("\"\\]\"")]
+            [DataRow("\"\\y\"")]
+            [DataRow("\"\\U78A3\"")]
+            [DataRow("\"\\U78A\"")]
+            [DataRow("\"\\U734F8A3\"")]
+            [DataRow("\"\\U04-=\"")]
+            [DataRow("\"\\u000-\"")]
+            [DataRow("\"\\uL\"")]
+            [DataRow("\"\\u\"")]
+            [DataRow("\"\\u8A3\"")]
+            [DataRow("\"\\8F3\"")]
+            [DataRow("\"\\a\"")]
+            [DataRow("\"\\0\"")]
+            [DataRow("\"\\Uaaaa\"")]
+            [DataRow("\"\\Uaaa00bba\"")]
+            [DataRow("sdf \"\"")]
+            public void TestParse(string s)
+            {
+                JsonString.ParseJson(s);
+            }// end TestParse()        
+        } // end inner class Invalid()
     } // end class
 } // end namespace
