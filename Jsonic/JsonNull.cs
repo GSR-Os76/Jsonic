@@ -1,9 +1,11 @@
-﻿namespace GSR.Jsonic
+﻿using GSR.Jsonic.Formatting;
+
+namespace GSR.Jsonic
 {
     /// <summary>
-    /// Singelton class for representing a null json value, for the 'instance' use <see cref="NULL"/>
+    /// Uninstantiable class for representing a null json value, for the 'instance' use <see cref="NULL"/>.
     /// </summary>
-    public sealed class JsonNull : IJsonValue
+    public sealed class JsonNull : AJsonValue
     {
         internal const string JSON_NULL = "null";
 
@@ -19,10 +21,7 @@
 
 
         /// <inheritdoc/>
-        public string ToCompressedString() => ToString();
-
-        /// <inheritdoc/>
-        public override string ToString() => JSON_NULL;
+        public override string ToString(JsonFormatting formatting) => JSON_NULL;
 
 
 
@@ -53,6 +52,5 @@
         /// <returns>A JsonNull containing the parsed Json value.</returns>
         /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
         public static JsonNull? ParseJson(string json) => JsonUtil.RequiredEmptyRemainder(ParseJson, json);
-
     } // end class
 } // end namespace

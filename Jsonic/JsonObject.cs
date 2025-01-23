@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using GSR.Jsonic.Formatting;
+using System.Collections;
 using System.Text;
 
 namespace GSR.Jsonic
@@ -6,7 +7,7 @@ namespace GSR.Jsonic
     /// <summary>
     /// Representation of a json object.
     /// </summary>
-    public sealed class JsonObject : IJsonValue, IEnumerable<KeyValuePair<JsonString, JsonElement>>
+    public sealed class JsonObject : AJsonValue, IEnumerable<KeyValuePair<JsonString, JsonElement>>
     {
         private readonly Dictionary<JsonString, JsonElement> _elements;
 
@@ -131,13 +132,10 @@ namespace GSR.Jsonic
 
 
         /// <inheritdoc/>
-        public string ToCompressedString() => AsString(true);
-
-        /// <inheritdoc/>
-        public override string ToString() => AsString();
-
-        private string AsString(bool compress = false)
+        public override string ToString(JsonFormatting formatting)
         {
+            throw new NotImplementedException();
+            bool compress = false;
             StringBuilder sb = new("{");
             if (!compress)
                 sb.Append('\r');
@@ -147,7 +145,7 @@ namespace GSR.Jsonic
             {
                 JsonString key = keys[i];
                 sb.Append(compress
-                    ? $"{key}:{_elements[key].ToCompressedString()}"
+                    ? $"{key}:{_elements[key].ToString(formatting)}"
                     : $"{key}: {_elements[key].ToString()}".Entabbed());
 
                 if (i != _elements.Count - 1)

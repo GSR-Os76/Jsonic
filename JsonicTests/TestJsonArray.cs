@@ -87,7 +87,7 @@ namespace GSR.Tests.Jsonic
         #endregion
 
         #region ToCompressedString()
-        [TestMethod]
+/*        [TestMethod]
         [DataRow("[]")]
         public void ToCompressedStringEmpty(string e)
         {
@@ -99,9 +99,9 @@ namespace GSR.Tests.Jsonic
         public void ToCompressedStringNested1(string e)
         {
             Assert.AreEqual(e, new JsonArray().Add(new JsonArray()).ToCompressedString());
-        } // end ToCompressedStringNested1()
+        } // end ToCompressedStringNested1()*/
 
-        [TestMethod]
+/*        [TestMethod]
         [DataRow("[[false],true]")]
         public void ToCompressedStringNested2(string e)
         {
@@ -114,14 +114,14 @@ namespace GSR.Tests.Jsonic
         public void ToCompressedStringNested3(string e)
         {
             Assert.AreEqual(e, new JsonArray(new(new JsonArray(new JsonElement(false))), new(true), new("are")).ToCompressedString());
-        } // end ToCompressedStringNested3()
+        } // end ToCompressedStringNested3()*/
 
-        [TestMethod]
+/*        [TestMethod]
         [DataRow("[[false],true,\"are\"]")]
         public void ToCompressedStringNested3_2(string e)
         {
             Assert.AreEqual(e, new JsonArray().Add(new JsonArray().Add(false)).Add(true).Add("are").ToCompressedString());
-        } // end ToCompressedStringNested3_2()
+        } // end ToCompressedStringNested3_2()*/
         #endregion
 
         #region ToString

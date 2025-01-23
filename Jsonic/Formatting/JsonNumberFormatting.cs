@@ -41,16 +41,20 @@
         /// <summary>
         /// At what position should the decimal point be placed.
         /// 
-        /// Invalid unless <see cref="PlaceExponent"/> or <see cref="AllowInsignificantDigits"/> are true.
+        /// Ignored unless <see cref="PlaceExponent"/> or <see cref="AllowInsignificantDigits"/> are true.
         /// 
+        /// <para>
         /// When <see cref="PlaceExponent"/> is true:
-        /// When 0 indicates no decimal.
-        /// When positive indicates preferred number of digits that will be to the right of the decimal, positioning will be fulfilled as far as possible, any further significant digits will be placed on the left.
-        /// When negative indicates the preferred number of digits that will be to the left of the decimal, positioning will be fulfilled as far as possible, any further significant digits will be placed on the right.
+        /// 0 indicates no decimal.
+        /// A negative value indicates the preferred number of digits that will be to the right of the decimal, positioning will be fulfilled as far as possible, any further significant digits will be placed on the left.
+        /// A positive value indicates the preferred number of digits that will be to the left of the decimal, positioning will be fulfilled as far as possible, any further significant digits will be placed on the right.
+        /// </para>
         /// 
-        /// When <see cref="AllowInsignificantDigits"/> is true, and <see cref="DecimalPositioning"/> is postiive, 0s will be added after the significant figures to fulfill the expected count - the json standard doesn't allow proceeding insignificant 0s.
+        /// <para>
+        /// When <see cref="AllowInsignificantDigits"/> is true:
         /// 
-        /// Note: Any shift is invalid unless <see cref="PlaceExponent"/> is set true, or the shift is fulfilled by <see cref="AllowInsignificantDigits"/>.
+        /// Trailing 0's will be added after the decimal point in volume sufficient to reach a number of digits equal to the preferred number, as such is only meanigful with a negative value and insufficient significant digits.
+        /// </para>
         /// </summary>
         public int DecimalPositioning { get; }
 

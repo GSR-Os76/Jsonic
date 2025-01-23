@@ -1,9 +1,11 @@
-﻿namespace GSR.Jsonic
+﻿using GSR.Jsonic.Formatting;
+
+namespace GSR.Jsonic
 {
     /// <summary>
     /// Representation of a json number. No constuctor provided, use: <see cref="TRUE"/> or <see cref="FALSE"/>.
     /// </summary>
-    public sealed class JsonBoolean : IJsonValue
+    public sealed class JsonBoolean : AJsonValue
     {
         private const string JSON_TRUE = "true";
         private const string JSON_FALSE = "false";
@@ -32,10 +34,7 @@
 
 
         /// <inheritdoc/>
-        public string ToCompressedString() => ToString();
-
-        /// <inheritdoc/>
-        public override string ToString() => Value ? JSON_TRUE : JSON_FALSE;
+        public override string ToString(JsonFormatting formatting) => Value ? JSON_TRUE : JSON_FALSE;
 
         /// <inheritdoc/>
         public override int GetHashCode() => Value.GetHashCode();

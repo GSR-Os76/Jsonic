@@ -35,7 +35,7 @@
 
 
         /// <inheritdoc/>
-        public JsonFormatting(NewLineType newLineType, JsonArrayFormatting arrayFormatting, JsonNumberFormatting numberFormatting, JsonObjectFormatting objectFormatting, JsonStringFormatting stringFormatting)
+        public JsonFormatting(NewLineType newLineType = NewLineType.CRLF, JsonArrayFormatting arrayFormatting = new(), JsonNumberFormatting numberFormatting = new(), JsonObjectFormatting objectFormatting = new(), JsonStringFormatting stringFormatting = new())
         {
             NewLineType = newLineType;
             ArrayFormatting = arrayFormatting;

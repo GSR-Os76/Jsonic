@@ -1,9 +1,11 @@
-﻿namespace GSR.Jsonic
+﻿using GSR.Jsonic.Formatting;
+
+namespace GSR.Jsonic
 {
     /// <summary>
     /// Common representation of one of the json values.
     /// </summary>
-    public sealed class JsonElement : IJsonValue
+    public sealed class JsonElement : AJsonValue
     {
         private static readonly JsonElement NULL = new();
         private static readonly JsonElement TRUE = new(true);
@@ -88,22 +90,14 @@
 
 
         /// <inheritdoc/>
-        public string ToCompressedString() => AsStringC(true);
-
-        /// <inheritdoc/>
-        public override string ToString() => AsStringC();
-
-        private string AsStringC(bool compress = false)
+        public override string ToString(JsonFormatting formatting)
         {
+            throw new NotImplementedException();
+            bool compress = false;
             if (Type == JsonType.Null)
                 return JsonNull.JSON_NULL;
 
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-#pragma warning disable CS8603 // Possible null reference return.
-            return compress ? Value.ToCompressedString() : Value.ToString();
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-#pragma warning restore CS8603 // Possible null reference return.
-
+            return Value.ToString(formatting);
         } // end AsStringC()
 
         /// <inheritdoc/>

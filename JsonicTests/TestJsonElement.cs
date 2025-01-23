@@ -7,7 +7,7 @@ namespace GSR.Tests.Jsonic
     public class TestJsonElement
     {
         #region ToString() and ToCompressedString()
-        [TestMethod]
+/*        [TestMethod]
         public void TestNullValue()
         {
             Assert.AreEqual("null", new JsonElement(JsonNull.NULL).ToString());
@@ -36,7 +36,7 @@ namespace GSR.Tests.Jsonic
             j.AsArray().Add(true).Add(new JsonArray()).Add(90);
             Assert.AreEqual("[\r\ttrue,\r\t[\r\t\r\t],\r\t90\r]", j.ToString());
             Assert.AreEqual("[true,[],90]", j.ToCompressedString());
-        } // end TestNullValue()
+        } // end TestNullValue()*/
 #warning others
         #endregion
 

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using GSR.Jsonic.Formatting;
+using System.Collections;
 using System.Text;
 
 namespace GSR.Jsonic
@@ -7,7 +8,7 @@ namespace GSR.Jsonic
     /// <summary>
     /// Representation of a json array.
     /// </summary>
-    public sealed class JsonArray : IJsonValue, IEnumerable<JsonElement>
+    public sealed class JsonArray : AJsonValue, IEnumerable<JsonElement>
     {
         private readonly List<JsonElement> _elements = new();
 
@@ -112,21 +113,19 @@ namespace GSR.Jsonic
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 
-        /// <inheritdoc/>
-        public string ToCompressedString() => AsString(true);
 
         /// <inheritdoc/>
-        public override string ToString() => AsString();
-
-        private string AsString(bool compress = false)
+        public override string ToString(JsonFormatting formatting) 
         {
+            throw new NotImplementedException();
+            bool compress = false;
             StringBuilder sb = new("[");
             if (!compress)
                 sb.Append('\r');
 
             for (int i = 0; i < _elements.Count; i++)
             {
-                sb.Append(compress ? _elements[i].ToCompressedString() : _elements[i].ToString().Entabbed());
+                sb.Append(compress ? _elements[i].ToString(formatting) : _elements[i].ToString().Entabbed());
 
                 if (i != _elements.Count - 1)
                 {

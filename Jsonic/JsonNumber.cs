@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using GSR.Jsonic.Formatting;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -7,9 +8,9 @@ namespace GSR.Jsonic
     /// <summary>
     /// Representation of a json number.
     /// </summary>
-    public sealed class JsonNumber : IJsonValue
+    public sealed class JsonNumber : AJsonValue
     {
-        private static readonly Regex REGEX = new Regex(@"-?(([1-9][0-9]*)|0)(\.[0-9]+)?([eE][-+]?[0-9]+)?");
+        private static readonly Regex REGEX = new(@"-?(([1-9][0-9]*)|0)(\.[0-9]+)?([eE][-+]?[0-9]+)?");
         private const NumberStyles PARSING_STYLE = NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint;
 
 
@@ -128,9 +129,57 @@ namespace GSR.Jsonic
         /// <inheritdoc/>
         public string ToCompressedString() => ToString();
 
+
         /// <inheritdoc/>
-        public override string ToString() => _value;
-#warning options to write formatted normalized, either in normalized exponential form, or in expanded form
+        public override string ToString(JsonFormatting formatting)
+        {
+            if (formatting.NumberFormatting.Preserve)
+                return _value;
+
+            int dp = formatting.NumberFormatting.DecimalPositioning;
+            if (formatting.NumberFormatting.PlaceExponent)
+            {
+#warning probably not considering significand sign.
+                StringBuilder significand = new(Significand);
+                int exponent = Exponent;
+                if (dp > 0)
+                {
+                    int pos = Math.Min(dp, significand.Length); // get position to insert at, either 'dp' or if that would be outside string bounds the string's end
+                    exponent -= (significand.Length - pos); // adjust exponent to reflect shift, number has became smaller by some power of 10 so exponent should be too.
+                                                            // significand never contains a decimal, so by subtracting the position we get the number of digits now to the right of the decimal
+                    significand = significand.Insert(pos, "."); // shift after updating exponent so decimal isn't count as a digit.
+                }
+                else if (dp < 0) 
+                {
+                    int pos = significand.Length + Math.Min(dp, -significand.Length); // get position to insert at, either 'dp' or if that would be outside string bounds the string's end, invert direction so decimal is place from right to left
+                    int unfulfilled = pos - dp;
+                    exponent += (significand.Length - pos);
+                    significand = significand.Insert(pos, ".");
+                    if (pos == 0)
+                        significand.Insert(0, "0"); // add proceeding 0
+                    for (int i = 0; i < unfulfilled; i++)
+                        significand.Append('0');
+                }
+                StringBuilder sb = new(significand.Length + 20);
+                sb.Append(significand);
+                sb.Append(formatting.NumberFormatting.CapitalizeExponent ? 'E' : 'e');
+                if (formatting.NumberFormatting.ExplicitlySignExponent && Exponent >= 0)
+                    sb.Append('+');
+                sb.Append(exponent);
+                return sb.ToString();
+            }
+            throw new NotImplementedException();
+            //else if (formatting.NumberFormatting.AllowInsignificantDigits) 
+            {
+                
+            }
+/*            PlaceExponent
+            CapitalizeExponent
+            ExplicitlySignExponent
+            AllowInsignificantDigits
+            DecimalPositioning*/
+    } // end ToString()
+
         /// <inheritdoc/>
         public override int GetHashCode() => _value.GetHashCode();
 
@@ -251,6 +300,5 @@ namespace GSR.Jsonic
         /// <returns>A JsonNumber containing the parsed Json value.</returns>
         /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
         public static JsonNumber ParseJson(string json) => JsonUtil.RequiredEmptyRemainder(ParseJson, json);
-
     } // end class
 } // end namespace

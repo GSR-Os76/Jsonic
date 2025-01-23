@@ -97,7 +97,7 @@ namespace GSR.Tests.Jsonic
         } // end TestNullEquality()
 
         #region test ToStringCompressed()
-        [TestMethod]
+/*        [TestMethod]
         public void TestToCompressedStringEmpty()
         {
             Assert.AreEqual("{}", new JsonObject().ToCompressedString());
@@ -119,7 +119,7 @@ namespace GSR.Tests.Jsonic
         public void TestToCompressedStringNested2()
         {
             Assert.AreEqual("{\"position\":[-12,0,403]}", new JsonObject().Add("position", new JsonArray().Add(-12).Add(0).Add(403)).ToCompressedString());
-        } // end TestToCompressedStringNested2()
+        } // end TestToCompressedStringNested2()*/
         #endregion
 
         #region test ToString()
