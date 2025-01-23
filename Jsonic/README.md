@@ -1,6 +1,6 @@
 ﻿# Jsonic
 
-Simple clean literal Json representation in C#. Adheres to json.org's Json standard.
+Simple clean literal objective C# Json representation. Adheres to json.org's Json standard.
 
 ## Versioning
 

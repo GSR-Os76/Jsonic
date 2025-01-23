@@ -10,15 +10,15 @@ namespace GSR.Tests.Jsonic
         [TestMethod]
         public void TestNullValue()
         {
-            Assert.AreEqual(JsonNull.JSON_NULL, new JsonElement(JsonNull.NULL).ToString());
-            Assert.AreEqual(JsonNull.JSON_NULL, new JsonElement().ToString());
-            Assert.AreEqual(JsonNull.JSON_NULL, new JsonElement(JsonNull.NULL).ToCompressedString());
-            Assert.AreEqual(JsonNull.JSON_NULL, new JsonElement().ToCompressedString());
+            Assert.AreEqual("null", new JsonElement(JsonNull.NULL).ToString());
+            Assert.AreEqual("null", new JsonElement().ToString());
+            Assert.AreEqual("null", new JsonElement(JsonNull.NULL).ToCompressedString());
+            Assert.AreEqual("null", new JsonElement().ToCompressedString());
         } // end TestNullValue()
 
         [TestMethod]
-        [DataRow(false, JsonBoolean.JSON_FALSE)]
-        [DataRow(true, JsonBoolean.JSON_TRUE)]
+        [DataRow(false, "false")]
+        [DataRow(true, "true")]
         public void TestBooleanValue(bool b, string expectation)
         {
             JsonElement j = new(b);
@@ -90,7 +90,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("false,", ",")]
         public void TestParseStartValidFalse(string input, string expectedRemained)
         {
-            Assert.AreEqual(new JsonBoolean(false), JsonElement.ParseJson(input, out string r).Value);
+            Assert.AreEqual(JsonBoolean.FALSE, JsonElement.ParseJson(input, out string r).Value);
             Assert.AreEqual(expectedRemained, r);
         } // end TestParseStartValidFalse()
 
@@ -101,7 +101,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("true,87", ",87")]
         public void TestParseStartValidTrue(string input, string expectedRemained)
         {
-            Assert.AreEqual(new JsonBoolean(true), JsonElement.ParseJson(input, out string r).Value);
+            Assert.AreEqual(JsonBoolean.TRUE, JsonElement.ParseJson(input, out string r).Value);
             Assert.AreEqual(expectedRemained, r);
         } // end TestParseStartValidTrue()
 

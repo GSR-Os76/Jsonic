@@ -3,12 +3,20 @@ using System.Text;
 
 namespace GSR.Jsonic
 {
-    public sealed class JsonObject : IJsonComponent, IEnumerable<KeyValuePair<JsonString, JsonElement>>
+    public sealed class JsonObject : IJsonValue, IEnumerable<KeyValuePair<JsonString, JsonElement>>
     {
-        private readonly Dictionary<JsonString, JsonElement> _elements = new();
+        private readonly Dictionary<JsonString, JsonElement> _elements;
 
 
 
+        /// <summary>
+        /// Get a <see cref="ICollection{T}"/> of all keys in the object.
+        /// </summary>
+        public ICollection<JsonString> Keys => _elements.Keys;
+
+        /// <summary>
+        /// Get the current number of key value pairs in the object
+        /// </summary>
         public int Count => _elements.Count;
 
         public JsonElement this[string key]
@@ -17,26 +25,55 @@ namespace GSR.Jsonic
             set => _elements[new JsonString(key.IsNotNull())] = value.IsNotNull();
         } // end indexer
 
+        /// <summary>
+        /// Get or set the value associated with the <paramref name="key"/>.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public JsonElement this[JsonString key]
         {
-            get => _elements[key.IsNotNull()];
-            set => _elements[key.IsNotNull()] = value.IsNotNull();
+            get
+            {
+#if DEBUG
+                key.IsNotNull();
+#endif
+                return _elements[key];
+            }
+            set
+            {
+#if DEBUG
+                key.IsNotNull();
+                value.IsNotNull();
+#endif
+                _elements[key] = value;
+            }
         } // end indexer
 
 
 
-        public JsonObject() { } // end constructor
+        /// <inheritdoc/>
+        public JsonObject() 
+        {
+            _elements = new();
+        } // end constructor
 
+        /// <inheritdoc/>
         public JsonObject(params KeyValuePair<JsonString, JsonElement>[] elements) : this((IEnumerable<KeyValuePair<JsonString, JsonElement>>)elements) { } // end constructor
 
+        /// <inheritdoc/>
         public JsonObject(IEnumerable<KeyValuePair<JsonString, JsonElement>> elements)
         {
+#if DEBUG
             foreach (KeyValuePair<JsonString, JsonElement> kvp in elements.IsNotNull())
-                _elements.Add(kvp.Key.IsNotNull(), kvp.Value.IsNotNull());
+            {
+                kvp.Key.IsNotNull();
+                kvp.Value.IsNotNull();
+            }
+#endif
+            _elements = new(elements);
         } // end constructor
 
 
-        public JsonString[] GetKeySet() => _elements.Keys.ToArray();
 
         /// <summary>
         /// Adds a null element to the object.
@@ -44,7 +81,7 @@ namespace GSR.Jsonic
         /// <param name="key"></param>
         /// <returns></returns>
         public JsonObject AddNull(string key) => Add(key, new JsonElement());
-        public JsonObject Add(string key, bool value) => Add(key, new JsonBoolean(value));
+        public JsonObject Add(string key, bool value) => Add(key, value ? JsonBoolean.TRUE : JsonBoolean.FALSE);
         public JsonObject Add(string key, string element) => Add(key, new JsonElement(element));
         public JsonObject Add(string key, sbyte element) => Add(key, new JsonElement(element));
         public JsonObject Add(string key, byte element) => Add(key, new JsonElement(element));
@@ -89,6 +126,12 @@ namespace GSR.Jsonic
         public JsonObject Add(JsonString key, JsonNumber value) => Add(key, new JsonElement(value));
         public JsonObject Add(JsonString key, JsonObject value) => Add(key, new JsonElement(value));
         public JsonObject Add(JsonString key, JsonString value) => Add(key, new JsonElement(value));
+        /// <summary>
+        /// Add a new <paramref name="key"/> <paramref name="value"/> pair to the object.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public JsonObject Add(JsonString key, JsonElement value)
         {
             _elements.Add(key.IsNotNull(), value.IsNotNull());
@@ -96,8 +139,14 @@ namespace GSR.Jsonic
         } // end Add()
 
         public bool ContainsKey(string key) => ContainsKey(new JsonString(key));
+        /// <summary>
+        /// Check if the object has a propety with the<paramref name="key"/>.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public bool ContainsKey(JsonString key) => _elements.ContainsKey(key.IsNotNull());
 
+#warning make string implict cast to JsonString and remove.
         public JsonObject Remove(string key) => Remove(new JsonString(key));
         /// <summary>
         /// Does nothing if not contained, else remove value paired with the key.
@@ -112,8 +161,10 @@ namespace GSR.Jsonic
 
 
 
+        /// <inheritdoc/>
         public string ToCompressedString() => AsString(true);
 
+        /// <inheritdoc/>
         public override string ToString() => AsString();
 
         private string AsString(bool compress = false)
@@ -144,12 +195,16 @@ namespace GSR.Jsonic
             return sb.ToString();
         } // end AsString()
 
+        /// <inheritdoc/>
         public override bool Equals(object? obj) => obj is JsonObject b && b.Count == Count && b._elements.Keys.All((x) => ContainsKey(x) && b[x].Equals(this[x]));
 
+        /// <inheritdoc/>
         public override int GetHashCode() => _elements.GetHashCode();
 
+        /// <inheritdoc/>
         public static bool operator ==(JsonObject a, JsonObject b) => a.Equals(b);
 
+        /// <inheritdoc/>
         public static bool operator !=(JsonObject a, JsonObject b) => !a.Equals(b);
 
 
@@ -163,7 +218,10 @@ namespace GSR.Jsonic
         /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
         public static JsonObject ParseJson(string json, out string remainder)
         {
-            string parse = json.IsNotNull().TrimStart();
+#if DEBUG
+            json.IsNotNull();
+#endif
+            string parse = json.TrimStart();
             JsonObject obj = new();
             if (parse.Length < 2 || parse[0] != '{')
                 throw new MalformedJsonException();

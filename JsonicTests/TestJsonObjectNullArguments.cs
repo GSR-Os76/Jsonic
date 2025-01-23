@@ -33,7 +33,7 @@ namespace GSR.Tests.Jsonic
         [ExpectedException(typeof(ArgumentNullException))]
         public void TestIndexerSet2()
         {
-            new JsonObject()[JsonString.EMPTY] = (JsonElement)null;
+            new JsonObject()[""] = (JsonElement)null;
         } // end TestIndexerSet2()
 
         #region Constructor Tests
@@ -63,7 +63,7 @@ namespace GSR.Tests.Jsonic
         [ExpectedException(typeof(ArgumentNullException))]
         public void TestAdd2()
         {
-            new JsonObject().Add(JsonString.EMPTY, (JsonElement)null);
+            new JsonObject().Add("", (JsonElement)null);
         } // end TestAdd2()
 
         [TestMethod]

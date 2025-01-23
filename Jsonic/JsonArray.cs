@@ -3,31 +3,52 @@ using System.Text;
 
 namespace GSR.Jsonic
 {
-    public sealed class JsonArray : IJsonComponent, IEnumerable<JsonElement>
+    /// <summary>
+    /// Representation of a json array.
+    /// </summary>
+    public sealed class JsonArray : IJsonValue, IEnumerable<JsonElement>
     {
         private readonly List<JsonElement> _elements = new();
 
 
 
+        /// <summary>
+        /// Number of elements in the array.
+        /// </summary>
         public int Count => _elements.Count;
 
+        /// <summary>
+        /// Get or set the value at the given index.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public JsonElement this[int index]
         {
             get => _elements[index];
-            set => _elements[index] = value.IsNotNull();
+            set
+            {
+#if DEBUG
+                value.IsNotNull();
+#endif
+                _elements[index] = value;
+            }
         } // end indexer
 
 
 
+        /// <inheritdoc/>
         public JsonArray() { } // end constructor
 
+        /// <inheritdoc/>
         public JsonArray(params JsonElement[] elements) : this((IEnumerable<JsonElement>)elements) { } // end constructor
 
+        /// <inheritdoc/>
         public JsonArray(IEnumerable<JsonElement> elements)
         {
+#if DEBUG
             foreach (JsonElement element in elements.IsNotNull())
                 element.IsNotNull();
-
+#endif
             _elements.AddRange(elements);
         } // end constructor()
 
@@ -52,12 +73,20 @@ namespace GSR.Jsonic
         public JsonArray Add(JsonNumber element) => Add(new JsonElement(element));
         public JsonArray Add(JsonObject element) => Add(new JsonElement(element));
         public JsonArray Add(JsonString element) => Add(new JsonElement(element));
+        /// <summary>
+        /// Add a new <paramref name="element"/> to the end of the array.
+        /// </summary>
+        /// <param name="element">this</param>
         public JsonArray Add(JsonElement element)
         {
             _elements.Add(element.IsNotNull());
             return this;
         } // end Add()
 
+        /// <summary>
+        /// Remove all the elements from the array.
+        /// </summary>
+        /// <returns>this</returns>
         public JsonArray Clear()
         {
             _elements.Clear();
@@ -83,12 +112,23 @@ namespace GSR.Jsonic
         public JsonArray InsertAt(int index, JsonNumber element) => InsertAt(index, new JsonElement(element));
         public JsonArray InsertAt(int index, JsonObject element) => InsertAt(index, new JsonElement(element));
         public JsonArray InsertAt(int index, JsonString element) => InsertAt(index, new JsonElement(element));
+        /// <summary>
+        /// Insert the <paramref name="element"/> at the specified index.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="element"></param>
+        /// <returns>this</returns>
         public JsonArray InsertAt(int index, JsonElement element)
         {
             _elements.Insert(index, element.IsNotNull());
             return this;
         } // end InsertAt()
 
+        /// <summary>
+        /// Remove the element at the specified index.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns>this</returns>
         public JsonArray RemoveAt(int index)
         {
             _elements.RemoveAt(index);
@@ -97,6 +137,7 @@ namespace GSR.Jsonic
 
 
 
+        /// <inheritdoc/>
         public IEnumerator<JsonElement> GetEnumerator() => _elements.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -105,6 +146,7 @@ namespace GSR.Jsonic
         /// <inheritdoc/>
         public string ToCompressedString() => AsString(true);
 
+        /// <inheritdoc/>
         public override string ToString() => AsString();
 
         private string AsString(bool compress = false)
@@ -131,6 +173,10 @@ namespace GSR.Jsonic
             return sb.ToString();
         } // end AsString()
 
+        /// <inheritdoc/>
+        public override int GetHashCode() => _elements.GetHashCode();
+
+        /// <inheritdoc/>
         public override bool Equals(object? obj)
         {
             if (obj is not JsonArray b || b.Count != Count)
@@ -143,10 +189,10 @@ namespace GSR.Jsonic
             return true;
         } // end Equals()
 
-        public override int GetHashCode() => _elements.GetHashCode();
-
+        /// <inheritdoc/>
         public static bool operator ==(JsonArray a, JsonArray b) => a.Equals(b);
 
+        /// <inheritdoc/>
         public static bool operator !=(JsonArray a, JsonArray b) => !a.Equals(b);
 
 

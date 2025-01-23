@@ -1,18 +1,30 @@
 ﻿namespace GSR.Jsonic
 {
-    public sealed class JsonBoolean : IJsonComponent
+    /// <summary>
+    /// Representation of a json number. No constuctor provided, use: <see cref="TRUE"/> or <see cref="FALSE"/>.
+    /// </summary>
+    public sealed class JsonBoolean : IJsonValue
     {
-        public const string JSON_TRUE = "true";
-        public const string JSON_FALSE = "false";
+        private const string JSON_TRUE = "true";
+        private const string JSON_FALSE = "false";
 
+        /// <summary>
+        /// Static true <see cref="JsonBoolean"/> instance reference.
+        /// </summary>
         public static readonly JsonBoolean TRUE = new(true);
+        /// <summary>
+        /// Static false <see cref="JsonBoolean"/> instance reference.
+        /// </summary>
         public static readonly JsonBoolean FALSE = new(false);
 
+        /// <summary>
+        /// Boolean value of the <see cref="JsonBoolean"/>.
+        /// </summary>
         public bool Value { get; }
 
 
 
-        public JsonBoolean(bool value)
+        private JsonBoolean(bool value)
         {
             Value = value;
         } // end constructor
@@ -22,14 +34,19 @@
         /// <inheritdoc/>
         public string ToCompressedString() => ToString();
 
+        /// <inheritdoc/>
         public override string ToString() => Value ? JSON_TRUE : JSON_FALSE;
 
+        /// <inheritdoc/>
         public override int GetHashCode() => Value.GetHashCode();
 
+        /// <inheritdoc/>
         public override bool Equals(object? obj) => obj is JsonBoolean b && b.Value == Value;
 
+        /// <inheritdoc/>
         public static bool operator ==(JsonBoolean a, JsonBoolean b) => a.Equals(b);
 
+        /// <inheritdoc/>
         public static bool operator !=(JsonBoolean a, JsonBoolean b) => !a.Equals(b);
 
 
@@ -51,10 +68,10 @@
             {
                 case 'f':
                     JsonUtil.RequireAtStart(JSON_FALSE, parse, out remainder);
-                    return new(false);
+                    return FALSE;
                 case 't':
                     JsonUtil.RequireAtStart(JSON_TRUE, parse, out remainder);
-                    return new(true);
+                    return TRUE;
                 default:
                     throw new MalformedJsonException();
             }

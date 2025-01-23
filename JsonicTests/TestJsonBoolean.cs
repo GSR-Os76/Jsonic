@@ -9,17 +9,17 @@ namespace GSR.Tests.Jsonic
         [TestMethod]
         public void TestDifferentInstanceMethodEquality()
         {
-            Assert.IsTrue(new JsonBoolean(false).Equals(new JsonBoolean(false)));
-            Assert.IsTrue(new JsonBoolean(true).Equals(new JsonBoolean(true)));
-            Assert.IsFalse(new JsonBoolean(false).Equals(new JsonBoolean(true)));
-            Assert.IsFalse(new JsonBoolean(true).Equals(new JsonBoolean(false)));
+            Assert.IsTrue(JsonBoolean.FALSE.Equals(JsonBoolean.FALSE));
+            Assert.IsTrue(JsonBoolean.TRUE.Equals(JsonBoolean.TRUE));
+            Assert.IsFalse(JsonBoolean.FALSE.Equals(JsonBoolean.TRUE));
+            Assert.IsFalse(JsonBoolean.TRUE.Equals(JsonBoolean.FALSE));
         } // end TestDifferentInstanceMethodEquality()
 
         [TestMethod]
         public void TestSameInstanceMethodEquality()
         {
-            JsonBoolean f = new(false);
-            JsonBoolean t = new(true);
+            JsonBoolean f = JsonBoolean.FALSE;
+            JsonBoolean t = JsonBoolean.TRUE;
             Assert.IsTrue(f.Equals(f));
             Assert.IsTrue(t.Equals(t));
             Assert.IsFalse(f.Equals(t));
@@ -29,17 +29,17 @@ namespace GSR.Tests.Jsonic
         [TestMethod]
         public void TestDifferentInstanceOperatorEquality()
         {
-            Assert.IsTrue(new JsonBoolean(false) == (new JsonBoolean(false)));
-            Assert.IsTrue(new JsonBoolean(true) == (new JsonBoolean(true)));
-            Assert.IsFalse(new JsonBoolean(false) == (new JsonBoolean(true)));
-            Assert.IsFalse(new JsonBoolean(true) == (new JsonBoolean(false)));
+            Assert.IsTrue(JsonBoolean.FALSE == JsonBoolean.FALSE);
+            Assert.IsTrue(JsonBoolean.TRUE == JsonBoolean.TRUE);
+            Assert.IsFalse(JsonBoolean.FALSE == JsonBoolean.TRUE);
+            Assert.IsFalse(JsonBoolean.TRUE == JsonBoolean.FALSE);
         } // end TestDifferentInstanceOperatorEquality()
 
         [TestMethod]
         public void TestSameInstanceOperatorEquality()
         {
-            JsonBoolean f = new(false);
-            JsonBoolean t = new(true);
+            JsonBoolean f = JsonBoolean.FALSE;
+            JsonBoolean t = JsonBoolean.TRUE;
 #pragma warning disable CS1718 // Comparison made to same variable
             Assert.IsTrue(f == f);
             Assert.IsTrue(t == t);
@@ -51,17 +51,17 @@ namespace GSR.Tests.Jsonic
         [TestMethod]
         public void TestDifferentInstanceOperatorDisequality()
         {
-            Assert.IsFalse(new JsonBoolean(false) != (new JsonBoolean(false)));
-            Assert.IsFalse(new JsonBoolean(true) != (new JsonBoolean(true)));
-            Assert.IsTrue(new JsonBoolean(false) != (new JsonBoolean(true)));
-            Assert.IsTrue(new JsonBoolean(true) != (new JsonBoolean(false)));
+            Assert.IsFalse(JsonBoolean.FALSE != JsonBoolean.FALSE);
+            Assert.IsFalse(JsonBoolean.TRUE != JsonBoolean.TRUE);
+            Assert.IsTrue(JsonBoolean.FALSE != JsonBoolean.TRUE);
+            Assert.IsTrue(JsonBoolean.TRUE != JsonBoolean.FALSE);
         } // end TestDifferentInstanceOperatorDisequality()
 
         [TestMethod]
         public void TestSameInstanceOperatorDisequality()
         {
-            JsonBoolean f = new(false);
-            JsonBoolean t = new(true);
+            JsonBoolean f = JsonBoolean.FALSE;
+            JsonBoolean t = JsonBoolean.TRUE;
 #pragma warning disable CS1718 // Comparison made to same variable
             Assert.IsFalse(f != f);
             Assert.IsFalse(t != t);
@@ -71,11 +71,10 @@ namespace GSR.Tests.Jsonic
         } // end TestSameInstanceOperatorDisequality()
 
         [TestMethod]
-        [DataRow(false)]
-        [DataRow(true)]
-        public void TestNullEquality(bool value)
+        public void TestNullEquality()
         {
-            Assert.IsFalse(new JsonBoolean(value).Equals(null));
+            Assert.IsFalse(JsonBoolean.FALSE.Equals(null));
+            Assert.IsFalse(JsonBoolean.TRUE.Equals(null));
         } // end TestDifferentInstanceOperatorDisequality()
 
     } // end class

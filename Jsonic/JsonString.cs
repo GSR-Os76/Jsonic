@@ -3,19 +3,27 @@ using System.Text.RegularExpressions;
 
 namespace GSR.Jsonic
 {
-    public sealed class JsonString : IJsonComponent
+    /// <summary>
+    /// Representation of a json string.
+    /// </summary>
+    public sealed class JsonString : IJsonValue
     {
-        public const string UNENQUOTED_REGEX = @"([^\\""]|(\\([""\\/bfnrt]|(u[0-9a-fA-F]{4}))))*";
-        public const string ENQUOTED_REGEX = @"""" + UNENQUOTED_REGEX + @"""";
-        public const string ANCHORED_UNENQUOTED_REGEX = @"^" + UNENQUOTED_REGEX + @"$";
-        public const string ANCHORED_ENQUOTED_REGEX = @"^" + ENQUOTED_REGEX + @"$";
+        private const string UNENQUOTED_REGEX = @"([^\\""]|(\\([""\\/bfnrt]|(u[0-9a-fA-F]{4}))))*";
+        private const string ENQUOTED_REGEX = @"""" + UNENQUOTED_REGEX + @"""";
+        private const string ANCHORED_UNENQUOTED_REGEX = @"^" + UNENQUOTED_REGEX + @"$";
+        private const string ANCHORED_ENQUOTED_REGEX = @"^" + ENQUOTED_REGEX + @"$";
 
-        public static readonly JsonString EMPTY = new();
-
+#warning how should escapes be handled? should they be left as is when object is created? should all be unescaped or escaped. should minimal be unescaped?
+        /// <summary>
+        /// The value of the string in escaped json format, to get the value without escapes see <see cref="ToUnescapedString"/>.
+        /// </summary>
         public string Value { get; }
 
 
 
+        /// <summary>
+        /// Create a new <see cref="JsonString"/>
+        /// </summary>
         public JsonString() : this(string.Empty) { }
 
         /// <summary>
@@ -40,6 +48,7 @@ namespace GSR.Jsonic
         /// <returns></returns>
         public string ToUnescapedString() => Value.Replace("\\\"", "\"").Replace("\\/", "/").Replace("\\b", "\b").Replace("\\f", "\f").Replace("\\n", "\n").Replace("\\r", "\r").Replace("\\t", "\t").UnescapeUnicodeCharacters().Replace("\\\\", "\\");
 
+#warning this has always be an unintuive way to create, flip with ctor
         /// <summary>
         /// Escapes all unescaped characters necessary, turning it into an equivalent string that represents it.
         /// </summary>
@@ -59,14 +68,19 @@ namespace GSR.Jsonic
         /// <inheritdoc/>
         public string ToCompressedString() => ToString();
 
+        /// <inheritdoc/>
         public override string ToString() => $"\"{Value}\"";
 
+        /// <inheritdoc/>
         public override int GetHashCode() => Value.GetHashCode();
 
+        /// <inheritdoc/>
         public override bool Equals(object? obj) => obj is JsonString b && b.Value == Value;
 
+        /// <inheritdoc/>
         public static bool operator ==(JsonString a, JsonString b) => a.Equals(b);
 
+        /// <inheritdoc/>
         public static bool operator !=(JsonString a, JsonString b) => !a.Equals(b);
 
 

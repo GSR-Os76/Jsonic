@@ -4,33 +4,62 @@ using System.Text.RegularExpressions;
 
 namespace GSR.Jsonic
 {
-    public sealed class JsonNumber : IJsonComponent
+    /// <summary>
+    /// Representation of a json number.
+    /// </summary>
+    public sealed class JsonNumber : IJsonValue
     {
-        public const string REGEX = @"-?(([1-9][0-9]*)|0)(\.[0-9]+)?([eE][-+]?[0-9]+)?";
-        public const string ANCHORED_REGEX = @"^" + REGEX + @"$";
+        private const string REGEX = @"-?(([1-9][0-9]*)|0)(\.[0-9]+)?([eE][-+]?[0-9]+)?";
+        private const string ANCHORED_REGEX = @"^" + REGEX + @"$";
         private const NumberStyles PARSING_STYLE = NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint;
 
+        /// <summary>
+        /// Json text of the number
+        /// </summary>
+#warning rename to Text
         public string Value { get; }
-
+#warning don't directly expose the lazy, cleaner to just show =>value
+        /// <summary>
+        /// Lazy that contains, or will calculate, the significand of the number.
+        /// </summary>
         public Lazy<string> Significand { get; }
+
+        /// <summary>
+        /// Lazy that contains, or will calculate, the exponent of the number.
+        /// </summary>
         public Lazy<int> Exponent { get; }
 
 
 
+        /// <inheritdoc/>
         public JsonNumber(sbyte value) : this(value.ToString()) { }
+        /// <inheritdoc/>
         public JsonNumber(byte value) : this(value.ToString()) { }
+        /// <inheritdoc/>
         public JsonNumber(short value) : this(value.ToString()) { }
+        /// <inheritdoc/>
         public JsonNumber(ushort value) : this(value.ToString()) { }
+        /// <inheritdoc/>
         public JsonNumber(int value) : this(value.ToString()) { }
+        /// <inheritdoc/>
         public JsonNumber(uint value) : this(value.ToString()) { }
+        /// <inheritdoc/>
         public JsonNumber(long value) : this(value.ToString()) { }
+        /// <inheritdoc/>
         public JsonNumber(ulong value) : this(value.ToString()) { }
+        /// <inheritdoc/>
         public JsonNumber(float value) : this(value.ToString()) { }
+        /// <inheritdoc/>
         public JsonNumber(double value) : this(value.ToString()) { }
+        /// <inheritdoc/>
         public JsonNumber(decimal value) : this(value.ToString()) { }
+        /// <inheritdoc/>
         public JsonNumber(string value)
         {
-            if (!Regex.IsMatch(value.IsNotNull(), ANCHORED_REGEX))
+#if DEBUG
+            value.IsNotNull();
+#endif
+            if (!Regex.IsMatch(value, ANCHORED_REGEX))
                 throw new MalformedJsonException($"\"{value}\" is not a valid json numeric");
 
             Value = value;
@@ -40,22 +69,66 @@ namespace GSR.Jsonic
 
 
 
+        /// <summary>
+        /// Attempt to convert the value to a <see cref="sbyte"/>.
+        /// </summary>
+        /// <returns></returns>
         public sbyte AsSignedByte() => sbyte.Parse(Value, PARSING_STYLE);
+        /// <summary>
+        /// Attempt to convert the value to a <see cref="byte"/>.
+        /// </summary>
+        /// <returns></returns>
         public byte AsByte() => byte.Parse(Value, PARSING_STYLE);
 
+        /// <summary>
+        /// Attempt to convert the value to a <see cref="short"/>.
+        /// </summary>
+        /// <returns></returns>
         public short AsShort() => short.Parse(Value, PARSING_STYLE);
+        /// <summary>
+        /// Attempt to convert the value to a <see cref="ushort"/>.
+        /// </summary>
+        /// <returns></returns>
         public ushort AsUnsignedShort() => ushort.Parse(Value, PARSING_STYLE);
 
+        /// <summary>
+        /// Attempt to convert the value to a <see cref="int"/>.
+        /// </summary>
+        /// <returns></returns>
         public int AsInt() => int.Parse(Value, PARSING_STYLE);
+        /// <summary>
+        /// Attempt to convert the value to a <see cref="uint"/>.
+        /// </summary>
+        /// <returns></returns>
         public uint AsUnsignedInt() => uint.Parse(Value, PARSING_STYLE);
 
+        /// <summary>
+        /// Attempt to convert the value to a <see cref="long"/>.
+        /// </summary>
+        /// <returns></returns>
         public long AsLong() => long.Parse(Value, PARSING_STYLE);
+        /// <summary>
+        /// Attempt to convert the value to a <see cref="ulong"/>.
+        /// </summary>
+        /// <returns></returns>
         public ulong AsUnsignedLong() => ulong.Parse(Value, PARSING_STYLE);
 
 
 
+        /// <summary>
+        /// Attempt to convert the value to a <see cref="float"/>.
+        /// </summary>
+        /// <returns></returns>
         public float AsFloat() => float.Parse(Value);
+        /// <summary>
+        /// Attempt to convert the value to a <see cref="double"/>.
+        /// </summary>
+        /// <returns></returns>
         public double AsDouble() => double.Parse(Value);
+        /// <summary>
+        /// Attempt to convert the value to a <see cref="decimal"/>.
+        /// </summary>
+        /// <returns></returns>
         public decimal AsDecimal() => decimal.Parse(Value, PARSING_STYLE);
 
 
@@ -63,19 +136,19 @@ namespace GSR.Jsonic
         /// <inheritdoc/>
         public string ToCompressedString() => ToString();
 
+        /// <inheritdoc/>
         public override string ToString() => Value;
 
+        /// <inheritdoc/>
         public override int GetHashCode() => Value.GetHashCode();
 
-        /// <summary>
-        /// Compares by string, not by the represented value.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public override bool Equals(object? obj) => obj is JsonNumber b && b.Significand.Value.Equals(Significand.Value) && b.Exponent.Value.Equals(Exponent.Value);
 
+        /// <inheritdoc/>
         public static bool operator ==(JsonNumber a, JsonNumber b) => a.Equals(b);
 
+        /// <inheritdoc/>
         public static bool operator !=(JsonNumber a, JsonNumber b) => !a.Equals(b);
 
         private static string SignificandOf(string number)

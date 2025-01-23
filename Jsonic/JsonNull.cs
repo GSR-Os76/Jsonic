@@ -1,9 +1,15 @@
 ﻿namespace GSR.Jsonic
 {
-    public sealed class JsonNull : IJsonComponent
+    /// <summary>
+    /// Singelton class for representing a null json value, for the 'instance' use <see cref="NULL"/>
+    /// </summary>
+    public sealed class JsonNull : IJsonValue
     {
-        public const string JSON_NULL = "null";
+        internal const string JSON_NULL = "null";
 
+        /// <summary>
+        /// The single constant <see cref="JsonNull"/> 'instance'.
+        /// </summary>
         public static readonly JsonNull? NULL = null;
 
 
@@ -12,8 +18,10 @@
 
 
 
+        /// <inheritdoc/>
         public string ToCompressedString() => ToString();
 
+        /// <inheritdoc/>
         public override string ToString() => JSON_NULL;
 
 
