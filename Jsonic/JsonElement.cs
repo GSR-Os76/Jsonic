@@ -1,7 +1,13 @@
 ﻿namespace GSR.Jsonic
 {
+    /// <summary>
+    /// Common representation of one of the json values.
+    /// </summary>
     public sealed class JsonElement : IJsonValue
     {
+        private static readonly JsonElement NULL = new();
+        private static readonly JsonElement TRUE = new(true);
+        private static readonly JsonElement FALSE = new(false);
         /// <summary>
         /// Underlying value of the <see cref="JsonElement"/>.
         /// </summary>
@@ -142,6 +148,87 @@
 
         /// <inheritdoc/>
         public static bool operator !=(JsonElement a, JsonElement b) => !a.Equals(b);
+
+
+        /// <inheritdoc/>
+        public static implicit operator JsonElement(bool value) => value ? TRUE : FALSE;
+        /// <inheritdoc/>
+        public static implicit operator JsonElement(sbyte value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonElement(byte value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonElement(short value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonElement(ushort value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonElement(int value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonElement(uint value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonElement(long value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonElement(ulong value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonElement(float value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonElement(double value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonElement(decimal value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonElement(string value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonElement(JsonNull? value) => NULL;
+        /// <inheritdoc/>
+        public static implicit operator JsonElement(JsonArray value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonElement(JsonBoolean value) => value ? TRUE : FALSE;
+        /// <inheritdoc/>
+        public static implicit operator JsonElement(JsonNumber value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonElement(JsonObject value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonElement(JsonString value) => new(value);
+
+
+
+        /// <inheritdoc/>
+        public static implicit operator bool(JsonElement value) => (JsonBoolean)value;
+        /// <inheritdoc/>
+        public static implicit operator sbyte(JsonElement value) => (JsonNumber)value;
+        /// <inheritdoc/>
+        public static implicit operator byte(JsonElement value) => (JsonNumber)value;
+        /// <inheritdoc/>
+        public static implicit operator short(JsonElement value) => (JsonNumber)value;
+        /// <inheritdoc/>
+        public static implicit operator ushort(JsonElement value) => (JsonNumber)value;
+        /// <inheritdoc/>
+        public static implicit operator int(JsonElement value) => (JsonNumber)value;
+        /// <inheritdoc/>
+        public static implicit operator uint(JsonElement value) => (JsonNumber)value;
+        /// <inheritdoc/>
+        public static implicit operator long(JsonElement value) => (JsonNumber)value;
+        /// <inheritdoc/>
+        public static implicit operator ulong(JsonElement value) => (JsonNumber)value;
+        /// <inheritdoc/>
+        public static implicit operator float(JsonElement value) => (JsonNumber)value;
+        /// <inheritdoc/>
+        public static implicit operator double(JsonElement value) => (JsonNumber)value;
+        /// <inheritdoc/>
+        public static implicit operator decimal(JsonElement value) => (JsonNumber)value;
+        /// <inheritdoc/>
+        public static implicit operator string(JsonElement value) => (JsonString)value;
+        /// <inheritdoc/>
+        public static explicit operator JsonNull?(JsonElement value) => value.AsNull();
+        /// <inheritdoc/>
+        public static explicit operator JsonArray(JsonElement value) => value.AsArray();
+        /// <inheritdoc/>
+        public static explicit operator JsonBoolean(JsonElement value) => value.AsBoolean();
+        /// <inheritdoc/>
+        public static explicit operator JsonNumber(JsonElement value) => value.AsNumber();
+        /// <inheritdoc/>
+        public static explicit operator JsonObject(JsonElement value) => value.AsObject();
+        /// <inheritdoc/>
+        public static explicit operator JsonString(JsonElement value) => value.AsString();
 
 
 

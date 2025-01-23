@@ -106,7 +106,7 @@ namespace GSR.Tests.Jsonic
         [TestMethod]
         public void TestToCompressedString2()
         {
-            Assert.AreEqual("{\"r\":false,\"nrew\":null}", new JsonObject().Add("r", false).AddNull("nrew").ToCompressedString());
+            Assert.AreEqual("{\"r\":false,\"nrew\":null}", new JsonObject().Add("r", false).Add("nrew").ToCompressedString());
         } // end TestToCompressedString2()
 
         [TestMethod]
@@ -132,7 +132,7 @@ namespace GSR.Tests.Jsonic
         [TestMethod]
         public void TestToString2()
         {
-            Assert.AreEqual("{\r\t\"r\": false,\r\t\"nrew\": null\r}", new JsonObject().Add("r", false).AddNull("nrew").ToString());
+            Assert.AreEqual("{\r\t\"r\": false,\r\t\"nrew\": null\r}", new JsonObject().Add("r", false).Add("nrew").ToString());
         } // end TestToString2()
 
         [TestMethod]

@@ -54,25 +54,6 @@ namespace GSR.Jsonic
 
 
 
-        public JsonArray Add(bool element) => Add(new JsonElement(element));
-        public JsonArray Add(string element) => Add(new JsonElement(element));
-        public JsonArray Add(sbyte element) => Add(new JsonElement(element));
-        public JsonArray Add(byte element) => Add(new JsonElement(element));
-        public JsonArray Add(short element) => Add(new JsonElement(element));
-        public JsonArray Add(ushort element) => Add(new JsonElement(element));
-        public JsonArray Add(int element) => Add(new JsonElement(element));
-        public JsonArray Add(uint element) => Add(new JsonElement(element));
-        public JsonArray Add(long element) => Add(new JsonElement(element));
-        public JsonArray Add(ulong element) => Add(new JsonElement(element));
-        public JsonArray Add(float element) => Add(new JsonElement(element));
-        public JsonArray Add(double element) => Add(new JsonElement(element));
-        public JsonArray Add(decimal element) => Add(new JsonElement(element));
-        public JsonArray Add(JsonNull? element) => Add(new JsonElement(element));
-        public JsonArray Add(JsonArray element) => Add(new JsonElement(element));
-        public JsonArray Add(JsonBoolean element) => Add(new JsonElement(element));
-        public JsonArray Add(JsonNumber element) => Add(new JsonElement(element));
-        public JsonArray Add(JsonObject element) => Add(new JsonElement(element));
-        public JsonArray Add(JsonString element) => Add(new JsonElement(element));
         /// <summary>
         /// Add a new <paramref name="element"/> to the end of the array.
         /// </summary>
@@ -93,25 +74,6 @@ namespace GSR.Jsonic
             return this;
         } // end Clear()
 
-        public JsonArray InsertAt(int index, bool element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, string element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, sbyte element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, byte element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, short element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, ushort element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, int element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, uint element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, long element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, ulong element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, float element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, double element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, decimal element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, JsonNull? element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, JsonArray element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, JsonBoolean element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, JsonNumber element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, JsonObject element) => InsertAt(index, new JsonElement(element));
-        public JsonArray InsertAt(int index, JsonString element) => InsertAt(index, new JsonElement(element));
         /// <summary>
         /// Insert the <paramref name="element"/> at the specified index.
         /// </summary>

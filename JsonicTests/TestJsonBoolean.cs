@@ -29,8 +29,10 @@ namespace GSR.Tests.Jsonic
         [TestMethod]
         public void TestDifferentInstanceOperatorEquality()
         {
+#pragma warning disable CS1718
             Assert.IsTrue(JsonBoolean.FALSE == JsonBoolean.FALSE);
             Assert.IsTrue(JsonBoolean.TRUE == JsonBoolean.TRUE);
+#pragma warning restore CS1718
             Assert.IsFalse(JsonBoolean.FALSE == JsonBoolean.TRUE);
             Assert.IsFalse(JsonBoolean.TRUE == JsonBoolean.FALSE);
         } // end TestDifferentInstanceOperatorEquality()
@@ -51,8 +53,10 @@ namespace GSR.Tests.Jsonic
         [TestMethod]
         public void TestDifferentInstanceOperatorDisequality()
         {
+#pragma warning disable CS1718
             Assert.IsFalse(JsonBoolean.FALSE != JsonBoolean.FALSE);
             Assert.IsFalse(JsonBoolean.TRUE != JsonBoolean.TRUE);
+#pragma warning restore CS1718
             Assert.IsTrue(JsonBoolean.FALSE != JsonBoolean.TRUE);
             Assert.IsTrue(JsonBoolean.TRUE != JsonBoolean.FALSE);
         } // end TestDifferentInstanceOperatorDisequality()

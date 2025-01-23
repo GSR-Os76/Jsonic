@@ -151,6 +151,56 @@ namespace GSR.Jsonic
         /// <inheritdoc/>
         public static bool operator !=(JsonNumber a, JsonNumber b) => !a.Equals(b);
 
+
+
+        /// <inheritdoc/>
+        public static implicit operator JsonNumber(sbyte value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonNumber(byte value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonNumber(short value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonNumber(ushort value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonNumber(int value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonNumber(uint value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonNumber(long value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonNumber(ulong value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonNumber(float value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonNumber(double value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator JsonNumber(decimal value) => new(value);
+
+        /// <inheritdoc/>
+        public static implicit operator sbyte(JsonNumber value) => value.AsSignedByte();
+        /// <inheritdoc/>
+        public static implicit operator byte(JsonNumber value) => value.AsByte();
+        /// <inheritdoc/>
+        public static implicit operator short(JsonNumber value) => value.AsShort();
+        /// <inheritdoc/>
+        public static implicit operator ushort(JsonNumber value) => value.AsUnsignedShort();
+        /// <inheritdoc/>
+        public static implicit operator int(JsonNumber value) => value.AsInt();
+        /// <inheritdoc/>
+        public static implicit operator uint(JsonNumber value) => value.AsUnsignedInt();
+        /// <inheritdoc/>
+        public static implicit operator long(JsonNumber value) => value.AsLong();
+        /// <inheritdoc/>
+        public static implicit operator ulong(JsonNumber value) => value.AsUnsignedLong();
+        /// <inheritdoc/>
+        public static implicit operator float(JsonNumber value) => value.AsFloat();
+        /// <inheritdoc/>
+        public static implicit operator double(JsonNumber value) => value.AsDouble();
+        /// <inheritdoc/>
+        public static implicit operator decimal(JsonNumber value) => value.AsDecimal();
+
+
+
         private static string SignificandOf(string number)
         {
             string w = WithoutInsignificantZeros(new string(number.Split('e', 'E')[0].Where((c) => c != '.').ToArray()));

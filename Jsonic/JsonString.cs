@@ -85,6 +85,13 @@ namespace GSR.Jsonic
 
 
 
+        /// <inheritdoc/>
+        public static implicit operator JsonString(string value) => new(value);
+        /// <inheritdoc/>
+        public static implicit operator string(JsonString value) => value.ToUnescapedString();
+
+
+
         /// <summary>
         /// Parse the element at the beginning of a string.
         /// </summary>

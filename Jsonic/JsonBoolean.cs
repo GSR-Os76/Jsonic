@@ -51,6 +51,14 @@
 
 
 
+        /// <inheritdoc/>
+        public static implicit operator JsonBoolean(bool value) => value ? TRUE : FALSE;
+        /// <inheritdoc/>
+        public static implicit operator bool(JsonBoolean value) => value.Value;
+
+
+
+
         /// <summary>
         /// Parse the element at the beginning of a string.
         /// </summary>

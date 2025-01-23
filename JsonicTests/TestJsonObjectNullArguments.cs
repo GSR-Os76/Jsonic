@@ -84,14 +84,14 @@ namespace GSR.Tests.Jsonic
         [ExpectedException(typeof(ArgumentNullException))]
         public void TestAddNull1()
         {
-            new JsonObject().AddNull((string)null);
+            new JsonObject().Add((string)null);
         } // end TestAddNull1()
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void TestAddNull2()
         {
-            new JsonObject().AddNull((JsonString)null);
+            new JsonObject().Add((JsonString)null);
         } // end TestAddNull2()
 
         [TestMethod]

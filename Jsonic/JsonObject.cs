@@ -3,6 +3,9 @@ using System.Text;
 
 namespace GSR.Jsonic
 {
+    /// <summary>
+    /// Representation of a json object.
+    /// </summary>
     public sealed class JsonObject : IJsonValue, IEnumerable<KeyValuePair<JsonString, JsonElement>>
     {
         private readonly Dictionary<JsonString, JsonElement> _elements;
@@ -18,12 +21,6 @@ namespace GSR.Jsonic
         /// Get the current number of key value pairs in the object
         /// </summary>
         public int Count => _elements.Count;
-
-        public JsonElement this[string key]
-        {
-            get => _elements[new JsonString(key.IsNotNull())];
-            set => _elements[new JsonString(key.IsNotNull())] = value.IsNotNull();
-        } // end indexer
 
         /// <summary>
         /// Get or set the value associated with the <paramref name="key"/>.
@@ -52,7 +49,7 @@ namespace GSR.Jsonic
 
 
         /// <inheritdoc/>
-        public JsonObject() 
+        public JsonObject()
         {
             _elements = new();
         } // end constructor
@@ -76,56 +73,18 @@ namespace GSR.Jsonic
 
 
         /// <summary>
-        /// Adds a null element to the object.
+        /// Associates the <paramref name="key"/> with null.
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public JsonObject AddNull(string key) => Add(key, new JsonElement());
-        public JsonObject Add(string key, bool value) => Add(key, value ? JsonBoolean.TRUE : JsonBoolean.FALSE);
-        public JsonObject Add(string key, string element) => Add(key, new JsonElement(element));
-        public JsonObject Add(string key, sbyte element) => Add(key, new JsonElement(element));
-        public JsonObject Add(string key, byte element) => Add(key, new JsonElement(element));
-        public JsonObject Add(string key, short element) => Add(key, new JsonElement(element));
-        public JsonObject Add(string key, ushort element) => Add(key, new JsonElement(element));
-        public JsonObject Add(string key, int element) => Add(key, new JsonElement(element));
-        public JsonObject Add(string key, uint element) => Add(key, new JsonElement(element));
-        public JsonObject Add(string key, long element) => Add(key, new JsonElement(element));
-        public JsonObject Add(string key, ulong element) => Add(key, new JsonElement(element));
-        public JsonObject Add(string key, float element) => Add(key, new JsonElement(element));
-        public JsonObject Add(string key, double element) => Add(key, new JsonElement(element));
-        public JsonObject Add(string key, decimal element) => Add(key, new JsonElement(element));
-        public JsonObject Add(string key, JsonNull? value) => Add(key, new JsonElement(value));
-        public JsonObject Add(string key, JsonArray value) => Add(key, new JsonElement(value));
-        public JsonObject Add(string key, JsonBoolean value) => Add(key, new JsonElement(value));
-        public JsonObject Add(string key, JsonNumber value) => Add(key, new JsonElement(value));
-        public JsonObject Add(string key, JsonObject value) => Add(key, new JsonElement(value));
-        public JsonObject Add(string key, JsonString value) => Add(key, new JsonElement(value));
-        public JsonObject Add(string key, JsonElement value) => Add(new JsonString(key), value);
-        /// <summary>
-        /// Adds a null element to the object.
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public JsonObject AddNull(JsonString key) => Add(key, new JsonElement());
-        public JsonObject Add(JsonString key, bool value) => Add(key, new JsonElement(value));
-        public JsonObject Add(JsonString key, string element) => Add(key, new JsonElement(element));
-        public JsonObject Add(JsonString key, sbyte element) => Add(key, new JsonElement(element));
-        public JsonObject Add(JsonString key, byte element) => Add(key, new JsonElement(element));
-        public JsonObject Add(JsonString key, short element) => Add(key, new JsonElement(element));
-        public JsonObject Add(JsonString key, ushort element) => Add(key, new JsonElement(element));
-        public JsonObject Add(JsonString key, int element) => Add(key, new JsonElement(element));
-        public JsonObject Add(JsonString key, uint element) => Add(key, new JsonElement(element));
-        public JsonObject Add(JsonString key, long element) => Add(key, new JsonElement(element));
-        public JsonObject Add(JsonString key, ulong element) => Add(key, new JsonElement(element));
-        public JsonObject Add(JsonString key, float element) => Add(key, new JsonElement(element));
-        public JsonObject Add(JsonString key, double element) => Add(key, new JsonElement(element));
-        public JsonObject Add(JsonString key, decimal element) => Add(key, new JsonElement(element));
-        public JsonObject Add(JsonString key, JsonNull? value) => Add(key, new JsonElement(value));
-        public JsonObject Add(JsonString key, JsonArray value) => Add(key, new JsonElement(value));
-        public JsonObject Add(JsonString key, JsonBoolean value) => Add(key, new JsonElement(value));
-        public JsonObject Add(JsonString key, JsonNumber value) => Add(key, new JsonElement(value));
-        public JsonObject Add(JsonString key, JsonObject value) => Add(key, new JsonElement(value));
-        public JsonObject Add(JsonString key, JsonString value) => Add(key, new JsonElement(value));
+        public JsonObject Add(JsonString key)
+        {
+#if DEBUG
+            key.IsNotNull();
+#endif
+            return Add(key, new JsonElement());
+        } // end Add()
+
         /// <summary>
         /// Add a new <paramref name="key"/> <paramref name="value"/> pair to the object.
         /// </summary>
@@ -134,28 +93,38 @@ namespace GSR.Jsonic
         /// <returns></returns>
         public JsonObject Add(JsonString key, JsonElement value)
         {
-            _elements.Add(key.IsNotNull(), value.IsNotNull());
+#if DEBUG
+            key.IsNotNull();
+            value.IsNotNull();
+#endif
+            _elements.Add(key, value);
             return this;
         } // end Add()
 
-        public bool ContainsKey(string key) => ContainsKey(new JsonString(key));
         /// <summary>
         /// Check if the object has a propety with the<paramref name="key"/>.
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public bool ContainsKey(JsonString key) => _elements.ContainsKey(key.IsNotNull());
+        public bool ContainsKey(JsonString key)
+        {
+#if DEBUG
+            key.IsNotNull();
+#endif
+            return _elements.ContainsKey(key);
+        } // end ContainsKey.
 
-#warning make string implict cast to JsonString and remove.
-        public JsonObject Remove(string key) => Remove(new JsonString(key));
         /// <summary>
         /// Does nothing if not contained, else remove value paired with the key.
         /// </summary>
         /// <param name="key"></param>
-        /// <returns></returns>
+        /// <returns>this</returns>
         public JsonObject Remove(JsonString key)
         {
-            _elements.Remove(key.IsNotNull());
+#if DEBUG
+            key.IsNotNull();
+#endif
+            _elements.Remove(key);
             return this;
         } // end Remove()
 
