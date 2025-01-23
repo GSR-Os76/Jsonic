@@ -136,6 +136,7 @@ namespace GSR.Jsonic
 
         /// <inheritdoc/>
         public override bool Equals(object? obj) =>
+#warning equality aginst primatives
             obj is JsonNumber other
             && other._significand.Value.Equals(_significand.Value)
             && other._exponent.Value.Equals(_exponent.Value);

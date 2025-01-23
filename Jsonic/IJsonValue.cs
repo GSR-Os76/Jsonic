@@ -12,11 +12,5 @@ namespace GSR.Jsonic
         /// </summary>
         /// <returns></returns>
         string ToString(JsonFormatting formatting);
-
-        /// <summary>
-        /// Write the json value with defualt <see cref="JsonFormatting"/>.
-        /// </summary>
-        /// <returns></returns>
-        string ToString() => ToString(new());
     } // end interface
 } // end namespace

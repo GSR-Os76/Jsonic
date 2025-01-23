@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using GSR.Jsonic.Formatting;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace GSR.Jsonic
@@ -6,10 +7,9 @@ namespace GSR.Jsonic
     /// <summary>
     /// Representation of a json string.
     /// </summary>
-    public sealed class JsonString : IJsonValue
+    public sealed class JsonString : AJsonValue
     {
         private static readonly Regex REGEX = new Regex(@"""([^\\""]|(\\([""\\/bfnrt]|(u[0-9a-fA-F]{4}))))*""");
-        private const OptionalEscapeCharacters DEFUALT_ESCAPES = OptionalEscapeCharacters.BACKSPACE | OptionalEscapeCharacters.FORMFEED | OptionalEscapeCharacters.LINEFEED | OptionalEscapeCharacters.CARRIAGE_RETURN | OptionalEscapeCharacters.HORIZONTAL_TAB;
 
         /// <summary>
         /// The value of the string, without any escaping.
@@ -38,26 +38,15 @@ namespace GSR.Jsonic
 
 
 
-
         /// <inheritdoc/>
-        public string ToCompressedString() => ToString();
-
-        /// <inheritdoc/>
-        public override string ToString() => ToString(DEFUALT_ESCAPES);
-
-        /// <summary>
-        /// Convert the string into json text with the selected <see cref="OptionalEscapeCharacters"/> <paramref name="escapes"/> escaped.
-        /// </summary>
-        /// <param name="escapes"></param>
-        /// <returns></returns>
-        public string ToString(OptionalEscapeCharacters escapes)
+        public override string ToString(JsonFormatting formatting)
         {
-            bool solidusFlag = (escapes & OptionalEscapeCharacters.SOLIDUS) != 0;
-            bool backspaceFlag = (escapes & OptionalEscapeCharacters.BACKSPACE) != 0;
-            bool formfeedFlag = (escapes & OptionalEscapeCharacters.FORMFEED) != 0;
-            bool linefeedFlag = (escapes & OptionalEscapeCharacters.LINEFEED) != 0;
-            bool carriageReturnFlag = (escapes & OptionalEscapeCharacters.CARRIAGE_RETURN) != 0;
-            bool horizontalTabFlag = (escapes & OptionalEscapeCharacters.HORIZONTAL_TAB) != 0;
+            bool solidusFlag = formatting.StringFormatting.EscapeSolidi;
+            bool backspaceFlag = formatting.StringFormatting.EscapeBackspaces;
+            bool formfeedFlag = formatting.StringFormatting.EscapeFormfeeds;
+            bool linefeedFlag = formatting.StringFormatting.EscapeLinefeeds;
+            bool carriageReturnFlag = formatting.StringFormatting.EscapeCarriageReturns;
+            bool horizontalTabFlag = formatting.StringFormatting.EscapeHorizontalTabs;
             StringBuilder sb = new(Value.Length + 2);
             sb.Append('"');
             foreach (char c in Value)
@@ -148,54 +137,5 @@ namespace GSR.Jsonic
         /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
         public static JsonString ParseJson(string json) => JsonUtil.RequiredEmptyRemainder(ParseJson, json);
 
-
-
-
-        /// <summary>
-        /// Flag style enum representation of characters that are allowed to be escaped or unescaped.
-        /// </summary>
-        public enum OptionalEscapeCharacters
-        {
-            /// <summary>
-            /// No flags set.
-            /// </summary>
-            NONE = 0b0000_0000,
-            /// <summary>
-            /// All flags set.
-            /// </summary>
-            ALL = 0b0011_1111,
-
-
-            /*          QUOTATION_MARK,
-                        REVERSE_SOLIDUS,*/
-            /// <summary>
-            /// Forward slash: '\/' 
-            /// </summary>
-            SOLIDUS = 0b0000_0001,
-            /// <summary>
-            /// Backspace: '\b'
-            /// </summary>
-            BACKSPACE = 0b0000_0010,
-            /// <summary>
-            /// Form feed: '\f'
-            /// </summary>
-            FORMFEED = 0b0000_0100,
-            /// <summary>
-            /// Line feed, or newline: '\n'
-            /// </summary>
-            LINEFEED = 0b0000_1000,
-            /// <summary>
-            /// Carriage return: '\r'
-            /// </summary>
-            CARRIAGE_RETURN = 0b0001_0000,
-            /// <summary>
-            /// Horizontal tab: '\t'
-            /// </summary>
-            HORIZONTAL_TAB = 0b0010_0000,
-            ///// <summary>
-            ///// Utf-16 codepoint: '\u[a-fA-F]{4}'
-            ///// </summary>
-            //UNICODE = 0b0100_0000
-        } // end EscapeCharacters
     } // end class
 } // end namespace
