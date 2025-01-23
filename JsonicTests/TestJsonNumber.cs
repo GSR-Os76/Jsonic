@@ -76,7 +76,7 @@ namespace GSR.Tests.Jsonic
 
         public void TestSignificand(string s, string expectation)
         {
-            Assert.AreEqual(expectation, new JsonNumber(s).Significand.Value);
+            Assert.AreEqual(expectation, new JsonNumber(s).Significand);
         } // end TestSignificand()
 
         [TestMethod]
@@ -105,7 +105,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("0e-60", 0)]
         public void TestExponent(string s, int expectation)
         {
-            Assert.AreEqual(expectation, new JsonNumber(s).Exponent.Value);
+            Assert.AreEqual(expectation, new JsonNumber(s).Exponent);
         } // end TestExponent()
 
         [TestMethod]

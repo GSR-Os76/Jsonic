@@ -13,21 +13,20 @@ namespace GSR.Jsonic
         private const string ANCHORED_REGEX = @"^" + REGEX + @"$";
         private const NumberStyles PARSING_STYLE = NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint;
 
-        /// <summary>
-        /// Json text of the number
-        /// </summary>
-#warning rename to Text
-        public string Value { get; }
-#warning don't directly expose the lazy, cleaner to just show =>value
-        /// <summary>
-        /// Lazy that contains, or will calculate, the significand of the number.
-        /// </summary>
-        public Lazy<string> Significand { get; }
+
 
         /// <summary>
-        /// Lazy that contains, or will calculate, the exponent of the number.
+        /// Significant figures of the number.
         /// </summary>
-        public Lazy<int> Exponent { get; }
+        public string Significand => _significand.Value;
+        /// <summary>
+        /// Number of decimal places to shift the <see cref="Significand"/>'s decimal to get the number.
+        /// </summary>
+        public int Exponent => _exponent.Value;
+
+        private readonly string _value;
+        private readonly Lazy<string> _significand;
+        private readonly Lazy<int> _exponent;
 
 
 
@@ -62,9 +61,9 @@ namespace GSR.Jsonic
             if (!Regex.IsMatch(value, ANCHORED_REGEX))
                 throw new MalformedJsonException($"\"{value}\" is not a valid json numeric");
 
-            Value = value;
-            Significand = new(() => SignificandOf(value));
-            Exponent = new(() => ExponentOf(value));
+            _value = value;
+            _significand = new(() => SignificandOf(value));
+            _exponent = new(() => ExponentOf(value));
         } // end JsonNumber
 
 
@@ -73,45 +72,45 @@ namespace GSR.Jsonic
         /// Attempt to convert the value to a <see cref="sbyte"/>.
         /// </summary>
         /// <returns></returns>
-        public sbyte AsSignedByte() => sbyte.Parse(Value, PARSING_STYLE);
+        public sbyte AsSignedByte() => sbyte.Parse(_value, PARSING_STYLE);
         /// <summary>
         /// Attempt to convert the value to a <see cref="byte"/>.
         /// </summary>
         /// <returns></returns>
-        public byte AsByte() => byte.Parse(Value, PARSING_STYLE);
+        public byte AsByte() => byte.Parse(_value, PARSING_STYLE);
 
         /// <summary>
         /// Attempt to convert the value to a <see cref="short"/>.
         /// </summary>
         /// <returns></returns>
-        public short AsShort() => short.Parse(Value, PARSING_STYLE);
+        public short AsShort() => short.Parse(_value, PARSING_STYLE);
         /// <summary>
         /// Attempt to convert the value to a <see cref="ushort"/>.
         /// </summary>
         /// <returns></returns>
-        public ushort AsUnsignedShort() => ushort.Parse(Value, PARSING_STYLE);
+        public ushort AsUnsignedShort() => ushort.Parse(_value, PARSING_STYLE);
 
         /// <summary>
         /// Attempt to convert the value to a <see cref="int"/>.
         /// </summary>
         /// <returns></returns>
-        public int AsInt() => int.Parse(Value, PARSING_STYLE);
+        public int AsInt() => int.Parse(_value, PARSING_STYLE);
         /// <summary>
         /// Attempt to convert the value to a <see cref="uint"/>.
         /// </summary>
         /// <returns></returns>
-        public uint AsUnsignedInt() => uint.Parse(Value, PARSING_STYLE);
+        public uint AsUnsignedInt() => uint.Parse(_value, PARSING_STYLE);
 
         /// <summary>
         /// Attempt to convert the value to a <see cref="long"/>.
         /// </summary>
         /// <returns></returns>
-        public long AsLong() => long.Parse(Value, PARSING_STYLE);
+        public long AsLong() => long.Parse(_value, PARSING_STYLE);
         /// <summary>
         /// Attempt to convert the value to a <see cref="ulong"/>.
         /// </summary>
         /// <returns></returns>
-        public ulong AsUnsignedLong() => ulong.Parse(Value, PARSING_STYLE);
+        public ulong AsUnsignedLong() => ulong.Parse(_value, PARSING_STYLE);
 
 
 
@@ -119,17 +118,17 @@ namespace GSR.Jsonic
         /// Attempt to convert the value to a <see cref="float"/>.
         /// </summary>
         /// <returns></returns>
-        public float AsFloat() => float.Parse(Value);
+        public float AsFloat() => float.Parse(_value);
         /// <summary>
         /// Attempt to convert the value to a <see cref="double"/>.
         /// </summary>
         /// <returns></returns>
-        public double AsDouble() => double.Parse(Value);
+        public double AsDouble() => double.Parse(_value);
         /// <summary>
         /// Attempt to convert the value to a <see cref="decimal"/>.
         /// </summary>
         /// <returns></returns>
-        public decimal AsDecimal() => decimal.Parse(Value, PARSING_STYLE);
+        public decimal AsDecimal() => decimal.Parse(_value, PARSING_STYLE);
 
 
 
@@ -137,13 +136,16 @@ namespace GSR.Jsonic
         public string ToCompressedString() => ToString();
 
         /// <inheritdoc/>
-        public override string ToString() => Value;
+        public override string ToString() => _value;
 
         /// <inheritdoc/>
-        public override int GetHashCode() => Value.GetHashCode();
+        public override int GetHashCode() => _value.GetHashCode();
 
         /// <inheritdoc/>
-        public override bool Equals(object? obj) => obj is JsonNumber b && b.Significand.Value.Equals(Significand.Value) && b.Exponent.Value.Equals(Exponent.Value);
+        public override bool Equals(object? obj) => 
+            obj is JsonNumber other 
+            && other._significand.Value.Equals(_significand.Value) 
+            && other._exponent.Value.Equals(_exponent.Value);
 
         /// <inheritdoc/>
         public static bool operator ==(JsonNumber a, JsonNumber b) => a.Equals(b);
