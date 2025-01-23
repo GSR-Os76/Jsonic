@@ -6,7 +6,7 @@ namespace GSR.Tests.Jsonic
     public class TestJsonString
     {
         [TestClass]
-        public class Valid 
+        public class Valid
         {
             [TestMethod]
             [DataRow("\"\"", "")]
@@ -73,7 +73,7 @@ namespace GSR.Tests.Jsonic
             [DataRow("\"n\": value }", "n", ": value }")]
             [DataRow("\"n\"n", "n", "n")]
             [DataRow("\"n\"\"", "n", "\"")]
-            public void TestParseJsonRemainder(string toParse, string expectation, string expectedRemainder) 
+            public void TestParseJsonRemainder(string toParse, string expectation, string expectedRemainder)
             {
                 Assert.AreEqual(expectation, JsonString.ParseJson(toParse, out string remainder).Value);
             } // end TestParseJsonRemainder()
@@ -90,14 +90,14 @@ namespace GSR.Tests.Jsonic
             [DataRow("afdsafd", "afdsafd")]
             [DataRow("afdsa\rfd", "afdsa\\rfd")]
             [DataRow("afd怸sa\rfd", "afd怸sa\\rfd")]
-            public void TestToString(string value, string expectation) 
+            public void TestToString(string value, string expectation)
             {
                 JsonString v = new(value);
                 Assert.AreEqual(value, v.Value);
                 Assert.AreEqual(value, (string)v);
                 Assert.AreEqual($"\"{expectation}\"", v.ToString());
             } // end TestToString()
-            
+
             [TestMethod]
             [DataRow("", "", JsonString.OptionalEscapeCharacters.NONE)]
             [DataRow("\"", "\\\"", JsonString.OptionalEscapeCharacters.NONE)]
@@ -123,7 +123,7 @@ namespace GSR.Tests.Jsonic
             [DataRow("\f", "\f", JsonString.OptionalEscapeCharacters.NONE)]
             [DataRow("\b", "\b", JsonString.OptionalEscapeCharacters.NONE)]
             [DataRow("afdsafd", "afdsafd", JsonString.OptionalEscapeCharacters.ALL)]
-            public void TestFormattedToString(string value, string expectation, JsonString.OptionalEscapeCharacters escaping) 
+            public void TestFormattedToString(string value, string expectation, JsonString.OptionalEscapeCharacters escaping)
             {
                 JsonString v = new(value);
                 Assert.AreEqual(value, v.Value);
@@ -140,7 +140,7 @@ namespace GSR.Tests.Jsonic
             }// end TestNullEquality()
         } // end inner class Valid
 
-        public class Invalid 
+        public class Invalid
         {
             [TestMethod]
             [ExpectedException(typeof(MalformedJsonException))]

@@ -142,9 +142,9 @@ namespace GSR.Jsonic
         public override int GetHashCode() => _value.GetHashCode();
 
         /// <inheritdoc/>
-        public override bool Equals(object? obj) => 
-            obj is JsonNumber other 
-            && other._significand.Value.Equals(_significand.Value) 
+        public override bool Equals(object? obj) =>
+            obj is JsonNumber other
+            && other._significand.Value.Equals(_significand.Value)
             && other._exponent.Value.Equals(_exponent.Value);
 
         /// <inheritdoc/>
@@ -234,7 +234,10 @@ namespace GSR.Jsonic
         /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
         public static JsonNumber ParseJson(string json, out string remainder)
         {
-            string parse = json.IsNotNull().TrimStart();
+#if DEBUG
+            json.IsNotNull();
+#endif
+            string parse = json.TrimStart();
             if (parse.Length < 1)
                 throw new MalformedJsonException();
 

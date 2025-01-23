@@ -60,7 +60,10 @@ namespace GSR.Jsonic
         /// <param name="element">this</param>
         public JsonArray Add(JsonElement element)
         {
-            _elements.Add(element.IsNotNull());
+#if DEBUG
+            element.IsNotNull();
+#endif
+            _elements.Add(element);
             return this;
         } // end Add()
 
@@ -82,7 +85,10 @@ namespace GSR.Jsonic
         /// <returns>this</returns>
         public JsonArray InsertAt(int index, JsonElement element)
         {
-            _elements.Insert(index, element.IsNotNull());
+#if DEBUG
+            element.IsNotNull();
+#endif
+            _elements.Insert(index, element);
             return this;
         } // end InsertAt()
 
@@ -168,7 +174,10 @@ namespace GSR.Jsonic
         /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
         public static JsonArray ParseJson(string json, out string remainder)
         {
-            string parse = json.IsNotNull().TrimStart();
+#if DEBUG
+            json.IsNotNull();
+#endif
+            string parse = json.TrimStart();
             JsonArray array = new();
             if (parse.Length < 2 || parse[0] != '[')
                 throw new MalformedJsonException();

@@ -49,6 +49,11 @@ namespace GSR.Jsonic
         /// <inheritdoc/>
         public override string ToString() => ToString(DEFUALT_ESCAPES);
 
+        /// <summary>
+        /// Convert the string into json text with the selected <see cref="OptionalEscapeCharacters"/> <paramref name="escapes"/> escaped.
+        /// </summary>
+        /// <param name="escapes"></param>
+        /// <returns></returns>
         public string ToString(OptionalEscapeCharacters escapes)
         {
             StringBuilder sb = new(Value.Length + 2);
@@ -82,7 +87,7 @@ namespace GSR.Jsonic
         public override int GetHashCode() => Value.GetHashCode();
 
         /// <inheritdoc/>
-        public override bool Equals(object? obj) 
+        public override bool Equals(object? obj)
         {
             if (obj is JsonString other1)
                 return other1.Value == Value;
@@ -91,21 +96,13 @@ namespace GSR.Jsonic
 
             return false;
         } // end Equals()
-            
+
 
         /// <inheritdoc/>
         public static bool operator ==(JsonString a, JsonString b) => a.Equals(b);
-        /// <inheritdoc/>
-        public static bool operator ==(string a, JsonString b) => b.Equals(a);
-        /// <inheritdoc/>
-        public static bool operator ==(JsonString a, string b) => a.Equals(b);
 
         /// <inheritdoc/>
         public static bool operator !=(JsonString a, JsonString b) => !a.Equals(b);
-        /// <inheritdoc/>
-        public static bool operator !=(string a, JsonString b) => !b.Equals(a);
-        /// <inheritdoc/>
-        public static bool operator !=(JsonString a, string b) => !a.Equals(b);
 
 
 
@@ -125,7 +122,10 @@ namespace GSR.Jsonic
         /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
         public static JsonString ParseJson(string json, out string remainder)
         {
-            string parse = json.IsNotNull().TrimStart();
+#if DEBUG
+            json.IsNotNull();
+#endif
+            string parse = json.TrimStart();
             if (parse.Length < 1 || !parse[0].Equals('"'))
                 throw new MalformedJsonException();
 
@@ -135,58 +135,7 @@ namespace GSR.Jsonic
 
             string s = m.Value;
             remainder = parse[s.Length..^0];
-            /*string v = s[1..^1];
-
-            StringBuilder result = new(v.Length);
-            int i = -1;
-            while (i < v.Length)
-            {
-                i += 1;
-                char c = v[i];
-                if (c == '\\')
-                {
-                    switch (v[i+1])
-                    {
-                        case '"':
-                            c = '"';
-                            i += 1;
-                            break;
-                        case '\\':
-                            c = '\\';
-                            i += 1;
-                            break;
-                        case 'b':
-                            c = '\b';
-                            i += 1;
-                            break;
-                        case 'f':
-                            c = '\f';
-                            i += 1;
-                            break;
-                        case 'n':
-                            c = '\n';
-                            i += 1;
-                            break;
-                        case 'r':
-                            c = '\r';
-                            i += 1;
-                            break;
-                        case 't':
-                            c = '\t';
-                            i += 1;
-                            break;
-                        case 'u':
-                            c = Regex.Unescape(v[1..5]);
-                            i += 5;
-                            break;
-                        default:
-                            throw new InvalidOperationException("Shouldn't've been possible, regex presumably broken."),;
-                    }
-                    result.Append(c);
-                }
-                result.Append(c);
-            }*/
-            return Regex.Unescape(s[1..^1]);//v[1..5]); //result.ToString();
+            return Regex.Unescape(s[1..^1]);
         } // end ParseJson()
 
         /// <summary>
@@ -201,9 +150,9 @@ namespace GSR.Jsonic
 
 
         /// <summary>
-        /// Flag style enum representation of characters that may or may not be escaped.
+        /// Flag style enum representation of characters that are allowed to be escaped or unescaped.
         /// </summary>
-        public enum OptionalEscapeCharacters 
+        public enum OptionalEscapeCharacters
         {
             /// <summary>
             /// No flags set.
@@ -215,8 +164,8 @@ namespace GSR.Jsonic
             ALL = 0b0011_1111,
 
 
-/*          QUOTATION_MARK,
-            REVERSE_SOLIDUS,*/
+            /*          QUOTATION_MARK,
+                        REVERSE_SOLIDUS,*/
             /// <summary>
             /// Forward slash: '\/' 
             /// </summary>
