@@ -4,8 +4,7 @@ using System.Data;
 
 namespace GSR.Tests.Jsonic
 {
-    [TestClass]
-    public class TestJsonString
+    public static class TestJsonString
     {
         [TestClass]
         public class Valid
@@ -44,7 +43,6 @@ namespace GSR.Tests.Jsonic
             }// end TestParseJson()
 
             [TestMethod]
-
             [DataRow("\"\"", "", "")]
             [DataRow("\"\\\"\"", "\"", "")]
             [DataRow("\"\\\\\"", "\\", "")]
@@ -143,6 +141,7 @@ namespace GSR.Tests.Jsonic
             }// end TestNullEquality()
         } // end inner class Valid
 
+        [TestClass]
         public class Invalid
         {
             [TestMethod]
@@ -173,6 +172,29 @@ namespace GSR.Tests.Jsonic
             {
                 JsonString.ParseJson(s);
             }// end TestParse()        
+
+#pragma warning disable CS8625
+            [TestMethod]
+            [ExpectedException(typeof(ArgumentNullException))]
+            public void TestConstructNull()
+            {
+                new JsonString(null);
+            } // end TestConstructNull()
+
+            [TestMethod]
+            [ExpectedException(typeof(ArgumentNullException))]
+            public void TestParseJson1()
+            {
+                JsonString.ParseJson(null, out _);
+            } // end TestParseJson1()
+
+            [TestMethod]
+            [ExpectedException(typeof(ArgumentNullException))]
+            public void TestParseJson2()
+            {
+                JsonString.ParseJson(null);
+            } // end TestParseJson2()
+#pragma warning restore CS8625
         } // end inner class Invalid()
     } // end class
 } // end namespace
