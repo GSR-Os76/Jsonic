@@ -1,15 +1,22 @@
-﻿namespace GSR.Jsonic
+﻿using GSR.Jsonic.Formatting;
+
+namespace GSR.Jsonic
 {
     /// <summary>
     /// Common contract of all GSR.Jsonic json value representations
     /// </summary>
     public interface IJsonValue
     {
-#warning replace with .ToString(JsonFormatting formatting);
         /// <summary>
-        /// Write the object to json format without any formatting white space, but without changing the value it represents..
+        /// Write the object to json format with the following <paramref name="formatting"/>.
         /// </summary>
         /// <returns></returns>
-        string ToCompressedString();
+        string ToString(JsonFormatting formatting);
+
+        /// <summary>
+        /// Write the json value with defualt <see cref="JsonFormatting"/>.
+        /// </summary>
+        /// <returns></returns>
+        string ToString() => ToString(new());
     } // end interface
 } // end namespace
