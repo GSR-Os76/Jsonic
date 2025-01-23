@@ -6,21 +6,43 @@
     public struct JsonFormatting
     {
         /// <summary>
-        /// How to write newlines inside of collections.
+        /// Type of newlines to use.
         /// </summary>
-        public NewLineMode NewLineMode { get; }
+        public NewLineType NewLineType { get; } = NewLineType.CRLF;
+
+
+
         /// <summary>
-        /// White space to use as indentation after a newline inside a collection, will be repeated to match the depth.
-        /// 
-        /// Note: Only used when newline mode isn't <see cref="NewLineMode.NONE"/>
+        /// How <see cref="JsonArray"/>s should be formatted.
         /// </summary>
-        public string Identation { get; } = "";
+        public JsonArrayFormatting ArrayFormatting { get; } = new();
 
+        /// <summary>
+        /// How <see cref="JsonNumber"/>s should be formatted.
+        /// </summary>
+        public JsonNumberFormatting NumberFormatting { get; } = new();
 
+        /// <summary>
+        /// How <see cref="JsonObject"/>s should be formatted.
+        /// </summary>
+        public JsonObjectFormatting ObjectFormatting { get; } = new();
 
         /// <summary>
         /// How <see cref="JsonString"/>s should be formatted.
         /// </summary>
         public JsonStringFormatting StringFormatting { get; } = new();
+
+
+
+        /// <inheritdoc/>
+        public JsonFormatting(NewLineType newLineType, JsonArrayFormatting arrayFormatting, JsonNumberFormatting numberFormatting, JsonObjectFormatting objectFormatting, JsonStringFormatting stringFormatting)
+        {
+            NewLineType = newLineType;
+            ArrayFormatting = arrayFormatting;
+            NumberFormatting = numberFormatting;
+            ObjectFormatting = objectFormatting;
+            StringFormatting = stringFormatting;
+        } // end ctor
+
     } // end struct
 } // end namespace

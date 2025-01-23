@@ -1,7 +1,7 @@
 ﻿namespace GSR.Jsonic.Formatting
 {
     /// <summary>
-    /// Formatting defining how to format a <see cref="JsonString"/>.
+    /// Formatting defining how to format a <see cref="JsonNumber"/>.
     /// </summary>
     public struct JsonNumberFormatting
     {

@@ -5,6 +5,8 @@ namespace GSR.Jsonic
 {
     internal static class JsonUtil
     {
+        internal static readonly Regex WHITESPACE_REGEX = new(@"[ \r\n\t]*");
+        internal static readonly Regex ANCHORED_WHITESPACE_REGEX = new(@"^([ \r\n\t]*)$");
         internal static string Entabbed(this string s) => $"\t{s}".Replace("\r", "\r\t");
         internal static string UnescapeUnicodeCharacters(this string s) => Regex.Replace(s, @"\\u[0-9a-fA-F]{4}", (x) => ((char)int.Parse(x.Value[2..], NumberStyles.HexNumber)).ToString());
 

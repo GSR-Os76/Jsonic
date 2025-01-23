@@ -1,9 +1,9 @@
 ﻿namespace GSR.Jsonic.Formatting
 {
     /// <summary>
-    /// Flag style enum representation definining how to write newlines inside a json collection.
+    /// Flag style enum representation of valid types of newlines.
     /// </summary>
-    public enum NewLineMode
+    public enum NewLineType
     {
         /// <summary>
         /// No newline.
@@ -20,9 +20,6 @@
         /// <summary>
         /// Newlines as a carriage return and then a linefeed.
         /// </summary>
-        CRLF = 0b0011,
-
-        AFTER_LAST_MEMBER
-        IN_EMPTY_COLLECTION
+        CRLF = 0b0011
     } // end enum
 } // end namespace
