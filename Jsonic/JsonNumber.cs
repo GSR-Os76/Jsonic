@@ -9,8 +9,7 @@ namespace GSR.Jsonic
     /// </summary>
     public sealed class JsonNumber : IJsonValue
     {
-        private const string REGEX = @"-?(([1-9][0-9]*)|0)(\.[0-9]+)?([eE][-+]?[0-9]+)?";
-        private const string ANCHORED_REGEX = @"^" + REGEX + @"$";
+        private static readonly Regex REGEX = new Regex(@"-?(([1-9][0-9]*)|0)(\.[0-9]+)?([eE][-+]?[0-9]+)?");
         private const NumberStyles PARSING_STYLE = NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint;
 
 
@@ -53,14 +52,8 @@ namespace GSR.Jsonic
         /// <inheritdoc/>
         public JsonNumber(decimal value) : this(value.ToString()) { }
         /// <inheritdoc/>
-        public JsonNumber(string value)
+        private JsonNumber(string value)
         {
-#if DEBUG
-            value.IsNotNull();
-#endif
-            if (!Regex.IsMatch(value, ANCHORED_REGEX))
-                throw new MalformedJsonException($"\"{value}\" is not a valid json numeric");
-
             _value = value;
             _significand = new(() => SignificandOf(value));
             _exponent = new(() => ExponentOf(value));
@@ -137,7 +130,7 @@ namespace GSR.Jsonic
 
         /// <inheritdoc/>
         public override string ToString() => _value;
-
+#warning options to write formatted normalized, either in normalized exponential form, or in expanded form
         /// <inheritdoc/>
         public override int GetHashCode() => _value.GetHashCode();
 
@@ -241,7 +234,7 @@ namespace GSR.Jsonic
             if (parse.Length < 1)
                 throw new MalformedJsonException();
 
-            Match m = new Regex(REGEX).Match(parse, 0);
+            Match m = REGEX.Match(parse, 0);
             if (!m.Success)
                 throw new MalformedJsonException($"Couldn't read element at the start of: \"{parse}\".");
 

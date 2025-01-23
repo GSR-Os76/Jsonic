@@ -25,34 +25,6 @@
         /// </summary>
         public JsonElement() : this(null, JsonType.Null) { } // end constructor
         /// <inheritdoc/>
-        public JsonElement(bool value) : this(value ? JsonBoolean.TRUE : JsonBoolean.FALSE) { } // end constructor
-        /// <inheritdoc/>
-        public JsonElement(string value) : this(new JsonString(value)) { } // end constructor
-        /// <inheritdoc/>
-        public JsonElement(sbyte value) : this(new JsonNumber(value)) { } // end constructor
-        /// <inheritdoc/>
-        public JsonElement(byte value) : this(new JsonNumber(value)) { } // end constructor
-        /// <inheritdoc/>
-        public JsonElement(short value) : this(new JsonNumber(value)) { } // end constructor
-        /// <inheritdoc/>
-        public JsonElement(ushort value) : this(new JsonNumber(value)) { } // end constructor
-        /// <inheritdoc/>
-        public JsonElement(int value) : this(new JsonNumber(value)) { } // end constructor
-        /// <inheritdoc/>
-        public JsonElement(uint value) : this(new JsonNumber(value)) { } // end constructor
-        /// <inheritdoc/>
-        public JsonElement(long value) : this(new JsonNumber(value)) { } // end constructor
-        /// <inheritdoc/>
-        public JsonElement(ulong value) : this(new JsonNumber(value)) { } // end constructor
-        /// <inheritdoc/>
-        public JsonElement(float value) : this(new JsonNumber(value)) { } // end constructor
-        /// <inheritdoc/>
-        public JsonElement(double value) : this(new JsonNumber(value)) { } // end constructor
-        /// <inheritdoc/>
-        public JsonElement(decimal value) : this(new JsonNumber(value)) { } // end constructor
-
-
-        /// <inheritdoc/>
         public JsonElement(JsonNull? value) : this(value, JsonType.Null) { } // end constructor
         /// <inheritdoc/>
         public JsonElement(JsonArray value) : this(value, JsonType.Array) { } // end constructor

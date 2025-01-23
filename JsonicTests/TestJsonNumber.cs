@@ -30,7 +30,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("-4.2e-8")]
         public void TestValidConstruct(string s)
         {
-            new JsonNumber(s);
+            JsonNumber.ParseJson(s);
             Assert.IsTrue(true);
         }// end TestValidConstruct()
 
@@ -52,7 +52,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("-E+3")]
         public void TestInvalidConstruct(string s)
         {
-            new JsonNumber(s);
+            JsonNumber.ParseJson(s);
         }// end TestInvalidConstruct()
         #endregion
 
@@ -76,7 +76,7 @@ namespace GSR.Tests.Jsonic
 
         public void TestSignificand(string s, string expectation)
         {
-            Assert.AreEqual(expectation, new JsonNumber(s).Significand);
+            Assert.AreEqual(expectation, JsonNumber.ParseJson(s).Significand);
         } // end TestSignificand()
 
         [TestMethod]
@@ -105,7 +105,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("0e-60", 0)]
         public void TestExponent(string s, int expectation)
         {
-            Assert.AreEqual(expectation, new JsonNumber(s).Exponent);
+            Assert.AreEqual(expectation, JsonNumber.ParseJson(s).Exponent);
         } // end TestExponent()
 
         [TestMethod]
@@ -117,7 +117,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("5", "5", true)]
         public void TestEquals(string a, string b, bool expectation)
         {
-            Assert.AreEqual(expectation, new JsonNumber(a).Equals(new JsonNumber(b)));
+            Assert.AreEqual(expectation, JsonNumber.ParseJson(a).Equals(JsonNumber.ParseJson(b)));
         } // end TestEquals()
 
 
@@ -134,7 +134,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("-1.0e2", (sbyte)-100)]
         public void TestAsSByteValid(string s, sbyte e)
         {
-            Assert.AreEqual(e, new JsonNumber(s).AsSignedByte());
+            Assert.AreEqual(e, JsonNumber.ParseJson(s).AsSignedByte());
         } //  end TestAsSByteValid()
 
         [TestMethod]
@@ -149,7 +149,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("-0.2")]
         public void TestAsSByteInvalid(string s)
         {
-            new JsonNumber(s).AsSignedByte();
+            JsonNumber.ParseJson(s).AsSignedByte();
         } //  end TestAsByteInvalid()
         #endregion
 
@@ -161,7 +161,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("2.0e2", (byte)200)]
         public void TestAsByteValid(string s, byte e)
         {
-            Assert.AreEqual(e, new JsonNumber(s).AsByte());
+            Assert.AreEqual(e, JsonNumber.ParseJson(s).AsByte());
         } //  end TestAsByteValid()
 
         [TestMethod]
@@ -180,7 +180,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("-0.2")]
         public void TestAsByteInvalid(string s)
         {
-            new JsonNumber(s).AsByte();
+            JsonNumber.ParseJson(s).AsByte();
         } //  end TestAsByteInvalid()
         #endregion
 
@@ -196,7 +196,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("2.0e3", (short)2000)]
         public void TestAsShortValid(string s, short e)
         {
-            Assert.AreEqual(e, new JsonNumber(s).AsShort());
+            Assert.AreEqual(e, JsonNumber.ParseJson(s).AsShort());
         } //  end TestAsShortValid()
 
         [TestMethod]
@@ -211,7 +211,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("-0.2")]
         public void TestAsShortInvalid(string s)
         {
-            new JsonNumber(s).AsShort();
+            JsonNumber.ParseJson(s).AsShort();
         } //  end TestAsShortInvalid()
         #endregion
 
@@ -223,7 +223,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("2.0e3", (ushort)2000)]
         public void TestAsUShortValid(string s, ushort e)
         {
-            Assert.AreEqual(e, new JsonNumber(s).AsUnsignedShort());
+            Assert.AreEqual(e, JsonNumber.ParseJson(s).AsUnsignedShort());
         } //  end TestAsUShortValid()
 
         [TestMethod]
@@ -242,7 +242,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("-0.2")]
         public void TestAsUShortInvalid(string s)
         {
-            new JsonNumber(s).AsUnsignedShort();
+            JsonNumber.ParseJson(s).AsUnsignedShort();
         } //  end TestAsUShortInvalid()
         #endregion
 
@@ -258,7 +258,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("2.0e3", 2000)]
         public void TestAsIntValid(string s, int e)
         {
-            Assert.AreEqual(e, new JsonNumber(s).AsInt());
+            Assert.AreEqual(e, JsonNumber.ParseJson(s).AsInt());
         } //  end TestAsIntValid()
 
         [TestMethod]
@@ -273,7 +273,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("-0.2")]
         public void TestAsIntInvalid(string s)
         {
-            new JsonNumber(s).AsInt();
+            JsonNumber.ParseJson(s).AsInt();
         } //  end TestAsIntInvalid()
         #endregion
 
@@ -285,7 +285,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("2.0e3", (uint)2000)]
         public void TestAsUIntValid(string s, uint e)
         {
-            Assert.AreEqual(e, new JsonNumber(s).AsUnsignedInt());
+            Assert.AreEqual(e, JsonNumber.ParseJson(s).AsUnsignedInt());
         } //  end TestAsUIntValid()
 
         [TestMethod]
@@ -304,7 +304,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("-0.2")]
         public void TestAsUIntInvalid(string s)
         {
-            new JsonNumber(s).AsUnsignedInt();
+            JsonNumber.ParseJson(s).AsUnsignedInt();
         } //  end TestAsUIntInvalid()
         #endregion
 
@@ -320,7 +320,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("2.0e3", 2000L)]
         public void TestAsLongValid(string s, long e)
         {
-            Assert.AreEqual(e, new JsonNumber(s).AsLong());
+            Assert.AreEqual(e, JsonNumber.ParseJson(s).AsLong());
         } //  end TestAsLongValid()
 
         [TestMethod]
@@ -335,7 +335,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("-0.2")]
         public void TestAsLongInvalid(string s)
         {
-            new JsonNumber(s).AsLong();
+            JsonNumber.ParseJson(s).AsLong();
         } //  end TestAsLongInvalid()
         #endregion
 
@@ -347,7 +347,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("2.0e3", (ulong)2000)]
         public void TestAsULongValid(string s, ulong e)
         {
-            Assert.AreEqual(e, new JsonNumber(s).AsUnsignedLong());
+            Assert.AreEqual(e, JsonNumber.ParseJson(s).AsUnsignedLong());
         } //  end TestAsULongValid()
 
         [TestMethod]
@@ -366,7 +366,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("-0.2")]
         public void TestAsULongInvalid(string s)
         {
-            new JsonNumber(s).AsUnsignedLong();
+            JsonNumber.ParseJson(s).AsUnsignedLong();
         } //  end TestAsULongInvalid()
         #endregion
 
@@ -388,7 +388,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("2e908", float.PositiveInfinity)]
         public void TestAsFloatValid(string s, float e)
         {
-            Assert.AreEqual(e, new JsonNumber(s).AsFloat());
+            Assert.AreEqual(e, JsonNumber.ParseJson(s).AsFloat());
         } //  end TestAsFloatValid()
         #endregion
 
@@ -406,7 +406,7 @@ namespace GSR.Tests.Jsonic
         [DataRow("2e908", double.PositiveInfinity)]
         public void TestAsDoubleValid(string s, double e)
         {
-            Assert.AreEqual(e, new JsonNumber(s).AsDouble());
+            Assert.AreEqual(e, JsonNumber.ParseJson(s).AsDouble());
         } //  end TestAsDoubleValid()
         #endregion
 
@@ -424,7 +424,7 @@ namespace GSR.Tests.Jsonic
         {
             Tuple<decimal, string>[] s = new Tuple<decimal, string>[] { Tuple.Create(2004m, "2004"), Tuple.Create(-8m, "-8"), Tuple.Create(-930000m, "-93e4"), Tuple.Create(2000m, "2e3"), Tuple.Create(2004m, "2004.0"), Tuple.Create(-8m, "-8.0"), Tuple.Create(-930000m, "-93.0e4"), Tuple.Create(2000m, "2.0e3") };
 
-            Assert.AreEqual(s[i].Item1, new JsonNumber(s[i].Item2).AsDecimal());
+            Assert.AreEqual(s[i].Item1, JsonNumber.ParseJson(s[i].Item2).AsDecimal());
         } //  end TestAsDecimalValid()
 
         [TestMethod]
@@ -434,7 +434,7 @@ namespace GSR.Tests.Jsonic
         public void TestAsDecimalInvalid(int i)
         {
             string[] s = new string[] { "-93e267", "2e908" };
-            new JsonNumber(s[i]).AsDecimal();
+            JsonNumber.ParseJson(s[i]).AsDecimal();
         } //  end TestAsDecimalInvalid()
         #endregion
 

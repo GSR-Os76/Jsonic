@@ -5,7 +5,7 @@
     /// </summary>
     public interface IJsonValue
     {
-#warning replace with .ToString(int indentation);
+#warning replace with .ToString(JsonFormatting formatting);
         /// <summary>
         /// Write the object to json format without any formatting white space, but without changing the value it represents..
         /// </summary>

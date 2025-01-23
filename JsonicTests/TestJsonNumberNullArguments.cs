@@ -8,13 +8,6 @@ namespace GSR.Tests.Jsonic
 #pragma warning disable CS8625
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void TestConstructNull()
-        {
-            new JsonNumber(null);
-        } // end TestConstructNull()
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void TestParseJson1()
         {
             JsonNumber.ParseJson(null, out _);

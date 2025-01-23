@@ -3,6 +3,7 @@ using System.Text;
 
 namespace GSR.Jsonic
 {
+#warning implement IList<
     /// <summary>
     /// Representation of a json array.
     /// </summary>

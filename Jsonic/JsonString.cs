@@ -8,11 +8,7 @@ namespace GSR.Jsonic
     /// </summary>
     public sealed class JsonString : IJsonValue
     {
-        private const string UNENQUOTED_REGEX = @"([^\\""]|(\\([""\\/bfnrt]|(u[0-9a-fA-F]{4}))))*";
-        private const string ENQUOTED_REGEX = @"""" + UNENQUOTED_REGEX + @"""";
-        private const string ANCHORED_UNENQUOTED_REGEX = @"^" + UNENQUOTED_REGEX + @"$";
-        private const string ANCHORED_ENQUOTED_REGEX = @"^" + ENQUOTED_REGEX + @"$";
-
+        private static readonly Regex REGEX = new Regex(@"""([^\\""]|(\\([""\\/bfnrt]|(u[0-9a-fA-F]{4}))))*""");
         private const OptionalEscapeCharacters DEFUALT_ESCAPES = OptionalEscapeCharacters.BACKSPACE | OptionalEscapeCharacters.FORMFEED | OptionalEscapeCharacters.LINEFEED | OptionalEscapeCharacters.CARRIAGE_RETURN | OptionalEscapeCharacters.HORIZONTAL_TAB;
 
         /// <summary>
@@ -56,6 +52,12 @@ namespace GSR.Jsonic
         /// <returns></returns>
         public string ToString(OptionalEscapeCharacters escapes)
         {
+            bool solidusFlag = (escapes & OptionalEscapeCharacters.SOLIDUS) != 0;
+            bool backspaceFlag = (escapes & OptionalEscapeCharacters.BACKSPACE) != 0;
+            bool formfeedFlag = (escapes & OptionalEscapeCharacters.FORMFEED) != 0;
+            bool linefeedFlag = (escapes & OptionalEscapeCharacters.LINEFEED) != 0;
+            bool carriageReturnFlag = (escapes & OptionalEscapeCharacters.CARRIAGE_RETURN) != 0;
+            bool horizontalTabFlag = (escapes & OptionalEscapeCharacters.HORIZONTAL_TAB) != 0;
             StringBuilder sb = new(Value.Length + 2);
             sb.Append('"');
             foreach (char c in Value)
@@ -64,17 +66,17 @@ namespace GSR.Jsonic
                     sb.Append("\\\\");
                 else if (c == '"')
                     sb.Append("\\\"");
-                else if (c == '/' && (escapes & OptionalEscapeCharacters.SOLIDUS) != 0)
+                else if (c == '/' && solidusFlag)
                     sb.Append("\\/");
-                else if (c == '\b' && (escapes & OptionalEscapeCharacters.BACKSPACE) != 0)
+                else if (c == '\b' && backspaceFlag)
                     sb.Append("\\b");
-                else if (c == '\f' && (escapes & OptionalEscapeCharacters.FORMFEED) != 0)
+                else if (c == '\f' && formfeedFlag)
                     sb.Append("\\f");
-                else if (c == '\n' && (escapes & OptionalEscapeCharacters.LINEFEED) != 0)
+                else if (c == '\n' && linefeedFlag)
                     sb.Append("\\n");
-                else if (c == '\r' && (escapes & OptionalEscapeCharacters.CARRIAGE_RETURN) != 0)
+                else if (c == '\r' && carriageReturnFlag)
                     sb.Append("\\r");
-                else if (c == '\t' && (escapes & OptionalEscapeCharacters.HORIZONTAL_TAB) != 0)
+                else if (c == '\t' && horizontalTabFlag)
                     sb.Append("\\t");
                 else
                     sb.Append(c);
@@ -129,7 +131,7 @@ namespace GSR.Jsonic
             if (parse.Length < 1 || !parse[0].Equals('"'))
                 throw new MalformedJsonException();
 
-            Match m = new Regex(ENQUOTED_REGEX).Match(parse, 0);
+            Match m = REGEX.Match(parse, 0);
             if (!m.Success)
                 throw new MalformedJsonException($"Couldn't read string at the start of: \"{parse}\".");
 
