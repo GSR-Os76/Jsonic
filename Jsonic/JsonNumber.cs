@@ -1,5 +1,6 @@
 ﻿using GSR.Jsonic.Formatting;
 using System.Globalization;
+using System.Runtime.Intrinsics.Arm;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -157,22 +158,7 @@ namespace GSR.Jsonic
             if (formatting.NumberFormatting.PlaceExponent)
             {
                 if (dp > 0)
-                {
-                    // significand is always positive, and currently as only digits - thus if is shorter than preferred 0 must be added, with exponent adjustment
-                    if (significand.Length < dp)
-                    {
-                        int unfulfilled = dp - significand.Length;
-                        significand.Append('0', unfulfilled);
-                        exponent -= unfulfilled;
-                    }
-                    else if (significand.Length > dp)
-                    {
-                        int pos = Math.Min(dp, significand.Length); // get position to insert at, either 'dp' or if that would be outside string bounds the string's end
-                        exponent += significand.Length - pos; // adjust exponent to reflect shift, number has became smaller by some power of 10 so exponent should be too.
-                                                              // significand never contains a decimal, so by subtracting the position we get the number of digits now to the right of the decimal
-                        significand = significand.Insert(pos, "."); // shift after updating exponent so decimal isn't count as a digit.
-                    }
-                }
+                    exponent += PositionDecimalLeft(significand, dp);
                 else if (dp < 0)
                 {
                     int pos = significand.Length + Math.Max(dp, -significand.Length); // get position to insert at, either 'dp' or if that would be outside string bounds the string's end, invert direction so decimal is place from right to left
@@ -249,6 +235,36 @@ namespace GSR.Jsonic
                 significand.Insert(0, "-");
             return significand.ToString();
         } // end ToString()
+
+#warning assure decimal placement right hand always fulfillls count, with or without allinsingificant.
+
+        /// <summary>
+        /// Places the a decimal point in the significand, putting <paramref name="decimalPositioning"/> to the left. 
+        /// Decimal point might be imagined, factional part is insignificant.
+        /// </summary>
+        /// <param name="unsignedSignificand"></param>
+        /// <param name="decimalPositioning"></param>
+        /// <returns>The power that the expondent has been shifted by</returns>
+        private static int PositionDecimalLeft(StringBuilder unsignedSignificand, int decimalPositioning)
+        {
+            if (unsignedSignificand.Length < decimalPositioning) // less digits in significand than desired count, pad with 0s and adjust exponent accordingly
+            {
+                int unfulfilled = decimalPositioning - unsignedSignificand.Length;
+                unsignedSignificand.Append('0', unfulfilled);
+                return -unfulfilled;
+            }
+            else if (unsignedSignificand.Length > decimalPositioning) // signficiand has more digits than the desire, and decimal will need to be placed inside it.
+            {
+                int exponent = unsignedSignificand.Length - decimalPositioning; // exponent adjust is difference because it's the number of values being moved to the right of the decimal point.
+                unsignedSignificand.Insert(decimalPositioning, "."); // position coincides with insertion index.
+                return exponent;
+            }
+            return 0; // length was equal to desire, and no adjustment is needed.
+        } // end PositionDecimalLeft()
+
+
+
+
 
         /// <inheritdoc/>
         public override int GetHashCode() => _value.GetHashCode();
