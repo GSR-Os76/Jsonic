@@ -189,6 +189,10 @@ namespace GSR.Tests.Jsonic
             [DataRow("80", "80.000e2", false, false, false, false, true, -3)] // add trailing wihtout an exponent
             [DataRow("80", "800e-1", false, true, false, false, true, 3)]
             [DataRow("80", "800e-1", false, true, false, false, false, 3)]
+            [DataRow("80", "8e+1", false, true, false, true, false, 1)]
+            [DataRow("807", "8.07e+2", false, true, false, true, false, 1)]
+            [DataRow("8070", "8070e0", false, true, false, false, false, 4)] // positive decimal position, and same length
+            [DataRow("8070", "8070e0", false, true, false, false, true, 4)] // positive decimal position, and same length
             [DataRow("123.4", "123.40", false, false, false, false, true, 2)]
             [DataRow("123.0", "123.00", false, false, false, false, true, 2)]
             [DataRow("123.00", "123.00", false, false, false, false, true, 2)]

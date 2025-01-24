@@ -145,10 +145,23 @@ namespace GSR.Jsonic
                 int exponent = Exponent;
                 if (dp > 0)
                 {
-                    int pos = Math.Min(dp, significand.Length); // get position to insert at, either 'dp' or if that would be outside string bounds the string's end
-                    exponent -= (significand.Length - pos); // adjust exponent to reflect shift, number has became smaller by some power of 10 so exponent should be too.
-                                                            // significand never contains a decimal, so by subtracting the position we get the number of digits now to the right of the decimal
-                    significand = significand.Insert(pos, "."); // shift after updating exponent so decimal isn't count as a digit.
+                    // significand is always positive, and currently as only digits - thus if is shorter than preferred 0 must be added, with exponent adjustment
+                    if (significand.Length < dp)
+                    {
+                        int unfulfilled = dp - significand.Length;
+                        significand.Append('0', unfulfilled);
+                        exponent -= unfulfilled;
+                    }
+                    else if (significand.Length > dp)
+                    {
+                        throw new NotImplementedException();
+
+                        int pos = Math.Min(dp, significand.Length); // get position to insert at, either 'dp' or if that would be outside string bounds the string's end
+                        exponent -= (significand.Length - pos); // adjust exponent to reflect shift, number has became smaller by some power of 10 so exponent should be too.
+                                                                // significand never contains a decimal, so by subtracting the position we get the number of digits now to the right of the decimal
+                        significand = significand.Insert(pos, "."); // shift after updating exponent so decimal isn't count as a digit.
+                    }
+
                 }
                 else if (dp < 0)
                 {
