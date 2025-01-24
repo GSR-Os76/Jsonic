@@ -112,12 +112,24 @@ namespace GSR.Jsonic
         /// Attempt to convert the value to a <see cref="float"/>.
         /// </summary>
         /// <returns></returns>
-        public float AsFloat() => float.Parse(_value);
+        public float AsFloat()
+        {
+            float f = float.Parse(_value);
+            if (f == float.PositiveInfinity || f == float.NegativeInfinity)
+                throw new OverflowException();
+            return f;
+        } // end AsFloat()
         /// <summary>
         /// Attempt to convert the value to a <see cref="double"/>.
         /// </summary>
         /// <returns></returns>
-        public double AsDouble() => double.Parse(_value);
+        public double AsDouble()
+        {
+            double f = double.Parse(_value);
+            if (f == double.PositiveInfinity || f == double.NegativeInfinity)
+                throw new OverflowException();
+            return f;
+        } // end AsDouble()
         /// <summary>
         /// Attempt to convert the value to a <see cref="decimal"/>.
         /// </summary>

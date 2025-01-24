@@ -388,7 +388,7 @@ namespace GSR.Tests.Jsonic
 
             [TestMethod]
             [ExpectedException(typeof(OverflowException))]
-            [DataRow("93e267")]
+            [DataRow("193e2467")]
             [DataRow("2e908")]
             [DataRow("-93e367")]
             public void AsDouble(string json) => JsonNumber.ParseJson(json).AsDouble();
