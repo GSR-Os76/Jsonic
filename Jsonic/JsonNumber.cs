@@ -127,10 +127,6 @@ namespace GSR.Jsonic
 
 
         /// <inheritdoc/>
-        public string ToCompressedString() => ToString();
-
-
-        /// <inheritdoc/>
         public override string ToString(JsonFormatting formatting)
         {
             if (formatting.NumberFormatting.Preserve)
@@ -139,8 +135,13 @@ namespace GSR.Jsonic
             int dp = formatting.NumberFormatting.DecimalPositioning;
             if (formatting.NumberFormatting.PlaceExponent)
             {
-#warning probably not considering significand sign.
                 StringBuilder significand = new(Significand);
+                bool negative = false;
+                if (significand[0] == '-')
+                {
+                    negative = true;
+                    significand.Remove(0, 1);
+                }
                 int exponent = Exponent;
                 if (dp > 0)
                 {
@@ -149,17 +150,19 @@ namespace GSR.Jsonic
                                                             // significand never contains a decimal, so by subtracting the position we get the number of digits now to the right of the decimal
                     significand = significand.Insert(pos, "."); // shift after updating exponent so decimal isn't count as a digit.
                 }
-                else if (dp < 0) 
+                else if (dp < 0)
                 {
-                    int pos = significand.Length + Math.Min(dp, -significand.Length); // get position to insert at, either 'dp' or if that would be outside string bounds the string's end, invert direction so decimal is place from right to left
-                    int unfulfilled = pos - dp;
+                    int pos = significand.Length + Math.Max(dp, -significand.Length); // get position to insert at, either 'dp' or if that would be outside string bounds the string's end, invert direction so decimal is place from right to left
+                    int unfulfilled = Math.Max(0, -dp - significand.Length);
                     exponent += (significand.Length - pos);
                     significand = significand.Insert(pos, ".");
                     if (pos == 0)
                         significand.Insert(0, "0"); // add proceeding 0
-                    for (int i = 0; i < unfulfilled; i++)
-                        significand.Append('0');
+                    if(formatting.NumberFormatting.AllowInsignificantDigits)
+                        significand.Append('0', unfulfilled);
                 }
+                if (negative)
+                    significand.Insert(0, "-");
                 StringBuilder sb = new(significand.Length + 20);
                 sb.Append(significand);
                 sb.Append(formatting.NumberFormatting.CapitalizeExponent ? 'E' : 'e');
@@ -171,24 +174,62 @@ namespace GSR.Jsonic
             throw new NotImplementedException();
             //else if (formatting.NumberFormatting.AllowInsignificantDigits) 
             {
-                
+
             }
-/*            PlaceExponent
-            CapitalizeExponent
-            ExplicitlySignExponent
-            AllowInsignificantDigits
-            DecimalPositioning*/
-    } // end ToString()
+            /*            PlaceExponent
+                        CapitalizeExponent
+                        ExplicitlySignExponent
+                        AllowInsignificantDigits
+                        DecimalPositioning*/
+        } // end ToString()
 
         /// <inheritdoc/>
         public override int GetHashCode() => _value.GetHashCode();
 
         /// <inheritdoc/>
-        public override bool Equals(object? obj) =>
-#warning equality aginst primatives
-            obj is JsonNumber other
-            && other._significand.Value.Equals(_significand.Value)
-            && other._exponent.Value.Equals(_exponent.Value);
+        public override bool Equals(object? obj)
+        {
+#warning Note: might be better to call corresponding AsX method, and catch the overflow exception
+            if (obj is JsonNumber other1)
+                return other1._significand.Value.Equals(_significand.Value)
+                && other1._exponent.Value.Equals(_exponent.Value);
+            else if (obj is sbyte other2)
+                return ((JsonNumber)other2)._significand.Value.Equals(_significand.Value)
+                && ((JsonNumber)other2)._exponent.Value.Equals(_exponent.Value);
+            else if (obj is byte other3)
+                return ((JsonNumber)other3)._significand.Value.Equals(_significand.Value)
+                && ((JsonNumber)other3)._exponent.Value.Equals(_exponent.Value);
+            else if (obj is short other4)
+                return ((JsonNumber)other4)._significand.Value.Equals(_significand.Value)
+                && ((JsonNumber)other4)._exponent.Value.Equals(_exponent.Value);
+            else if (obj is ushort other5)
+                return ((JsonNumber)other5)._significand.Value.Equals(_significand.Value)
+                && ((JsonNumber)other5)._exponent.Value.Equals(_exponent.Value);
+            else if (obj is int other6)
+                return ((JsonNumber)other6)._significand.Value.Equals(_significand.Value)
+                && ((JsonNumber)other6)._exponent.Value.Equals(_exponent.Value);
+            else if (obj is uint other7)
+                return ((JsonNumber)other7)._significand.Value.Equals(_significand.Value)
+                && ((JsonNumber)other7)._exponent.Value.Equals(_exponent.Value);
+            else if (obj is long other8)
+                return ((JsonNumber)other8)._significand.Value.Equals(_significand.Value)
+                && ((JsonNumber)other8)._exponent.Value.Equals(_exponent.Value);
+            else if (obj is ulong other9)
+                return ((JsonNumber)other9)._significand.Value.Equals(_significand.Value)
+                && ((JsonNumber)other9)._exponent.Value.Equals(_exponent.Value);
+            else if (obj is float other10)
+                return ((JsonNumber)other10)._significand.Value.Equals(_significand.Value)
+                && ((JsonNumber)other10)._exponent.Value.Equals(_exponent.Value);
+            else if (obj is double other11)
+                return ((JsonNumber)other11)._significand.Value.Equals(_significand.Value)
+                && ((JsonNumber)other11)._exponent.Value.Equals(_exponent.Value);
+            else if (obj is decimal other12)
+                return ((JsonNumber)other12)._significand.Value.Equals(_significand.Value)
+                && ((JsonNumber)other12)._exponent.Value.Equals(_exponent.Value);
+
+            return false;
+        } // end equals
+
 
         /// <inheritdoc/>
         public static bool operator ==(JsonNumber a, JsonNumber b) => a.Equals(b);

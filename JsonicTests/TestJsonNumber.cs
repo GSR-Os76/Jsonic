@@ -179,11 +179,14 @@ namespace GSR.Tests.Jsonic
             [DataRow("0.8e+2340", "0.8e+2340", true, false, true, false, true, 12)]
             [DataRow("-8e+2", "-800", false, false, true, false, false, 0)]
             [DataRow("-8e+2", "-800", false, false, true, false, false, 0)]
-            [DataRow("8e+2", "-800", false, false, true, true, false, -10)]
+            [DataRow("8e+2", "800", false, false, true, true, false, -10)]
             [DataRow("80", "0.8E2", false, true, true, false, false, -1)]
+            [DataRow("-80", "-0.8E2", false, true, true, false, false, -1)]
             [DataRow("80", "0.8E2", false, true, true, false, false, -3)]
             [DataRow("80", "0.800E2", false, true, true, false, true, -3)]
-            [DataRow("80", "80.000e2", false, true, false, false, true, -3)]
+            [DataRow("80", "0.8000E2", false, true, true, false, true, -4)]
+            [DataRow("8212", "0.8212e4", false, true, false, false, true, -4)]
+            [DataRow("80", "80.000e2", false, false, false, false, true, -3)] // add trailing wihtout an exponent
             [DataRow("80", "800e-1", false, true, false, false, true, 3)]
             [DataRow("80", "800e-1", false, true, false, false, false, 3)]
             [DataRow("123.4", "123.40", false, false, false, false, true, 2)]
@@ -220,11 +223,6 @@ namespace GSR.Tests.Jsonic
             [DataRow("12.444E-2", .12444f, true)]
             [DataRow("12.444E-3", .12444f, false)]
             public void HeterotypicEquals(string a, object b, bool expectation) => Assert.AreEqual(expectation, JsonNumber.ParseJson(a).Equals(b));
-
-#warning heterotypic equality
-
-
-#warning tostring
 
             [TestMethod]
             [DataRow("45")]

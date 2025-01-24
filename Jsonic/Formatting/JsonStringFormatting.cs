@@ -5,6 +5,7 @@
     /// </summary>
     public struct JsonStringFormatting
     {
+#warning "or control characters", unescaped control characters are not optional
 #warning preserve
         /// <summary>
         /// Should forward slashes be escaped: '\/'.
