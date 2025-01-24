@@ -154,6 +154,7 @@ namespace GSR.Jsonic
                 significand.Remove(0, 1);
             }
             int exponent = Exponent;
+
             if (formatting.NumberFormatting.PlaceExponent)
             {
                 if (dp > 0)
@@ -167,19 +168,9 @@ namespace GSR.Jsonic
                     significand.Append('+');
                 significand.Append(exponent);
             }
-            else
+            else // not placing exponent
             {
-                if (exponent > 0)
-                {
-                    significand.Append('0', exponent);
-                    if (formatting.NumberFormatting.AllowInsignificantDigits
-                        && dp < 0)
-                    {
-                        significand.Append('.');
-                        significand.Append('0', -dp);
-                    }
-                }
-                else if (exponent < 0)
+                if (exponent < 0)
                 {
                     if (significand.Length < -exponent)
                     {
@@ -212,10 +203,13 @@ namespace GSR.Jsonic
                 }
                 else
                 {
-                    if (formatting.NumberFormatting.AllowInsignificantDigits
-                        && dp < 0)
+                    if (exponent > 0) // postive exponent means number of times to multiply by ten, so add that many trailing 0s
+                        significand.Append('0', exponent);
+
+                    if (formatting.NumberFormatting.AllowInsignificantDigits 
+                        && dp < 0) // being of positive or 0 exponent will not contain a decimal - add as many insignificant 0s as necessary to satisy DecimalPlacement.
                     {
-                        significand.Append('.');
+                        significand.Append('.'); 
                         significand.Append('0', -dp);
                     }
                 }
@@ -223,6 +217,7 @@ namespace GSR.Jsonic
 
             if (negative)
                 significand.Insert(0, "-");
+
             return significand.ToString();
         } // end ToString()
 
