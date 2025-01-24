@@ -171,6 +171,35 @@ namespace GSR.Tests.Jsonic
             } // end TestAsDecimalValid()
 
             [TestMethod]
+            [DataRow("0", "0", true, false, false, false, false, 0)]
+            [DataRow("0", "0", true, true, true, false, false, 0)]
+            [DataRow("0e0", "0e0", true, false, true, false, false, 0)]
+            [DataRow("-0.8e+2340", "-0.8e+2340", true, false, true, false, false, 0)]
+            [DataRow("-0.8e+2340", "-0.8e+2340", true, false, true, false, false, 12)]
+            [DataRow("0.8e+2340", "0.8e+2340", true, false, true, false, true, 12)]
+            [DataRow("-8e+2", "-800", false, false, true, false, false, 0)]
+            [DataRow("-8e+2", "-800", false, false, true, false, false, 0)]
+            [DataRow("8e+2", "-800", false, false, true, true, false, -10)]
+            [DataRow("80", "0.8E2", false, true, true, false, false, -1)]
+            [DataRow("80", "0.8E2", false, true, true, false, false, -3)]
+            [DataRow("80", "0.800E2", false, true, true, false, true, -3)]
+            [DataRow("80", "80.000e2", false, true, false, false, true, -3)]
+            [DataRow("80", "800e-1", false, true, false, false, true, 3)]
+            [DataRow("80", "800e-1", false, true, false, false, false, 3)]
+            [DataRow("123.4", "123.40", false, false, false, false, true, 2)]
+            [DataRow("123.0", "123.00", false, false, false, false, true, 2)]
+            [DataRow("123.00", "123.00", false, false, false, false, true, 2)]
+            [DataRow("123", "123.00", false, false, false, false, true, 2)]
+            [DataRow("167", "167", false, false, false, false, true, 0)]
+            [DataRow("17.0", "17", false, false, false, false, true, 0)]
+            public void ToString(string json, string expectation, 
+                bool preserve, bool placeExponent, bool capitalizeExponent, 
+                bool explicitlySignExponent, bool allowInsignificantDigits, int decimalPositioning)
+            {
+                Assert.AreEqual(expectation, JsonNumber.ParseJson(json).ToString(new(numberFormatting: new(preserve, placeExponent, capitalizeExponent, explicitlySignExponent, allowInsignificantDigits, decimalPositioning))));
+            } // end ToString()
+
+            [TestMethod]
             [DataRow("3.2e3", "32e2", true)]
             [DataRow("1", "-1", false)]
             [DataRow("-20", "-0.2e2", true)]
@@ -178,6 +207,19 @@ namespace GSR.Tests.Jsonic
             [DataRow("19e0", "19.00000000000e0", true)]
             [DataRow("5", "5", true)]
             public void HomotypicEquals(string a, string b, bool expectation) => Assert.AreEqual(expectation, JsonNumber.ParseJson(a).Equals(JsonNumber.ParseJson(b)));
+            
+            [TestMethod]
+            [DataRow("3.2e3", "32e2", false)]
+            [DataRow("1", "-1", false)]
+            [DataRow("-20", "-0.2e2", false)]
+            [DataRow("6.00", "6", false)]
+            [DataRow("19e0", "19.00000000000e0", false)]
+            [DataRow("5", "5", false)]
+            [DataRow("5", (byte)5, true)]
+            [DataRow("34352345", 34352345, true)]
+            [DataRow("12.444E-2", .12444f, true)]
+            [DataRow("12.444E-3", .12444f, false)]
+            public void HeterotypicEquals(string a, object b, bool expectation) => Assert.AreEqual(expectation, JsonNumber.ParseJson(a).Equals(b));
 
 #warning heterotypic equality
 

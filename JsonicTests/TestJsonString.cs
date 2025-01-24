@@ -1,6 +1,5 @@
 ﻿using GSR.Jsonic;
 using GSR.Jsonic.Formatting;
-using System.Data;
 
 namespace GSR.Tests.Jsonic
 {

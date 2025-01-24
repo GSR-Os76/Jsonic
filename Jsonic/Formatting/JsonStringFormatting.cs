@@ -5,6 +5,7 @@
     /// </summary>
     public struct JsonStringFormatting
     {
+#warning preserve
         /// <summary>
         /// Should forward slashes be escaped: '\/'.
         /// </summary>
