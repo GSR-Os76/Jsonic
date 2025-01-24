@@ -182,7 +182,7 @@ namespace GSR.Tests.Jsonic
             [DataRow("8e+2", "800", false, false, true, true, false, -10)]
             [DataRow("80", "0.8E2", false, true, true, false, false, -1)]
             [DataRow("-80", "-0.8E2", false, true, true, false, false, -1)]
-            [DataRow("80", "0.8E2", false, true, true, false, false, -3)]
+            [DataRow("80", "0.008E4", false, true, true, false, false, -3)]
             [DataRow("80", "0.800E2", false, true, true, false, true, -3)]
             [DataRow("80", "0.8000E2", false, true, true, false, true, -4)]
             [DataRow("8212", "0.8212e4", false, true, false, false, true, -4)]
@@ -206,6 +206,11 @@ namespace GSR.Tests.Jsonic
             [DataRow("123.00", "123.00", false, false, false, false, true, -2)]
             [DataRow("123", "123.00", false, false, false, false, true, -2)]
             [DataRow("123", "123", false, false, false, false, true, 2)]
+
+            [DataRow("123", "0.0123e4", false, true, false, false, false, -4)]
+            [DataRow("123", "0.000123e6", false, true, false, false, false, -6)]
+            [DataRow("123", "0.1230e3", false, true, false, false, true, -4)]
+            [DataRow("123", "0.123000e3", false, true, false, false, true, -6)]
 
             [DataRow("-123.4", "-123.40", false, false, false, false, true, -2)]
             [DataRow("-0.1234", "-0.1234", false, false, false, false, true, -4)]
