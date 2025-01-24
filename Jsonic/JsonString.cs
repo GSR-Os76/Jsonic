@@ -59,7 +59,7 @@ namespace GSR.Jsonic
                     sb.Append("\\r");
                 else if (c == '\t')
                     sb.Append("\\t");
-                else if (char.IsControl(c)) 
+                else if (char.IsControl(c))
                 {
                     sb.Append(@"\u");
                     sb.Append(((int)c).ToString("x4"));

@@ -206,6 +206,19 @@ namespace GSR.Tests.Jsonic
             [DataRow("123.00", "123.00", false, false, false, false, true, -2)]
             [DataRow("123", "123.00", false, false, false, false, true, -2)]
             [DataRow("123", "123", false, false, false, false, true, 2)]
+
+            [DataRow("-123.4", "-123.40", false, false, false, false, true, -2)]
+            [DataRow("-0.1234", "-0.1234", false, false, false, false, true, -4)]
+            [DataRow("-1.234", "-1.234", false, false, false, false, false, 0)]
+            [DataRow("-0.1234", "-0.12340", false, false, false, false, true, -5)]
+            [DataRow("-1234e-6", "-0.001234", false, false, false, false, false, 0)]
+            [DataRow("-1234e-6", "-0.0012340", false, false, false, false, true, -7)]
+            [DataRow("-1234e-6", "-0.001234", false, false, false, false, true, -1)]
+            [DataRow("-123.0", "-123.00", false, false, false, false, true, -2)]
+            [DataRow("-123.00", "-123.00", false, false, false, false, true, -2)]
+            [DataRow("-123", "-123.00", false, false, false, false, true, -2)]
+            [DataRow("-123", "-123", false, false, false, false, true, 2)]
+
             [DataRow("167", "167", false, false, false, false, true, 0)]
             [DataRow("17.0", "17", false, false, false, false, true, 0)]
             public void ToString(string json, string expectation, 

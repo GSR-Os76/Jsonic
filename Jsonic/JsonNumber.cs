@@ -196,6 +196,13 @@ namespace GSR.Jsonic
             }
 
             StringBuilder sb2 = new(Significand);
+            bool negative2 = false;
+            if (sb2[0] == '-')
+            {
+                negative2 = true;
+                sb2.Remove(0, 1);
+            }
+
             if (exponent > 0)
             {
                 sb2.Append('0', exponent);
@@ -246,6 +253,9 @@ namespace GSR.Jsonic
                     sb2.Append('0', -dp);
                 }
             }
+
+            if (negative2)
+                sb2.Insert(0, '-');
 
             return sb2.ToString();
         } // end ToString()
