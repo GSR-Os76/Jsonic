@@ -146,16 +146,16 @@ namespace GSR.Jsonic
                 return _value;
 
             int dp = formatting.NumberFormatting.DecimalPositioning;
+            StringBuilder significand = new(Significand);
+            bool negative = false;
+            if (significand[0] == '-')
+            {
+                negative = true;
+                significand.Remove(0, 1);
+            }
             int exponent = Exponent;
             if (formatting.NumberFormatting.PlaceExponent)
             {
-                StringBuilder significand = new(Significand);
-                bool negative = false;
-                if (significand[0] == '-')
-                {
-                    negative = true;
-                    significand.Remove(0, 1);
-                }
                 if (dp > 0)
                 {
                     // significand is always positive, and currently as only digits - thus if is shorter than preferred 0 must be added, with exponent adjustment
@@ -184,80 +184,70 @@ namespace GSR.Jsonic
                     if (formatting.NumberFormatting.AllowInsignificantDigits)
                         significand.Append('0', unfulfilled);
                 }
-                if (negative)
-                    significand.Insert(0, "-");
-                StringBuilder sb = new(significand.Length + 20);
-                sb.Append(significand);
-                sb.Append(formatting.NumberFormatting.CapitalizeExponent ? 'E' : 'e');
+
+                // add the exponent after the processed significand
+                significand.Append(formatting.NumberFormatting.CapitalizeExponent ? 'E' : 'e');
                 if (formatting.NumberFormatting.ExplicitlySignExponent && Exponent >= 0)
-                    sb.Append('+');
-                sb.Append(exponent);
-                return sb.ToString();
+                    significand.Append('+');
+                significand.Append(exponent);
             }
-
-            StringBuilder sb2 = new(Significand);
-            bool negative2 = false;
-            if (sb2[0] == '-')
+            else 
             {
-                negative2 = true;
-                sb2.Remove(0, 1);
-            }
-
-            if (exponent > 0)
-            {
-                sb2.Append('0', exponent);
-                if (formatting.NumberFormatting.AllowInsignificantDigits
-                    && dp < 0)
+                if (exponent > 0)
                 {
-                    sb2.Append('.');
-                    sb2.Append('0', -dp);
-                }
-            }
-            else if (exponent < 0)
-            {
-                if (sb2.Length < -exponent)
-                {
-                    sb2.Insert(0, "0", -exponent - sb2.Length);
-                    sb2.Insert(0, "0.");
+                    significand.Append('0', exponent);
                     if (formatting.NumberFormatting.AllowInsignificantDigits
                         && dp < 0)
                     {
-                        int shift = -dp - (sb2.Length - 2);
-                        if(shift > 0)
-                            sb2.Append('0', shift);
+                        significand.Append('.');
+                        significand.Append('0', -dp);
                     }
                 }
-                else 
+                else if (exponent < 0)
                 {
-                    int pos = sb2.Length + exponent;
-                    sb2.Insert(pos, ".");
+                    if (significand.Length < -exponent)
+                    {
+                        significand.Insert(0, "0", -exponent - significand.Length);
+                        significand.Insert(0, "0.");
+                        if (formatting.NumberFormatting.AllowInsignificantDigits
+                            && dp < 0)
+                        {
+                            int shift = -dp - (significand.Length - 2);
+                            if (shift > 0)
+                                significand.Append('0', shift);
+                        }
+                    }
+                    else
+                    {
+                        int pos = significand.Length + exponent;
+                        significand.Insert(pos, ".");
+                        if (formatting.NumberFormatting.AllowInsignificantDigits
+                            && dp < 0)
+                        {
+                            int rightHandCount = (significand.Length - 1) - pos;
+                            int shift = -dp - rightHandCount;
+                            if (shift > 0)
+                                significand.Append('0', shift);
+                        }
+
+                        if (pos == 0)
+                            significand.Insert(0, '0');
+                    }
+                }
+                else
+                {
                     if (formatting.NumberFormatting.AllowInsignificantDigits
                         && dp < 0)
                     {
-                        int rightHandCount = (sb2.Length - 1) - pos;
-                        int shift = -dp - rightHandCount;
-                        if (shift > 0)
-                            sb2.Append('0', shift);
+                        significand.Append('.');
+                        significand.Append('0', -dp);
                     }
-
-                    if (pos == 0)
-                        sb2.Insert(0, '0');
-                }
-            }
-            else
-            {
-                if (formatting.NumberFormatting.AllowInsignificantDigits
-                    && dp < 0)
-                {
-                    sb2.Append('.');
-                    sb2.Append('0', -dp);
                 }
             }
 
-            if (negative2)
-                sb2.Insert(0, '-');
-
-            return sb2.ToString();
+            if (negative)
+                significand.Insert(0, "-");
+            return significand.ToString();
         } // end ToString()
 
         /// <inheritdoc/>
