@@ -129,10 +129,12 @@ namespace GSR.Jsonic
         /// <inheritdoc/>
         public override string ToString(JsonFormatting formatting)
         {
+#warning refactor and document - desparately.
             if (formatting.NumberFormatting.Preserve)
                 return _value;
 
             int dp = formatting.NumberFormatting.DecimalPositioning;
+            int exponent = Exponent;
             if (formatting.NumberFormatting.PlaceExponent)
             {
                 StringBuilder significand = new(Significand);
@@ -142,7 +144,6 @@ namespace GSR.Jsonic
                     negative = true;
                     significand.Remove(0, 1);
                 }
-                int exponent = Exponent;
                 if (dp > 0)
                 {
                     // significand is always positive, and currently as only digits - thus if is shorter than preferred 0 must be added, with exponent adjustment
@@ -156,7 +157,7 @@ namespace GSR.Jsonic
                     {
                         int pos = Math.Min(dp, significand.Length); // get position to insert at, either 'dp' or if that would be outside string bounds the string's end
                         exponent += significand.Length - pos; // adjust exponent to reflect shift, number has became smaller by some power of 10 so exponent should be too.
-                                                                // significand never contains a decimal, so by subtracting the position we get the number of digits now to the right of the decimal
+                                                              // significand never contains a decimal, so by subtracting the position we get the number of digits now to the right of the decimal
                         significand = significand.Insert(pos, "."); // shift after updating exponent so decimal isn't count as a digit.
                     }
                 }
@@ -168,7 +169,7 @@ namespace GSR.Jsonic
                     significand = significand.Insert(pos, ".");
                     if (pos == 0)
                         significand.Insert(0, "0"); // add proceeding 0
-                    if(formatting.NumberFormatting.AllowInsignificantDigits)
+                    if (formatting.NumberFormatting.AllowInsignificantDigits)
                         significand.Append('0', unfulfilled);
                 }
                 if (negative)
@@ -181,16 +182,60 @@ namespace GSR.Jsonic
                 sb.Append(exponent);
                 return sb.ToString();
             }
-            throw new NotImplementedException();
-            //else if (formatting.NumberFormatting.AllowInsignificantDigits) 
-            {
 
+            StringBuilder sb2 = new(Significand);
+            if (exponent > 0)
+            {
+                sb2.Append('0', exponent);
+                if (formatting.NumberFormatting.AllowInsignificantDigits
+                    && dp < 0)
+                {
+                    sb2.Append('.');
+                    sb2.Append('0', -dp);
+                }
             }
-            /*            PlaceExponent
-                        CapitalizeExponent
-                        ExplicitlySignExponent
-                        AllowInsignificantDigits
-                        DecimalPositioning*/
+            else if (exponent < 0)
+            {
+                if (sb2.Length < -exponent)
+                {
+                    sb2.Insert(0, "0", -exponent - sb2.Length);
+                    sb2.Insert(0, "0.");
+                    if (formatting.NumberFormatting.AllowInsignificantDigits
+                        && dp < 0)
+                    {
+                        int shift = -dp - (sb2.Length - 2);
+                        if(shift > 0)
+                            sb2.Append('0', shift);
+                    }
+                }
+                else 
+                {
+                    int pos = sb2.Length + exponent;
+                    sb2.Insert(pos, ".");
+                    if (formatting.NumberFormatting.AllowInsignificantDigits
+                        && dp < 0)
+                    {
+                        int rightHandCount = (sb2.Length - 1) - pos;
+                        int shift = -dp - rightHandCount;
+                        if (shift > 0)
+                            sb2.Append('0', shift);
+                    }
+
+                    if (pos == 0)
+                        sb2.Insert(0, '0');
+                }
+            }
+            else
+            {
+                if (formatting.NumberFormatting.AllowInsignificantDigits
+                    && dp < 0)
+                {
+                    sb2.Append('.');
+                    sb2.Append('0', -dp);
+                }
+            }
+
+            return sb2.ToString();
         } // end ToString()
 
         /// <inheritdoc/>

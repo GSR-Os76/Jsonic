@@ -186,7 +186,7 @@ namespace GSR.Tests.Jsonic
             [DataRow("80", "0.800E2", false, true, true, false, true, -3)]
             [DataRow("80", "0.8000E2", false, true, true, false, true, -4)]
             [DataRow("8212", "0.8212e4", false, true, false, false, true, -4)]
-            [DataRow("80", "80.000e2", false, false, false, false, true, -3)] // add trailing wihtout an exponent
+            [DataRow("80", "80.000", false, false, false, false, true, -3)] // add trailing wihtout an exponent
             [DataRow("80", "800e-1", false, true, false, false, true, 3)]
             [DataRow("80", "800e-1", false, true, false, false, false, 3)]
             [DataRow("80", "8e+1", false, true, false, true, false, 1)]
@@ -195,10 +195,17 @@ namespace GSR.Tests.Jsonic
             [DataRow("807e-3", "8.07e-1", false, true, false, true, false, 1)]
             [DataRow("8070", "8070e0", false, true, false, false, false, 4)] // positive decimal position, and same length
             [DataRow("8070", "8070e0", false, true, false, false, true, 4)] // positive decimal position, and same length
-            [DataRow("123.4", "123.40", false, false, false, false, true, 2)]
-            [DataRow("123.0", "123.00", false, false, false, false, true, 2)]
-            [DataRow("123.00", "123.00", false, false, false, false, true, 2)]
-            [DataRow("123", "123.00", false, false, false, false, true, 2)]
+            [DataRow("123.4", "123.40", false, false, false, false, true, -2)]
+            [DataRow("0.1234", "0.1234", false, false, false, false, true, -4)]
+            [DataRow("1.234", "1.234", false, false, false, false, false, 0)]
+            [DataRow("0.1234", "0.12340", false, false, false, false, true, -5)]
+            [DataRow("1234e-6", "0.001234", false, false, false, false, false, 0)]
+            [DataRow("1234e-6", "0.0012340", false, false, false, false, true, -7)]
+            [DataRow("1234e-6", "0.001234", false, false, false, false, true, -1)]
+            [DataRow("123.0", "123.00", false, false, false, false, true, -2)]
+            [DataRow("123.00", "123.00", false, false, false, false, true, -2)]
+            [DataRow("123", "123.00", false, false, false, false, true, -2)]
+            [DataRow("123", "123", false, false, false, false, true, 2)]
             [DataRow("167", "167", false, false, false, false, true, 0)]
             [DataRow("17.0", "17", false, false, false, false, true, 0)]
             public void ToString(string json, string expectation, 
