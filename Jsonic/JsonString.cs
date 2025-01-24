@@ -42,34 +42,33 @@ namespace GSR.Jsonic
         public override string ToString(JsonFormatting formatting)
         {
             bool solidusFlag = formatting.StringFormatting.EscapeSolidi;
-            bool backspaceFlag = formatting.StringFormatting.EscapeBackspaces;
-            bool formfeedFlag = formatting.StringFormatting.EscapeFormfeeds;
-            bool linefeedFlag = formatting.StringFormatting.EscapeLinefeeds;
-            bool carriageReturnFlag = formatting.StringFormatting.EscapeCarriageReturns;
-            bool horizontalTabFlag = formatting.StringFormatting.EscapeHorizontalTabs;
             StringBuilder sb = new(Value.Length + 2);
             sb.Append('"');
             foreach (char c in Value)
-            {
                 if (c == '\\')
                     sb.Append("\\\\");
                 else if (c == '"')
                     sb.Append("\\\"");
+                else if (c == '\b')
+                    sb.Append("\\b");
+                else if (c == '\f')
+                    sb.Append("\\f");
+                else if (c == '\n')
+                    sb.Append("\\n");
+                else if (c == '\r')
+                    sb.Append("\\r");
+                else if (c == '\t')
+                    sb.Append("\\t");
+                else if (char.IsControl(c)) 
+                {
+                    sb.Append(@"\u");
+                    sb.Append(((int)c).ToString("x4"));
+                }
                 else if (c == '/' && solidusFlag)
                     sb.Append("\\/");
-                else if (c == '\b' && backspaceFlag)
-                    sb.Append("\\b");
-                else if (c == '\f' && formfeedFlag)
-                    sb.Append("\\f");
-                else if (c == '\n' && linefeedFlag)
-                    sb.Append("\\n");
-                else if (c == '\r' && carriageReturnFlag)
-                    sb.Append("\\r");
-                else if (c == '\t' && horizontalTabFlag)
-                    sb.Append("\\t");
                 else
                     sb.Append(c);
-            }
+
             sb.Append('"');
             return sb.ToString();
         } // end ToString()
