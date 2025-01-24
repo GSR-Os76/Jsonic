@@ -1,9 +1,7 @@
 ﻿using GSR.Jsonic.Formatting;
 using System.Globalization;
-using System.Runtime.Intrinsics.Arm;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Xml;
 
 namespace GSR.Jsonic
 {
@@ -161,15 +159,15 @@ namespace GSR.Jsonic
                 if (dp > 0)
                     exponent += PositionDecimalLeft(significand, dp);
                 else if (dp < 0)
-                    exponent += PositionDecimalRight(significand, dp, formatting.NumberFormatting.AllowInsignificantDigits);
+                    exponent += PositionDecimalRight(significand, -dp, formatting.NumberFormatting.AllowInsignificantDigits);
 
                 // add the exponent after the processed significand
                 significand.Append(formatting.NumberFormatting.CapitalizeExponent ? 'E' : 'e');
-                if (formatting.NumberFormatting.ExplicitlySignExponent && Exponent >= 0)
+                if (formatting.NumberFormatting.ExplicitlySignExponent && exponent >= 0)
                     significand.Append('+');
                 significand.Append(exponent);
             }
-            else 
+            else
             {
                 if (exponent > 0)
                 {
@@ -231,7 +229,7 @@ namespace GSR.Jsonic
 #warning assure decimal placement right hand always fulfillls count, with or without allinsingificant.
 
         /// <summary>
-        /// Places the a decimal point in the significand, putting <paramref name="decimalPositioning"/> to the left. 
+        /// Places the a decimal point in the significand, putting <paramref name="decimalPositioning"/> values to the left. 
         /// Decimal point might be imagined, factional part is insignificant.
         /// </summary>
         /// <param name="unsignedSignificand"></param>
@@ -254,36 +252,34 @@ namespace GSR.Jsonic
             return 0; // length was equal to desire, and no adjustment is needed.
         } // end PositionDecimalLeft()
 
+        /// <summary>
+        /// Places the a decimal point in the significand, putting <paramref name="decimalPositioning"/> values to the right. 
+        /// Decimal point might be imagined, factional part is insignificant.
+        /// </summary>
+        /// <param name="unsignedSignificand"></param>
+        /// <param name="decimalPositioning"></param>
+        /// <param name="allowInsignificantDigits"></param>
+        /// <returns>The power that the expondent has been shifted by</returns>
         private static int PositionDecimalRight(StringBuilder unsignedSignificand, int decimalPositioning, bool allowInsignificantDigits)
         {
-            if (unsignedSignificand.Length < -decimalPositioning) // less digits in significand than desired count, will require 0s for padding.
+            if (unsignedSignificand.Length <= decimalPositioning) // less digits in significand than desired count, will require 0s for padding.
             {
                 int significantLength = unsignedSignificand.Length;
-                int unfulfille = -decimalPositioning - significantLength; // get number of 0s to add
+                int unfulfille = decimalPositioning - significantLength; // get number of 0s to add
 
                 if (allowInsignificantDigits)
-                    unsignedSignificand.Append('0', unfulfille);
+                    unsignedSignificand.Append('0', unfulfille); // if insignificant 0s are allowed prefer them over significant 0s
                 else
                     unsignedSignificand.Insert(0, "0", unfulfille);
 
                 unsignedSignificand.Insert(0, "0.");
-                return allowInsignificantDigits ? significantLength : -decimalPositioning;
+                return allowInsignificantDigits ? significantLength : decimalPositioning;
             }
 
-            int pos = unsignedSignificand.Length + Math.Max(decimalPositioning, -unsignedSignificand.Length); // get position to insert at, either 'dp' or if that would be outside string bounds the string's end, invert direction so decimal is place from right to left
-            int unfulfilled = Math.Max(0, -decimalPositioning - unsignedSignificand.Length);
-            int expAdjust = (unsignedSignificand.Length - pos);
+            int pos = unsignedSignificand.Length - decimalPositioning;
             unsignedSignificand.Insert(pos, ".");
-
-            if (pos == 0)
-                unsignedSignificand.Insert(0, "0"); // add proceeding 0
-            if (allowInsignificantDigits)
-                unsignedSignificand.Append('0', unfulfilled);
-
-            return expAdjust;
+            return decimalPositioning;
         } // end PositionDecimalRight()
-
-
 
 
 

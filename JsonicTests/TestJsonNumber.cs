@@ -212,6 +212,8 @@ namespace GSR.Tests.Jsonic
             [DataRow("123", "0.1230e3", false, true, false, false, true, -4)]
             [DataRow("123", "0.123000e3", false, true, false, false, true, -6)]
 
+            [DataRow("0.12", "0.12E+0", false, true, true, true, true, -2)]
+
             [DataRow("-123.4", "-123.40", false, false, false, false, true, -2)]
             [DataRow("-0.1234", "-0.1234", false, false, false, false, true, -4)]
             [DataRow("-1.234", "-1.234", false, false, false, false, false, 0)]
