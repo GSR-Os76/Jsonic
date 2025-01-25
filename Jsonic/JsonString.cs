@@ -9,13 +9,16 @@ namespace GSR.Jsonic
     /// </summary>
     public sealed class JsonString : AJsonValue
     {
-        private static readonly Regex REGEX = new Regex(@"""([^\\""]|(\\([""\\/bfnrt]|(u[0-9a-fA-F]{4}))))*""");
+        private static readonly Regex REGEX = new(@"""([^\\""]|(\\([""\\/bfnrt]|(u[0-9a-fA-F]{4}))))*""");
 
         /// <summary>
         /// The value of the string, without any escaping.
         /// </summary>
-        public string Value { get; }
+        public string Value => _value.Value;
 
+#warning when parsed could do a weak reference thing to avoid doubling memory footprint for data that can be recalculated if needed
+        private readonly Lazy<string> _value;
+        private readonly string? _parsed;
 
 
         /// <summary>
@@ -29,18 +32,27 @@ namespace GSR.Jsonic
         /// <param name="value">The value to be represented by the <see cref="JsonString"/>, understood as having no escape codes.</param>
         /// <exception cref="MalformedJsonException">String wasn't in valid Json string format.</exception>
         public JsonString(string value)
+            : this(null, new Lazy<string>(() => value))
         {
 #if ASSERT
             value.IsNotNull();
 #endif
-            Value = value;
-        } // end constructor()
+        } // end ctor
+
+        private JsonString(string? parsed, Lazy<string> value)
+        {
+            _parsed = parsed;
+            _value = value;
+        } // end ctor
 
 
 
         /// <inheritdoc/>
         public override string ToString(JsonFormatting formatting)
         {
+            if (formatting.StringFormatting.Preserve && _parsed is not null)
+                return _parsed;
+
             bool solidusFlag = formatting.StringFormatting.EscapeSolidi;
             StringBuilder sb = new(Value.Length + 2);
             sb.Append('"');
@@ -125,7 +137,7 @@ namespace GSR.Jsonic
 
             string s = m.Value;
             remainder = parse[s.Length..^0];
-            return Regex.Unescape(s[1..^1]);
+            return new(s, new Lazy<string>(() => Regex.Unescape(s[1..^1])));
         } // end ParseJson()
 
         /// <summary>

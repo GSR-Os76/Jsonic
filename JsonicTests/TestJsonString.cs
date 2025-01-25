@@ -131,15 +131,22 @@ namespace GSR.Tests.Jsonic
                 Assert.AreEqual(value, (string)v);
                 Assert.AreEqual($"\"{expectation}\"", v.ToString(format));
             } // end ConstructedFormattedToString()
-
-#warning ParsedFormattedToString
-            /*
-             
-            [DataRow("\"\\u9999\"", "香", "")]
-            [DataRow("\"\\u6038\"", "怸", "")]
-            [DataRow("\"\\u1234\"", "ሴ", "")]
-            [DataRow("\"\\uaFaa\"", "꾪", "")]
-             */
+            
+            [TestMethod]
+            [DataRow("\"\\u9999\"", "香", "香", false, false)]
+            [DataRow("\"\\u6038\"", "怸", "怸", false, false)]
+            [DataRow("\"\\u1234\"", "ሴ", "ሴ", false, false)]
+            [DataRow("\"\\uaFaa\"", "꾪", "꾪", false, false)]
+            [DataRow("\"\\uaFaa\"", "\\uaFaa", "꾪", true, false)]
+            [DataRow("\"\\uaFaaafdsa\"", "\\uaFaaafdsa", "꾪afdsa", true, false)]
+            public void ParsedFormattedToString(string json, string expectation, string expectedValue, bool preserve, bool solidus)
+            {
+                JsonFormatting format = new(stringFormatting: new(preserve, solidus));
+                JsonString v = JsonString.ParseJson(json);
+                Assert.AreEqual(expectedValue, v.Value);
+                Assert.AreEqual(expectedValue, (string)v);
+                Assert.AreEqual($"\"{expectation}\"", v.ToString(format));
+            } // end ParsedFormattedToString()
 
             [TestMethod]
             [DataRow("\"\"")]

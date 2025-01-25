@@ -6,7 +6,7 @@
     public sealed class JsonStringFormatting
     {
         /// <summary>
-        /// Write to string exactly as how it was parsed. Overrides all the other settings.
+        /// Write to string exactly as how it was parsed. Overrides all the other settings. Ignored if string wasn't parsed.
         /// </summary>
         public bool Preserve { get; }
 
@@ -15,7 +15,7 @@
         /// </summary>
         public bool EscapeSolidi { get; }
 
-#warning could escape unicode code points inside a specified range.
+#warning could escape unicode code points inside a specified range.   -   also, captial/lowercase hex
 
 
 
