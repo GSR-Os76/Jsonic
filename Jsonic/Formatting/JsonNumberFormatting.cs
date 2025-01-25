@@ -6,7 +6,7 @@
     public struct JsonNumberFormatting
     {
         /// <summary>
-        /// Write the string exactly as how it was parsed. Overrides all the other settings.
+        /// Write to string exactly as how it was parsed. Overrides all the other settings.
         /// </summary>
         public bool Preserve { get; } = true;
 

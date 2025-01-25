@@ -116,7 +116,7 @@ namespace GSR.Jsonic
         {
             float f = float.Parse(_value);
             if (f == float.PositiveInfinity || f == float.NegativeInfinity)
-                throw new OverflowException();
+                throw new OverflowException("Value was either too large or too small for a float");
             return f;
         } // end AsFloat()
         /// <summary>
@@ -127,7 +127,7 @@ namespace GSR.Jsonic
         {
             double f = double.Parse(_value);
             if (f == double.PositiveInfinity || f == double.NegativeInfinity)
-                throw new OverflowException();
+                throw new OverflowException("Value was either too large or too small for a double");
             return f;
         } // end AsDouble()
         /// <summary>
@@ -297,32 +297,29 @@ namespace GSR.Jsonic
             try
             {
                 if (obj is sbyte other2)
-                    return other2 == this;
+                    return other2 == (sbyte)this;
                 else if (obj is byte other3)
-                    return other3 == this;
+                    return other3 == (byte)this;
                 else if (obj is short other4)
-                    return other4 == this;
+                    return other4 == (short)this;
                 else if (obj is ushort other5)
-                    return other5 == this;
+                    return other5 == (ushort)this;
                 else if (obj is int other6)
-                    return other6 == this;
+                    return other6 == (int)this;
                 else if (obj is uint other7)
-                    return other7 == this;
+                    return other7 == (uint)this;
                 else if (obj is long other8)
-                    return other8 == this;
+                    return other8 == (long)this;
                 else if (obj is ulong other9)
-                    return other9 == this;
+                    return other9 == (ulong)this;
                 else if (obj is float other10)
-                    return other10 == this;
+                    return other10 == (float)this;
                 else if (obj is double other11)
-                    return other11 == this;
+                    return other11 == (double)this;
                 else if (obj is decimal other12)
-                    return other12 == this;
+                    return other12 == (decimal)this;
             }
-            catch (OverflowException)
-            {
-                return false;
-            }            
+            catch (OverflowException) { }            
             return false;
         } // end equals
 

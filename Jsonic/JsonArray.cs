@@ -4,11 +4,10 @@ using System.Text;
 
 namespace GSR.Jsonic
 {
-#warning implement IList<
     /// <summary>
     /// Representation of a json array.
     /// </summary>
-    public sealed class JsonArray : AJsonValue, IEnumerable<JsonElement>
+    public sealed class JsonArray : AJsonValue, IList<JsonElement>
     {
         private readonly List<JsonElement> _elements = new();
 
@@ -18,6 +17,9 @@ namespace GSR.Jsonic
         /// Number of elements in the array.
         /// </summary>
         public int Count => _elements.Count;
+
+        /// <inheritdoc/>
+        public bool IsReadOnly => false;
 
         /// <summary>
         /// Get or set the value at the given index.
@@ -69,6 +71,9 @@ namespace GSR.Jsonic
             return this;
         } // end Add()
 
+        /// <inheritdoc/>
+        void ICollection<JsonElement>.Add(JsonElement item) => _elements.Add(item);
+
         /// <summary>
         /// Remove all the elements from the array.
         /// </summary>
@@ -78,6 +83,9 @@ namespace GSR.Jsonic
             _elements.Clear();
             return this;
         } // end Clear()
+
+        /// <inheritdoc/>
+        void ICollection<JsonElement>.Clear() => _elements.Clear();
 
         /// <summary>
         /// Insert the <paramref name="element"/> at the specified index.
@@ -94,6 +102,9 @@ namespace GSR.Jsonic
             return this;
         } // end InsertAt()
 
+        /// <inheritdoc/>
+        public void Insert(int index, JsonElement item) => _elements.Insert(index, item);
+
         /// <summary>
         /// Remove the element at the specified index.
         /// </summary>
@@ -104,6 +115,23 @@ namespace GSR.Jsonic
             _elements.RemoveAt(index);
             return this;
         } // end RemoveAt()
+
+        /// <inheritdoc/>
+        void IList<JsonElement>.RemoveAt(int index) => _elements.RemoveAt(index);
+
+
+
+        /// <inheritdoc/>
+        public int IndexOf(JsonElement item) => _elements.IndexOf(item);
+
+        /// <inheritdoc/>
+        public bool Contains(JsonElement item) => _elements.Contains(item);
+
+        /// <inheritdoc/>
+        public void CopyTo(JsonElement[] array, int arrayIndex) => _elements.CopyTo(array, arrayIndex);
+
+        /// <inheritdoc/>
+        public bool Remove(JsonElement item) => _elements.Remove(item);
 
 
 
@@ -217,6 +245,5 @@ namespace GSR.Jsonic
         /// <returns>A JsonArray containing the parsed Json value.</returns>
         /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
         public static JsonArray ParseJson(string json) => JsonUtil.RequiredEmptyRemainder(ParseJson, json);
-
     } // end class
 } // end namespace

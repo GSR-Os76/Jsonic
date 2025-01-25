@@ -5,8 +5,11 @@
     /// </summary>
     public struct JsonStringFormatting
     {
-        // public bool Preserve { get; }
-#warning preserve
+        /// <summary>
+        /// Write to string exactly as how it was parsed. Overrides all the other settings.
+        /// </summary>
+        public bool Preserve { get; }
+
         /// <summary>
         /// Should forward slashes be escaped: '\/'.
         /// </summary>
@@ -18,8 +21,10 @@
 
         /// <inheritdoc/>
         public JsonStringFormatting(
-            bool escapeSolidus = false) 
+            bool preserve = true,
+            bool escapeSolidus = false)
         {
+            Preserve = preserve;
             EscapeSolidi = escapeSolidus;
         } // end ctor
     } // end struct

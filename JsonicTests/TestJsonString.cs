@@ -56,7 +56,7 @@ namespace GSR.Tests.Jsonic
             [DataRow("\"\\u6038\"", "怸", "")]
             [DataRow("\"\\u1234\"", "ሴ", "")]
             [DataRow("\"\\uaFaa\"", "꾪", "")]
-            [DataRow("\"\\uA6f9\"\t", "꛹", "")]
+            [DataRow("\"\\uA6f9\"\t", "꛹", "\t")]
             [DataRow("\"\\uaB7C\"", "ꭼ", "")]
             [DataRow("\"\\u463D\"", "䘽", "")]
             [DataRow("\"\\u463DF\"", "䘽F", "")]
@@ -75,6 +75,7 @@ namespace GSR.Tests.Jsonic
             public void ParseJsonRemainderized(string toParse, string expectation, string expectedRemainder)
             {
                 Assert.AreEqual(expectation, JsonString.ParseJson(toParse, out string remainder).Value);
+                Assert.AreEqual(expectedRemainder, remainder);
             } // end ParseJsonRemainderized()
 
             [TestMethod]
@@ -101,37 +102,46 @@ namespace GSR.Tests.Jsonic
             } // end ToString()
 
             [TestMethod]
-            [DataRow("", "", false)]
-            [DataRow("\"", "\\\"", false)]
-            [DataRow("\"", "\\\"", true)]
-            [DataRow("\\", "\\\\", false)]
-            [DataRow("\\", "\\\\", true)]
-            [DataRow("/", "\\/", true)]
-            [DataRow("/", "/", false)]
-            [DataRow("\0", "\\u0000", true)]
-            [DataRow("\u0000", "\\u0000", true)]
+            [DataRow("", "", false, false)]
+            [DataRow("\"", "\\\"", false, false)]
+            [DataRow("\"", "\\\"", false, true)]
+            [DataRow("\\", "\\\\", false, false)]
+            [DataRow("\\", "\\\\", false, true)]
+            [DataRow("/", "\\/", false, true)]
+            [DataRow("/", "/", false, false)]
+            [DataRow("\0", "\\u0000", false, true)]
+            [DataRow("\u0000", "\\u0000", false, true)]
 #warning should separators be counted too? [DataRow("\u2028", "\\u2028", true)]
-            [DataRow("\0", "\\u0000", false)]
-            [DataRow("\u0000", "\\u0000", false)]
-            [DataRow("\r", "\\r", false)]
-            [DataRow("\n", "\\n", false)]
-            [DataRow("\t", "\\t", false)]
-            [DataRow("\f", "\\f", false)]
-            [DataRow("\b", "\\b", false)]
-            [DataRow("\r", "\\r", true)]
-            [DataRow("\n", "\\n", true)]
-            [DataRow("\t", "\\t", true)]
-            [DataRow("\f", "\\f", true)]
-            [DataRow("\b", "\\b", true)]
-            [DataRow("afdsafd", "afdsafd", true)]
-            public void FormattedToString(string value, string expectation, bool solidus)
+            [DataRow("\0", "\\u0000", false, false)]
+            [DataRow("\u0000", "\\u0000", false, false)]
+            [DataRow("\r", "\\r", false, false)]
+            [DataRow("\n", "\\n", false, false)]
+            [DataRow("\t", "\\t", false, false)]
+            [DataRow("\f", "\\f", false, false)]
+            [DataRow("\b", "\\b", false, false)]
+            [DataRow("\r", "\\r", false, true)]
+            [DataRow("\n", "\\n", false, true)]
+            [DataRow("\t", "\\t", false, true)]
+            [DataRow("\f", "\\f", false, true)]
+            [DataRow("\b", "\\b", false, true)]
+            [DataRow("afdsafd", "afdsafd", false, true)]
+            public void ConstructedFormattedToString(string value, string expectation, bool preserve, bool solidus)
             {
-                JsonFormatting format = new(stringFormatting: new(solidus));
+                JsonFormatting format = new(stringFormatting: new(preserve, solidus));
                 JsonString v = new(value);
                 Assert.AreEqual(value, v.Value);
                 Assert.AreEqual(value, (string)v);
                 Assert.AreEqual($"\"{expectation}\"", v.ToString(format));
-            } // end FormattedToString()
+            } // end ConstructedFormattedToString()
+
+#warning ParsedFormattedToString
+            /*
+             
+            [DataRow("\"\\u9999\"", "香", "")]
+            [DataRow("\"\\u6038\"", "怸", "")]
+            [DataRow("\"\\u1234\"", "ሴ", "")]
+            [DataRow("\"\\uaFaa\"", "꾪", "")]
+             */
 
             [TestMethod]
             [DataRow("\"\"")]
