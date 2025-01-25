@@ -40,7 +40,15 @@ namespace GSR.Jsonic
         public override int GetHashCode() => Value.GetHashCode();
 
         /// <inheritdoc/>
-        public override bool Equals(object? obj) => obj is JsonBoolean b && b.Value == Value;
+        public override bool Equals(object? obj)
+        {
+            if (obj is JsonBoolean other)
+                return other.Value == Value;
+            else if (obj is bool other2)
+                return other2 == Value;
+
+            return false;
+        } // end Equals()
 
         /// <inheritdoc/>
         public static bool operator ==(JsonBoolean a, JsonBoolean b) => a.Equals(b);

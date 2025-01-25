@@ -105,7 +105,23 @@ namespace GSR.Jsonic
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
         /// <inheritdoc/>
-        public override bool Equals(object? obj) => obj is JsonElement b && b.Type == Type && (Type == JsonType.Null || b.Value.Equals(Value)); // apparently C# == doesn't look up type. using it here, even though overridden in the actual type, fails. Presumably because Value is stored as IJsonComponent? not the realized type?
+        public override bool Equals(object? obj)
+        {
+            if (obj is null)
+                return Type == JsonType.Null;
+
+            if(obj is JsonElement other)
+                return other.Type == Type
+                && (Type == JsonType.Null || other.Value.Equals(Value));
+
+            if (Type != JsonType.Null)
+                return Value.Equals(obj);
+
+            return false;
+        } // end Equals()
+
+#warning maybe override equals against primamatives
+
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
 
@@ -113,7 +129,7 @@ namespace GSR.Jsonic
         public static bool operator ==(JsonElement a, JsonElement b) => a.Equals(b);
 
         /// <inheritdoc/>
-        public static bool operator !=(JsonElement a, JsonElement b) => !a.Equals(b);
+        public static bool operator !=(JsonElement a, JsonElement b) => !(a == b);
 
 
         /// <inheritdoc/>

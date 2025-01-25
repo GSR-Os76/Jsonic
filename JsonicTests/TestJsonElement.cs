@@ -41,6 +41,18 @@ namespace GSR.Tests.Jsonic
             } // end ToStringArray()
 
             [TestMethod]
+            [DataRow("true", true, true)]
+            [DataRow("false", false, true)]
+            [DataRow("false", true, false)]
+            [DataRow("\"\"", "", true)]
+            [DataRow("\"\\r\"", "\r", true)]
+            [DataRow("904", 904L, true)]
+            [DataRow("0.33e-1", .033f, true)]
+            [DataRow("0.33e-1", .033d, true)]
+            public void Equality(string json, object b, bool expectation)
+                => Assert.AreEqual(expectation, JsonElement.ParseJson(json).Equals(b));
+
+            [TestMethod]
             [DataRow(true, false, false)]
             [DataRow(false, true, false)]
             [DataRow(true, true, true)]
