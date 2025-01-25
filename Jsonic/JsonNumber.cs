@@ -141,10 +141,10 @@ namespace GSR.Jsonic
         /// <inheritdoc/>
         public override string ToString(JsonFormatting formatting)
         {
-#warning refactor and document - desparately.
             if (formatting.NumberFormatting.Preserve)
                 return _value;
 
+            bool aid = formatting.NumberFormatting.AllowInsignificantDigits;
             int dp = formatting.NumberFormatting.DecimalPositioning;
             StringBuilder significand = new(Significand);
             bool negative = false;
@@ -160,7 +160,7 @@ namespace GSR.Jsonic
                 if (dp > 0)
                     exponent += PositionDecimalLeft(significand, dp);
                 else if (dp < 0)
-                    exponent += PositionDecimalRight(significand, -dp, formatting.NumberFormatting.AllowInsignificantDigits);
+                    exponent += PositionDecimalRight(significand, -dp, aid);
 
                 // add the exponent after the processed significand
                 significand.Append(formatting.NumberFormatting.CapitalizeExponent ? 'E' : 'e');
@@ -171,45 +171,15 @@ namespace GSR.Jsonic
             else // not placing exponent
             {
                 if (exponent < 0)
-                {
-                    if (significand.Length < -exponent)
-                    {
-                        significand.Insert(0, "0", -exponent - significand.Length);
-                        significand.Insert(0, "0.");
-                        if (formatting.NumberFormatting.AllowInsignificantDigits
-                            && dp < 0)
-                        {
-                            int shift = -dp - (significand.Length - 2);
-                            if (shift > 0)
-                                significand.Append('0', shift);
-                        }
-                    }
-                    else
-                    {
-                        int pos = significand.Length + exponent;
-                        significand.Insert(pos, ".");
-                        if (formatting.NumberFormatting.AllowInsignificantDigits
-                            && dp < 0)
-                        {
-                            int rightHandCount = (significand.Length - 1) - pos;
-                            int shift = -dp - rightHandCount;
-                            if (shift > 0)
-                                significand.Append('0', shift);
-                        }
-
-                        if (pos == 0)
-                            significand.Insert(0, '0');
-                    }
-                }
+                    UnexponentializeNegativeExponent(significand, exponent, aid ? -dp : 0);
                 else
                 {
                     if (exponent > 0) // postive exponent means number of times to multiply by ten, so add that many trailing 0s
                         significand.Append('0', exponent);
 
-                    if (formatting.NumberFormatting.AllowInsignificantDigits 
-                        && dp < 0) // being of positive or 0 exponent will not contain a decimal - add as many insignificant 0s as necessary to satisy DecimalPlacement.
+                    if (aid && dp < 0) // being of positive or 0 exponent will not contain a decimal - add as many insignificant 0s as necessary to satisy DecimalPlacement.
                     {
-                        significand.Append('.'); 
+                        significand.Append('.');
                         significand.Append('0', -dp);
                     }
                 }
@@ -220,8 +190,6 @@ namespace GSR.Jsonic
 
             return significand.ToString();
         } // end ToString()
-
-#warning assure decimal placement right hand always fulfillls count, with or without allinsingificant.
 
         /// <summary>
         /// Places the a decimal point in the significand, putting <paramref name="decimalPositioning"/> values to the left. 
@@ -276,7 +244,43 @@ namespace GSR.Jsonic
             return decimalPositioning;
         } // end PositionDecimalRight()
 
+        /// <summary>
+        /// Convert a signficand and exponent, where the exponent is negative, to a single number.
+        /// </summary>
+        /// <param name="unsignedSignificand"></param>
+        /// <param name="exponent"></param>
+        /// <param name="decimalPositioning"></param>
+        private static void UnexponentializeNegativeExponent(StringBuilder unsignedSignificand, int exponent, int decimalPositioning)
+        {
+            if (unsignedSignificand.Length <= -exponent) // significant has less or equal digits than the exponent, thus all significant digits will be right of decimal.
+            {
+                unsignedSignificand.Insert(0, "0", -exponent - unsignedSignificand.Length); // add proceeding 0s to fulfill exponent shift
+                SatisfyInsignificantZeros(unsignedSignificand, decimalPositioning, unsignedSignificand.Length);
+                unsignedSignificand.Insert(0, "0.");
+            }
+            else // more digits than exponent shift, thus decimal is within the significand.
+            {
+                int pos = unsignedSignificand.Length + exponent;
+                SatisfyInsignificantZeros(unsignedSignificand, decimalPositioning, unsignedSignificand.Length - pos);
+                unsignedSignificand.Insert(pos, "."); // all insignficant 0's are after pos, so it should still be valid as the decimal index.
+            }
+        } // end UnexponentializeNegativeExponent()
 
+        /// <summary>
+        /// Add insignificant 0s if required to meet a deired number of digits to the right of the decimal.
+        /// </summary>
+        /// <param name="significand"></param>
+        /// <param name="decimalPositioning"></param>
+        /// <param name="rightHandLength"></param>
+        private static void SatisfyInsignificantZeros(StringBuilder significand, int decimalPositioning, int rightHandLength)
+        {
+            if (decimalPositioning > 0)
+            {
+                int unfullfilled = decimalPositioning - rightHandLength; // calculate how many digits to the right of the decimal positionings aren't occupied, but are desired to be
+                if (unfullfilled > 0)
+                    significand.Append('0', unfullfilled);
+            }
+        } // end SatisfyInsignificantZeros()
 
 
 
