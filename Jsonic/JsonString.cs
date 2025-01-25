@@ -22,21 +22,19 @@ namespace GSR.Jsonic
                     return _value;
 
                 string? val;
-                if (_valueP is null || !_valueP.TryGetTarget(out val))
+#warning what happens if garbage collection occurs after lazy is calculated but before returning?
+                if (!_valueP.Value.TryGetTarget(out val))
                 {
-                    val = Regex.Unescape(_parsed?[1..^1] ?? throw new InvalidOperationException("Value hypothetically shouldn't possibly be null currently."));
-                    if (_valueP is null)
-                        _valueP = new(val);
-                    else
-                        _valueP.SetTarget(val);
+                    val = Regex.Unescape(_parsedJson?[1..^1] ?? throw new InvalidOperationException("Value hypothetically shouldn't possibly be null currently."));
+                    _valueP.Value.SetTarget(val);
                 }
                 return val ?? throw new InvalidOperationException("Value hypothetically shouldn't possibly be null currently.");
             }
         }
 
-        private WeakReference<string>? _valueP;
+        private readonly Lazy<WeakReference<string>> _valueP;
         private readonly string? _value;
-        private readonly string? _parsed;
+        private readonly string? _parsedJson;
 
 
         /// <summary>
@@ -59,8 +57,9 @@ namespace GSR.Jsonic
 
         private JsonString(string? parsed, string? value)
         {
-            _parsed = parsed;
+            _parsedJson = parsed;
             _value = value;
+            _valueP = new Lazy<WeakReference<string>>(() => new WeakReference<string>(Regex.Unescape(_parsedJson?[1..^1] ?? throw new InvalidOperationException("Value hypothetically shouldn't possibly be null currently."))));
         } // end ctor
 
 
@@ -68,8 +67,8 @@ namespace GSR.Jsonic
         /// <inheritdoc/>
         public override string ToString(JsonFormatting formatting)
         {
-            if (formatting.StringFormatting.Preserve && _parsed is not null)
-                return _parsed;
+            if (formatting.StringFormatting.Preserve && _parsedJson is not null)
+                return _parsedJson;
 
             bool solidusFlag = formatting.StringFormatting.EscapeSolidi;
             StringBuilder sb = new(Value.Length + 2);
