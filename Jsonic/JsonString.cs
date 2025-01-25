@@ -14,10 +14,28 @@ namespace GSR.Jsonic
         /// <summary>
         /// The value of the string, without any escaping.
         /// </summary>
-        public string Value => _value.Value;
+        public string Value
+        {
+            get
+            {
+                if (_value is not null)
+                    return _value;
 
-#warning when parsed could do a weak reference thing to avoid doubling memory footprint for data that can be recalculated if needed
-        private readonly Lazy<string> _value;
+                string? val;
+                if (_valueP is null || !_valueP.TryGetTarget(out val))
+                {
+                    val = Regex.Unescape(_parsed?[1..^1] ?? throw new InvalidOperationException("Value hypothetically shouldn't possibly be null currently."));
+                    if (_valueP is null)
+                        _valueP = new(val);
+                    else
+                        _valueP.SetTarget(val);
+                }
+                return val ?? throw new InvalidOperationException("Value hypothetically shouldn't possibly be null currently.");
+            }
+        }
+
+        private WeakReference<string>? _valueP;
+        private readonly string? _value;
         private readonly string? _parsed;
 
 
@@ -32,14 +50,14 @@ namespace GSR.Jsonic
         /// <param name="value">The value to be represented by the <see cref="JsonString"/>, understood as having no escape codes.</param>
         /// <exception cref="MalformedJsonException">String wasn't in valid Json string format.</exception>
         public JsonString(string value)
-            : this(null, new Lazy<string>(() => value))
+            : this(null, value)
         {
 #if ASSERT
             value.IsNotNull();
 #endif
         } // end ctor
 
-        private JsonString(string? parsed, Lazy<string> value)
+        private JsonString(string? parsed, string? value)
         {
             _parsed = parsed;
             _value = value;
@@ -137,7 +155,7 @@ namespace GSR.Jsonic
 
             string s = m.Value;
             remainder = parse[s.Length..^0];
-            return new(s, new Lazy<string>(() => Regex.Unescape(s[1..^1])));
+            return new(s, null);
         } // end ParseJson()
 
         /// <summary>
