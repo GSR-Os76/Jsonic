@@ -1,5 +1,6 @@
 ﻿using GSR.Jsonic.Formatting;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace GSR.Jsonic
@@ -7,21 +8,29 @@ namespace GSR.Jsonic
     /// <summary>
     /// Representation of a json object.
     /// </summary>
-    public sealed class JsonObject : AJsonValue, IEnumerable<KeyValuePair<JsonString, JsonElement>>
+    public sealed class JsonObject : AJsonValue, IDictionary<JsonString, JsonElement>
     {
-        private readonly Dictionary<JsonString, JsonElement> _elements;
+        private readonly IDictionary<JsonString, JsonElement> _elements;
 
 
 
-        /// <summary>
-        /// Get a <see cref="ICollection{T}"/> of all keys in the object.
-        /// </summary>
-        public ICollection<JsonString> Keys => _elements.Keys;
 
         /// <summary>
         /// Get the current number of key value pairs in the object
         /// </summary>
         public int Count => _elements.Count;
+
+        /// <inheritdoc/>
+        public bool IsReadOnly => false;
+
+
+        /// <inheritdoc/>
+        public ICollection<JsonString> Keys => _elements.Keys;
+
+
+        /// <inheritdoc/>
+        public ICollection<JsonElement> Values => _elements.Values;
+
 
         /// <summary>
         /// Get or set the value associated with the <paramref name="key"/>.
@@ -52,7 +61,7 @@ namespace GSR.Jsonic
         /// <inheritdoc/>
         public JsonObject()
         {
-            _elements = new();
+            _elements = new Dictionary<JsonString, JsonElement>();
         } // end constructor
 
         /// <inheritdoc/>
@@ -68,7 +77,7 @@ namespace GSR.Jsonic
                 kvp.Value.IsNotNull();
             }
 #endif
-            _elements = new(elements);
+            _elements = new Dictionary<JsonString, JsonElement>(elements);
         } // end constructor
 
 
@@ -102,6 +111,23 @@ namespace GSR.Jsonic
             return this;
         } // end Add()
 
+        /// <inheritdoc/>
+        public void Add(KeyValuePair<JsonString, JsonElement> item) => _elements.Add(item);
+
+        void IDictionary<JsonString, JsonElement>.Add(JsonString key, JsonElement value) => _elements.Add(key, value);
+
+        /// <summary>
+        /// Remove all the elements from the array.
+        /// </summary>
+        /// <returns>this</returns>
+        public JsonObject Clear()
+        {
+            _elements.Clear();
+            return this;
+        } // end Clear()
+
+        void ICollection<KeyValuePair<JsonString, JsonElement>>.Clear() => _elements.Clear();
+
         /// <summary>
         /// Check if the object has a propety with the<paramref name="key"/>.
         /// </summary>
@@ -114,6 +140,9 @@ namespace GSR.Jsonic
 #endif
             return _elements.ContainsKey(key);
         } // end ContainsKey.
+
+        /// <inheritdoc/>
+        public bool Contains(KeyValuePair<JsonString, JsonElement> item) => _elements.Contains(item);
 
         /// <summary>
         /// Does nothing if not contained, else remove value paired with the key.
@@ -128,6 +157,26 @@ namespace GSR.Jsonic
             _elements.Remove(key);
             return this;
         } // end Remove()
+
+        bool IDictionary<JsonString, JsonElement>.Remove(JsonString key) => _elements.Remove(key);
+
+        /// <inheritdoc/>
+        public bool Remove(KeyValuePair<JsonString, JsonElement> item) => _elements.Remove(item);
+
+
+
+        /// <inheritdoc/>
+        public bool TryGetValue(JsonString key, [MaybeNullWhen(false)] out JsonElement value) => _elements.TryGetValue(key, out value);
+
+        /// <inheritdoc/>
+        public void CopyTo(KeyValuePair<JsonString, JsonElement>[] array, int arrayIndex) => _elements.CopyTo(array, arrayIndex);
+
+
+
+        /// <inheritdoc/>
+        public IEnumerator<KeyValuePair<JsonString, JsonElement>> GetEnumerator() => _elements.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 
 
@@ -255,12 +304,5 @@ namespace GSR.Jsonic
         /// <returns>A JsonObject containing the parsed Json value.</returns>
         /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
         public static JsonObject ParseJson(string json) => Util.RequiredEmptyRemainder(ParseJson, json);
-
-
-
-        /// <inheritdoc/>
-        public IEnumerator<KeyValuePair<JsonString, JsonElement>> GetEnumerator() => _elements.GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     } // end class
 } // end namespace

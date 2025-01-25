@@ -71,7 +71,6 @@ namespace GSR.Jsonic
             return this;
         } // end Add()
 
-        /// <inheritdoc/>
         void ICollection<JsonElement>.Add(JsonElement item) => _elements.Add(item);
 
         /// <summary>
@@ -84,7 +83,6 @@ namespace GSR.Jsonic
             return this;
         } // end Clear()
 
-        /// <inheritdoc/>
         void ICollection<JsonElement>.Clear() => _elements.Clear();
 
         /// <summary>
@@ -116,7 +114,6 @@ namespace GSR.Jsonic
             return this;
         } // end RemoveAt()
 
-        /// <inheritdoc/>
         void IList<JsonElement>.RemoveAt(int index) => _elements.RemoveAt(index);
 
 
