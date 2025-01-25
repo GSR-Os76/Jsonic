@@ -290,44 +290,39 @@ namespace GSR.Jsonic
         /// <inheritdoc/>
         public override bool Equals(object? obj)
         {
-#warning Note: might be better to call corresponding AsX method, and catch the overflow exception
             if (obj is JsonNumber other1)
                 return other1._significand.Value.Equals(_significand.Value)
                 && other1._exponent.Value.Equals(_exponent.Value);
-            else if (obj is sbyte other2)
-                return ((JsonNumber)other2)._significand.Value.Equals(_significand.Value)
-                && ((JsonNumber)other2)._exponent.Value.Equals(_exponent.Value);
-            else if (obj is byte other3)
-                return ((JsonNumber)other3)._significand.Value.Equals(_significand.Value)
-                && ((JsonNumber)other3)._exponent.Value.Equals(_exponent.Value);
-            else if (obj is short other4)
-                return ((JsonNumber)other4)._significand.Value.Equals(_significand.Value)
-                && ((JsonNumber)other4)._exponent.Value.Equals(_exponent.Value);
-            else if (obj is ushort other5)
-                return ((JsonNumber)other5)._significand.Value.Equals(_significand.Value)
-                && ((JsonNumber)other5)._exponent.Value.Equals(_exponent.Value);
-            else if (obj is int other6)
-                return ((JsonNumber)other6)._significand.Value.Equals(_significand.Value)
-                && ((JsonNumber)other6)._exponent.Value.Equals(_exponent.Value);
-            else if (obj is uint other7)
-                return ((JsonNumber)other7)._significand.Value.Equals(_significand.Value)
-                && ((JsonNumber)other7)._exponent.Value.Equals(_exponent.Value);
-            else if (obj is long other8)
-                return ((JsonNumber)other8)._significand.Value.Equals(_significand.Value)
-                && ((JsonNumber)other8)._exponent.Value.Equals(_exponent.Value);
-            else if (obj is ulong other9)
-                return ((JsonNumber)other9)._significand.Value.Equals(_significand.Value)
-                && ((JsonNumber)other9)._exponent.Value.Equals(_exponent.Value);
-            else if (obj is float other10)
-                return ((JsonNumber)other10)._significand.Value.Equals(_significand.Value)
-                && ((JsonNumber)other10)._exponent.Value.Equals(_exponent.Value);
-            else if (obj is double other11)
-                return ((JsonNumber)other11)._significand.Value.Equals(_significand.Value)
-                && ((JsonNumber)other11)._exponent.Value.Equals(_exponent.Value);
-            else if (obj is decimal other12)
-                return ((JsonNumber)other12)._significand.Value.Equals(_significand.Value)
-                && ((JsonNumber)other12)._exponent.Value.Equals(_exponent.Value);
 
+            try
+            {
+                if (obj is sbyte other2)
+                    return other2 == this;
+                else if (obj is byte other3)
+                    return other3 == this;
+                else if (obj is short other4)
+                    return other4 == this;
+                else if (obj is ushort other5)
+                    return other5 == this;
+                else if (obj is int other6)
+                    return other6 == this;
+                else if (obj is uint other7)
+                    return other7 == this;
+                else if (obj is long other8)
+                    return other8 == this;
+                else if (obj is ulong other9)
+                    return other9 == this;
+                else if (obj is float other10)
+                    return other10 == this;
+                else if (obj is double other11)
+                    return other11 == this;
+                else if (obj is decimal other12)
+                    return other12 == this;
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }            
             return false;
         } // end equals
 

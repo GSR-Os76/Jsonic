@@ -253,6 +253,8 @@ namespace GSR.Tests.Jsonic
             [DataRow("5", "5", false)]
             [DataRow("5", (byte)5, true)]
             [DataRow("34352345", 34352345, true)]
+            [DataRow("34352345", (byte)255, false)] // too large for compared type
+            [DataRow("34352345000000000000000000000e100", (float)423.324, false)] // too large for compared type
             [DataRow("12.444E-2", .12444f, true)]
             [DataRow("12.444E-3", .12444f, false)]
             public void HeterotypicEquals(string a, object b, bool expectation) => Assert.AreEqual(expectation, JsonNumber.ParseJson(a).Equals(b));
