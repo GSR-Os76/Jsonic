@@ -125,6 +125,30 @@ namespace GSR.Tests.Jsonic
             [DataRow("[0, -1]")]
             public void ParseJson(string json)
                 => JsonArray.ParseJson(json);
+
+            [TestMethod]
+            public void Add()
+            {
+                JsonArray arr = new JsonArray().Add(null);
+                Assert.AreEqual(new JsonElement(), arr[0]);
+            } // end Add()
+
+/*            [TestMethod]
+            public void IndexerSet()
+            {
+                JsonArray arr = new();
+#pragma warning disable CS8625
+                arr[0] = null;
+#pragma warning restore CS8625 
+                Assert.AreEqual(new JsonElement(), arr[0]);
+            } // end IndexerSet()*/
+
+            [TestMethod]
+            public void InsertAt()
+            {
+                JsonArray arr = new JsonArray().InsertAt(0, null);
+                Assert.AreEqual(new JsonElement(), arr[0]);
+            } // end InsertAt()
         } // end inner class Valid
 
         [TestClass]
@@ -152,9 +176,6 @@ namespace GSR.Tests.Jsonic
 
 #pragma warning disable CS8625
 #pragma warning disable CS8600
-            [TestMethod]
-            [ExpectedException(typeof(ArgumentNullException))]
-            public void IndexerSet() => new JsonArray()[0] = null;
 
             [TestMethod]
             [ExpectedException(typeof(ArgumentNullException))]
@@ -180,17 +201,6 @@ namespace GSR.Tests.Jsonic
             [ExpectedException(typeof(ArgumentNullException))]
             public void ConstructNullContainingParams()
                 => new JsonArray(2, null);
-
-            [TestMethod]
-            [ExpectedException(typeof(ArgumentNullException))]
-            public void Add()
-                => new JsonArray().Add(null);
-#warning make this legal
-
-            [TestMethod]
-            [ExpectedException(typeof(ArgumentNullException))]
-            public void InsertAt()
-                => new JsonArray().InsertAt(0, null);
 
             [TestMethod]
             [ExpectedException(typeof(ArgumentNullException))]

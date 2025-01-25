@@ -29,13 +29,7 @@ namespace GSR.Jsonic
         public JsonElement this[int index]
         {
             get => _elements[index];
-            set
-            {
-#if DEBUG
-                value.IsNotNull();
-#endif
-                _elements[index] = value;
-            }
+            set => _elements[index] = value ?? (JsonElement)JsonNull.NULL;
         } // end indexer
 
 
@@ -62,16 +56,13 @@ namespace GSR.Jsonic
         /// Add a new <paramref name="element"/> to the end of the array.
         /// </summary>
         /// <param name="element">this</param>
-        public JsonArray Add(JsonElement element)
+        public JsonArray Add(JsonElement? element)
         {
-#if DEBUG
-            element.IsNotNull();
-#endif
-            _elements.Add(element);
+            _elements.Add(element ?? (JsonElement)JsonNull.NULL);
             return this;
         } // end Add()
 
-        void ICollection<JsonElement>.Add(JsonElement item) => _elements.Add(item);
+        void ICollection<JsonElement>.Add(JsonElement? item) => _elements.Add(item ?? (JsonElement)JsonNull.NULL);
 
         /// <summary>
         /// Remove all the elements from the array.
@@ -91,17 +82,14 @@ namespace GSR.Jsonic
         /// <param name="index"></param>
         /// <param name="element"></param>
         /// <returns>this</returns>
-        public JsonArray InsertAt(int index, JsonElement element)
+        public JsonArray InsertAt(int index, JsonElement? element)
         {
-#if DEBUG
-            element.IsNotNull();
-#endif
-            _elements.Insert(index, element);
+            _elements.Insert(index, element ?? (JsonElement)JsonNull.NULL);
             return this;
         } // end InsertAt()
 
         /// <inheritdoc/>
-        public void Insert(int index, JsonElement item) => _elements.Insert(index, item);
+        public void Insert(int index, JsonElement? item) => _elements.Insert(index, item ?? (JsonElement)JsonNull.NULL);
 
         /// <summary>
         /// Remove the element at the specified index.

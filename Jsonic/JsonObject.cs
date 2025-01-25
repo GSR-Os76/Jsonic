@@ -48,9 +48,8 @@ namespace GSR.Jsonic
             {
 #if DEBUG
                 key.IsNotNull();
-                value.IsNotNull();
 #endif
-                _elements[key] = value;
+                _elements[key] = value ?? (JsonElement)JsonNull.NULL;
             }
         } // end indexer
 
@@ -99,20 +98,19 @@ namespace GSR.Jsonic
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public JsonObject Add(JsonString key, JsonElement value)
+        public JsonObject Add(JsonString key, JsonElement? value)
         {
 #if DEBUG
             key.IsNotNull();
-            value.IsNotNull();
 #endif
-            _elements.Add(key, value);
+            _elements.Add(key, value ?? (JsonElement)JsonNull.NULL);
             return this;
         } // end Add()
 
         /// <inheritdoc/>
         public void Add(KeyValuePair<JsonString, JsonElement> item) => _elements.Add(item);
 
-        void IDictionary<JsonString, JsonElement>.Add(JsonString key, JsonElement value) => _elements.Add(key, value);
+        void IDictionary<JsonString, JsonElement>.Add(JsonString key, JsonElement? value) => _elements.Add(key, value ?? (JsonElement)JsonNull.NULL);
 
         /// <summary>
         /// Remove all the elements from the array.

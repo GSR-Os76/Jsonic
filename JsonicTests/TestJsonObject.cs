@@ -153,6 +153,23 @@ namespace GSR.Tests.Jsonic
             {
                 JsonObject.ParseJson(json);
             } // end ParseJson()
+
+            [TestMethod]
+            public void Add()
+            {
+                JsonObject obj = new JsonObject().Add("", null);
+                Assert.AreEqual(new JsonElement(), obj[""]);
+            } // end Add()
+
+            [TestMethod]
+            public void IndexerSet()
+            {
+                JsonObject obj = new();
+#pragma warning disable CS8625
+                obj[string.Empty] = null;
+#pragma warning restore CS8625 
+                Assert.AreEqual(new JsonElement(), obj[""]);
+            } // end IndexerSet()
         } // end inner class Valid
 
         [TestClass]
@@ -198,10 +215,6 @@ namespace GSR.Tests.Jsonic
 
             [TestMethod]
             [ExpectedException(typeof(ArgumentNullException))]
-            public void IndexerSet() => new JsonObject()[string.Empty] = null;
-
-            [TestMethod]
-            [ExpectedException(typeof(ArgumentNullException))]
             public void ConstructNull1()
                 => new JsonObject((KeyValuePair<JsonString, JsonElement>[])null);
 
@@ -209,11 +222,6 @@ namespace GSR.Tests.Jsonic
             [ExpectedException(typeof(ArgumentNullException))]
             public void ConstructNull2()
                 => new JsonObject((IEnumerable<KeyValuePair<JsonString, JsonElement>>)null);
-
-            [TestMethod]
-            [ExpectedException(typeof(ArgumentNullException))]
-            public void Add1()
-                => new JsonObject().Add("", null);
 
             [TestMethod]
             [ExpectedException(typeof(ArgumentNullException))]
