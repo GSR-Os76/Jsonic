@@ -39,14 +39,14 @@ namespace GSR.Jsonic
         {
             get
             {
-#if DEBUG
+#if ASSERT
                 key.IsNotNull();
 #endif
                 return _elements[key];
             }
             set
             {
-#if DEBUG
+#if ASSERT
                 key.IsNotNull();
 #endif
                 _elements[key] = value ?? (JsonElement)JsonNull.NULL;
@@ -67,7 +67,7 @@ namespace GSR.Jsonic
         /// <inheritdoc/>
         public JsonObject(IEnumerable<KeyValuePair<JsonString, JsonElement>> elements)
         {
-#if DEBUG
+#if ASSERT
             foreach (KeyValuePair<JsonString, JsonElement> kvp in elements.IsNotNull())
             {
                 kvp.Key.IsNotNull();
@@ -86,7 +86,7 @@ namespace GSR.Jsonic
         /// <returns></returns>
         public JsonObject Add(JsonString key)
         {
-#if DEBUG
+#if ASSERT
             key.IsNotNull();
 #endif
             return Add(key, new JsonElement());
@@ -100,7 +100,7 @@ namespace GSR.Jsonic
         /// <returns></returns>
         public JsonObject Add(JsonString key, JsonElement? value)
         {
-#if DEBUG
+#if ASSERT
             key.IsNotNull();
 #endif
             _elements.Add(key, value ?? (JsonElement)JsonNull.NULL);
@@ -131,7 +131,7 @@ namespace GSR.Jsonic
         /// <returns></returns>
         public bool ContainsKey(JsonString key)
         {
-#if DEBUG
+#if ASSERT
             key.IsNotNull();
 #endif
             return _elements.ContainsKey(key);
@@ -147,7 +147,7 @@ namespace GSR.Jsonic
         /// <returns>this</returns>
         public JsonObject Remove(JsonString key)
         {
-#if DEBUG
+#if ASSERT
             key.IsNotNull();
 #endif
             _elements.Remove(key);
@@ -249,7 +249,7 @@ namespace GSR.Jsonic
         /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
         public static JsonObject ParseJson(string json, out string remainder)
         {
-#if DEBUG
+#if ASSERT
             json.IsNotNull();
 #endif
             string parse = json.TrimStart();

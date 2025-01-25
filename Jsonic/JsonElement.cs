@@ -103,7 +103,6 @@ namespace GSR.Jsonic
         /// <inheritdoc/>
         public override int GetHashCode() => Tuple.Create(Value, Type).GetHashCode();
 
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
         /// <inheritdoc/>
         public override bool Equals(object? obj)
         {
@@ -112,17 +111,15 @@ namespace GSR.Jsonic
 
             if(obj is JsonElement other)
                 return other.Type == Type
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 && (Type == JsonType.Null || other.Value.Equals(Value));
 
             if (Type != JsonType.Null)
                 return Value.Equals(obj);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
             return false;
         } // end Equals()
-
-#warning maybe override equals against primamatives
-
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
 
         /// <inheritdoc/>
@@ -223,7 +220,7 @@ namespace GSR.Jsonic
         /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
         public static JsonElement ParseJson(string json, out string remainder)
         {
-#if DEBUG
+#if ASSERT
             json.IsNotNull();
 #endif
             string parse = json.TrimStart();

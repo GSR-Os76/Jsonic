@@ -43,7 +43,7 @@ namespace GSR.Jsonic
         /// <inheritdoc/>
         public JsonArray(IEnumerable<JsonElement> elements)
         {
-#if DEBUG
+#if ASSERT
             foreach (JsonElement element in elements.IsNotNull())
                 element.IsNotNull();
 #endif
@@ -202,7 +202,7 @@ namespace GSR.Jsonic
         /// <exception cref="MalformedJsonException">A value couldn't be recognized at the string's beginning, or an error occured while parsing the predicted value.</exception>
         public static JsonArray ParseJson(string json, out string remainder)
         {
-#if DEBUG
+#if ASSERT
             json.IsNotNull();
 #endif
             string parse = json.TrimStart();
