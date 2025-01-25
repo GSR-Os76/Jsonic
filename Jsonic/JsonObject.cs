@@ -134,33 +134,52 @@ namespace GSR.Jsonic
         /// <inheritdoc/>
         public override string ToString(JsonFormatting formatting)
         {
-            throw new NotImplementedException();
-            bool compress = false;
             StringBuilder sb = new("{");
-            if (!compress)
-                sb.Append('\r');
+            if (_elements.Count == 0)
+                for (int i = 0; i < formatting.ObjectFormatting.Formatting.EmptyCollectionNewLining; i++)
+                    sb.Append(formatting.NewLineType.Str());
+            else
+                WriteElements(sb, formatting);
+            sb.Append('}');
+            string s = sb.ToString();
+            return sb.ToString();
+        } // end ToString()
 
-            JsonString[] keys = _elements.Keys.ToArray();
-            for (int i = 0; i < keys.Length; i++)
+        private void WriteElements(StringBuilder stringBuilder, JsonFormatting formatting)
+        {
+            if (formatting.ObjectFormatting.Formatting.NewLineProceedingFirstElement)
             {
-                JsonString key = keys[i];
-                sb.Append(compress
-                    ? $"{key}:{_elements[key].ToString(formatting)}"
-                    : $"{key}: {_elements[key].ToString()}");//.Entabbed());
+                stringBuilder.Append(formatting.NewLineType.Str());
+                stringBuilder.Append(formatting.ObjectFormatting.Formatting.Indentation);
+            }
+
+            int i = 0;
+            foreach (KeyValuePair<JsonString, JsonElement> kvp in _elements)
+            {
+                stringBuilder.Append(kvp.Key.ToString(formatting));
+                stringBuilder.Append(formatting.ObjectFormatting.PostKeyWhitespace);
+                stringBuilder.Append(':');
+                stringBuilder.Append(formatting.ObjectFormatting.PreValueWhitespace);
+                stringBuilder.Append(kvp.Value.ToString(formatting).Entabbed(formatting.NewLineType, formatting.ObjectFormatting.Formatting.Indentation));
+
 
                 if (i != _elements.Count - 1)
                 {
-                    sb.Append(',');
-                    if (!compress)
-                        sb.Append('\r');
+                    stringBuilder.Append(',');
+                    if (formatting.ObjectFormatting.Formatting.NewLineBetweenElements)
+                    {
+                        stringBuilder.Append(formatting.NewLineType.Str());
+                        stringBuilder.Append(formatting.ObjectFormatting.Formatting.Indentation);
+                    }
+                    else
+                        stringBuilder.Append(formatting.ObjectFormatting.Formatting.PostCommaSpacing);
                 }
+                i++;
             }
-            if (!compress)
-                sb.Append('\r');
 
-            sb.Append('}');
-            return sb.ToString();
-        } // end AsString()
+            if (formatting.ObjectFormatting.Formatting.NewLineSucceedingLastElement)
+                stringBuilder.Append(formatting.NewLineType.Str());
+        } // end WriteElements()
 
         /// <inheritdoc/>
         public override bool Equals(object? obj) => obj is JsonObject b && b.Count == Count && b._elements.Keys.All((x) => ContainsKey(x) && b[x].Equals(this[x]));

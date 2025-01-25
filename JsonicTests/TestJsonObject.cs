@@ -1,4 +1,5 @@
 ﻿using GSR.Jsonic;
+using GSR.Jsonic.Formatting;
 
 namespace GSR.Tests.Jsonic
 {
@@ -96,56 +97,100 @@ namespace GSR.Tests.Jsonic
             Assert.IsFalse(JsonObject.ParseJson(json).Equals(null));
         } // end TestNullEquality()
 
-        #region test ToStringCompressed()
-/*        [TestMethod]
-        public void TestToCompressedStringEmpty()
-        {
-            Assert.AreEqual("{}", new JsonObject().ToCompressedString());
-        } // end TestToCompressedStringEmpty()
 
-        [TestMethod]
-        public void TestToCompressedString2()
-        {
-            Assert.AreEqual("{\"r\":false,\"nrew\":null}", new JsonObject().Add("r", false).Add("nrew").ToCompressedString());
-        } // end TestToCompressedString2()
-
-        [TestMethod]
-        public void TestToCompressedStringNested1()
-        {
-            Assert.AreEqual("{\"Data\":{},\"nrew\":70}", new JsonObject().Add("Data", new JsonObject()).Add("nrew", new JsonNumber(70)).ToCompressedString());
-        } // end TestToCompressedStringNested1()
-
-        [TestMethod]
-        public void TestToCompressedStringNested2()
-        {
-            Assert.AreEqual("{\"position\":[-12,0,403]}", new JsonObject().Add("position", new JsonArray().Add(-12).Add(0).Add(403)).ToCompressedString());
-        } // end TestToCompressedStringNested2()*/
-        #endregion
 
         #region test ToString()
         [TestMethod]
-        public void TestToStringEmpty()
+        [DataRow("{\r\r}", NewLineType.CR, 2, false, false, false, "", "", "", "")]
+        [DataRow("{\r\r}", NewLineType.CR, 2, true, true, true, "", "", "", "")]
+        [DataRow("{\n\n\n\n}", NewLineType.LF, 4, false, false, false, " \t ", "", " ", " ")]
+        public void ToStringEmpty(string expectation, NewLineType newLineType, int emptySpacing,
+            bool newLineProceedingFirstElement,
+            bool newLineBetweenElements,
+            bool newLineSucceedingLastElement,
+            string indentation,
+            string postCommaSeparation,
+            string postkeySpacing,
+            string preValueSpacing)
         {
-            Assert.AreEqual("{\r\r}", new JsonObject().ToString());
-        } // end TestToStringEmpty()
+            JsonObject data = new();
+            Assert.AreEqual(expectation, data.ToString(new(
+                newLineType: newLineType,
+                objectFormatting: new(
+                    new(emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation),
+                    postkeySpacing,
+                    preValueSpacing))));
+        } // end ToStringEmpty()
 
         [TestMethod]
-        public void TestToString2()
+        [DataRow("{\"r\" : false,\"nrew\" : null}", NewLineType.CRLF, 2, false, false, false, "", "", " ", " ")]
+        [DataRow("{\r\n\"r\" : false,\"nrew\" : null}", NewLineType.CRLF, 2, true, false, false, "", "", " ", " ")]
+        [DataRow("{\"r\" : false, \"nrew\" : null}", NewLineType.CRLF, 2, false, false, false, "", " ", " ", " ")]
+        [DataRow("{\r\n\"r\" : false, \"nrew\" : null}", NewLineType.CRLF, 2, true, false, false, "", " ", " ", " ")]
+        [DataRow("{\r\n\"r\" : false,\r\n\"nrew\" : null\r\n}", NewLineType.CRLF, 2, true, true, true, "", " ", " ", " ")]
+        [DataRow("{\r\n   \"r\" : false,\r\n   \"nrew\" : null\r\n}", NewLineType.CRLF, 2, true, true, true, "   ", " ", " ", " ")]
+        public void ToString1(string expectation, NewLineType newLineType, int emptySpacing,
+            bool newLineProceedingFirstElement,
+            bool newLineBetweenElements,
+            bool newLineSucceedingLastElement,
+            string indentation,
+            string postCommaSeparation,
+            string postkeySpacing,
+            string preValueSpacing)
         {
-            Assert.AreEqual("{\r\t\"r\": false,\r\t\"nrew\": null\r}", new JsonObject().Add("r", false).Add("nrew").ToString());
-        } // end TestToString2()
+            JsonObject data = new JsonObject().Add("r", false).Add("nrew");
+            Assert.AreEqual(expectation, data.ToString(new(
+                newLineType: newLineType,
+                objectFormatting: new(
+                    new(emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation),
+                    postkeySpacing,
+                    preValueSpacing))));
+        } // end ToString1()
+
 
         [TestMethod]
-        public void TestToStringNested1()
+        [DataRow("{\r\t\"Data\": {\r\t\r\t},\r\t\"nrew\": 70\r}", NewLineType.CR, 2, true, true, true, "\t", "", "", " ")]
+        [DataRow("{\r\t\"Data\":{\r\t\r\t},\r\t\"nrew\":70\r}", NewLineType.CR, 2, true, true, true, "\t", "", "", "")]
+        public void ToStringNested1(string expectation, NewLineType newLineType, int emptySpacing,
+            bool newLineProceedingFirstElement,
+            bool newLineBetweenElements,
+            bool newLineSucceedingLastElement,
+            string indentation,
+            string postCommaSeparation,
+            string postkeySpacing,
+            string preValueSpacing)
         {
-            Assert.AreEqual("{\r\t\"Data\": {\r\t\r\t},\r\t\"nrew\": 70\r}", new JsonObject().Add("Data", new JsonObject()).Add("nrew", new JsonNumber(70)).ToString());
-        } // end TestToStringNested1()
+            JsonObject data = new JsonObject().Add("Data", new JsonObject()).Add("nrew", 70);
+            Assert.AreEqual(expectation, data.ToString(new(
+                newLineType: newLineType,
+                objectFormatting: new(
+                    new(emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation),
+                    postkeySpacing,
+                    preValueSpacing))));
+        } // end ToStringNested1()
 
         [TestMethod]
-        public void TestToStringNested2()
+        [DataRow("{\r\t\"position\":[\r\t\t-12,\r\t\t0,\r\t\t403\r\t]\r}", NewLineType.CR, 2, true, true, true, "\t", "", "", "")]
+        [DataRow("{\"position\":[-12,0,403]}", NewLineType.NONE, 2, true, true, true, "", "", "", "")]
+        public void ToStringNested2(string expectation, NewLineType newLineType, int emptySpacing,
+            bool newLineProceedingFirstElement,
+            bool newLineBetweenElements,
+            bool newLineSucceedingLastElement,
+            string indentation,
+            string postCommaSeparation,
+            string postkeySpacing,
+            string preValueSpacing)
         {
-            Assert.AreEqual("{\r\t\"position\": [\r\t\t-12,\r\t\t0,\r\t\t403\r\t]\r}", new JsonObject().Add("position", new JsonArray().Add(-12).Add(0).Add(403)).ToString());
-        } // end TestToStringNested2()
+            JsonObject data = new JsonObject().Add("position", new JsonArray().Add(-12).Add(0).Add(403));
+            Assert.AreEqual(expectation, data.ToString(new(
+                newLineType: newLineType,
+                arrayFormatting: new(new(emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation)),
+                objectFormatting: new(
+                    new(emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation),
+                    postkeySpacing,
+                    preValueSpacing))));
+            //Assert.AreEqual(, new JsonObject().Add("position", new JsonArray().Add(-12).Add(0).Add(403)).ToString());
+        } // end ToStringNested2()
         #endregion
 
         [TestMethod]
