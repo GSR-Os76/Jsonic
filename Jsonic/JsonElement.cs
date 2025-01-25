@@ -92,12 +92,12 @@ namespace GSR.Jsonic
         /// <inheritdoc/>
         public override string ToString(JsonFormatting formatting)
         {
-            throw new NotImplementedException();
-            bool compress = false;
             if (Type == JsonType.Null)
                 return JsonNull.JSON_NULL;
 
-            return Value.ToString(formatting);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            return Value.ToString(formatting); // shouuld never be null when JsonType != JsonType.Null
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
         } // end AsStringC()
 
         /// <inheritdoc/>
@@ -238,7 +238,7 @@ namespace GSR.Jsonic
         /// <param name="json">The input string.</param>
         /// <returns>A JsonElement containing the parsed Json value.</returns>
         /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
-        public static JsonElement ParseJson(string json) => JsonUtil.RequiredEmptyRemainder(ParseJson, json);
+        public static JsonElement ParseJson(string json) => Util.RequiredEmptyRemainder(ParseJson, json);
 
     } // end record class
 } // end namespace

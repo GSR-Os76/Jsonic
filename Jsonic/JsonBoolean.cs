@@ -77,10 +77,10 @@ namespace GSR.Jsonic
             switch (parse[0])
             {
                 case 'f':
-                    JsonUtil.RequireAtStart(JSON_FALSE, parse, out remainder);
+                    Util.RequireAtStart(JSON_FALSE, parse, out remainder);
                     return FALSE;
                 case 't':
-                    JsonUtil.RequireAtStart(JSON_TRUE, parse, out remainder);
+                    Util.RequireAtStart(JSON_TRUE, parse, out remainder);
                     return TRUE;
                 default:
                     throw new MalformedJsonException();
@@ -93,7 +93,7 @@ namespace GSR.Jsonic
         /// <param name="json">The input string.</param>
         /// <returns>A JsonBoolean containing the parsed Json value.</returns>
         /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
-        public static JsonBoolean ParseJson(string json) => JsonUtil.RequiredEmptyRemainder(ParseJson, json);
+        public static JsonBoolean ParseJson(string json) => Util.RequiredEmptyRemainder(ParseJson, json);
 
     } // end class
 } // end namespace

@@ -26,10 +26,10 @@
         public JsonObjectFormatting(JsonCollectionFormatting formatting, string postKeyWhitespace, string preValueWhitespace)
         {
 #if DEBUG
-            if (!JsonUtil.ANCHORED_WHITESPACE_REGEX.IsMatch(postKeyWhitespace))
+            if (!Util.ANCHORED_WHITESPACE_REGEX.IsMatch(postKeyWhitespace))
                 throw new ArgumentException();
             
-            if (!JsonUtil.ANCHORED_WHITESPACE_REGEX.IsMatch(preValueWhitespace))
+            if (!Util.ANCHORED_WHITESPACE_REGEX.IsMatch(preValueWhitespace))
                 throw new ArgumentException();
 #endif
             Formatting = formatting;

@@ -145,29 +145,44 @@ namespace GSR.Jsonic
         /// <inheritdoc/>
         public override string ToString(JsonFormatting formatting) 
         {
-            throw new NotImplementedException();
-            bool compress = false;
             StringBuilder sb = new("[");
-            if (!compress)
-                sb.Append('\r');
+            if (_elements.Count == 0)
+                for (int i = 0; i < formatting.ArrayFormatting.Formatting.EmptyCollectionNewLining; i++)
+                    sb.Append(formatting.NewLineType.Str());
+            else
+                WriteElements(sb, formatting);            
+            sb.Append(']');
+            return sb.ToString();
+        } // end ToString()
+
+        private void WriteElements(StringBuilder stringBuilder, JsonFormatting formatting) 
+        {
+            if (formatting.ArrayFormatting.Formatting.NewLineProceedingFirstElement)
+            {
+                stringBuilder.Append(formatting.NewLineType.Str());
+                stringBuilder.Append(formatting.ArrayFormatting.Formatting.Indentation);
+
+            }
 
             for (int i = 0; i < _elements.Count; i++)
             {
-                sb.Append(compress ? _elements[i].ToString(formatting) : _elements[i].ToString().Entabbed());
-
+                stringBuilder.Append(_elements[i].ToString(formatting).Entabbed(formatting.NewLineType, formatting.ArrayFormatting.Formatting.Indentation));
                 if (i != _elements.Count - 1)
                 {
-                    sb.Append(',');
-                    if (!compress)
-                        sb.Append('\r');
+                    stringBuilder.Append(',');
+                    if (formatting.ArrayFormatting.Formatting.NewLineBetweenElements)
+                    {
+                        stringBuilder.Append(formatting.NewLineType.Str());
+                        stringBuilder.Append(formatting.ArrayFormatting.Formatting.Indentation);
+                    }
+                    else
+                        stringBuilder.Append(formatting.ArrayFormatting.Formatting.PostCommaSpacing);
                 }
             }
-            if (!compress)
-                sb.Append('\r');
 
-            sb.Append(']');
-            return sb.ToString();
-        } // end AsString()
+            if (formatting.ArrayFormatting.Formatting.NewLineSucceedingLastElement)
+                stringBuilder.Append(formatting.NewLineType.Str());
+        } // end WriteElements()
 
         /// <inheritdoc/>
         public override int GetHashCode() => _elements.GetHashCode();
@@ -244,6 +259,6 @@ namespace GSR.Jsonic
         /// <param name="json">The input string.</param>
         /// <returns>A JsonArray containing the parsed Json value.</returns>
         /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
-        public static JsonArray ParseJson(string json) => JsonUtil.RequiredEmptyRemainder(ParseJson, json);
+        public static JsonArray ParseJson(string json) => Util.RequiredEmptyRemainder(ParseJson, json);
     } // end class
 } // end namespace

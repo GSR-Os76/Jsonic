@@ -41,7 +41,7 @@ namespace GSR.Jsonic
             if (parse.Length < 1 || !parse[0].Equals('n'))
                 throw new MalformedJsonException();
 
-            JsonUtil.RequireAtStart(JSON_NULL, parse, out remainder);
+            Util.RequireAtStart(JSON_NULL, parse, out remainder);
             return NULL;
         } // end ParseJson()
 
@@ -51,6 +51,6 @@ namespace GSR.Jsonic
         /// <param name="json">The input string.</param>
         /// <returns>A JsonNull containing the parsed Json value.</returns>
         /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
-        public static JsonNull? ParseJson(string json) => JsonUtil.RequiredEmptyRemainder(ParseJson, json);
+        public static JsonNull? ParseJson(string json) => Util.RequiredEmptyRemainder(ParseJson, json);
     } // end class
 } // end namespace

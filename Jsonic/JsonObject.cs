@@ -146,7 +146,7 @@ namespace GSR.Jsonic
                 JsonString key = keys[i];
                 sb.Append(compress
                     ? $"{key}:{_elements[key].ToString(formatting)}"
-                    : $"{key}: {_elements[key].ToString()}".Entabbed());
+                    : $"{key}: {_elements[key].ToString()}");//.Entabbed());
 
                 if (i != _elements.Count - 1)
                 {
@@ -235,7 +235,7 @@ namespace GSR.Jsonic
         /// <param name="json">The input string.</param>
         /// <returns>A JsonObject containing the parsed Json value.</returns>
         /// <exception cref="MalformedJsonException">If parsing of a value wasn't possible, or there were trailing characters.</exception>
-        public static JsonObject ParseJson(string json) => JsonUtil.RequiredEmptyRemainder(ParseJson, json);
+        public static JsonObject ParseJson(string json) => Util.RequiredEmptyRemainder(ParseJson, json);
 
 
 

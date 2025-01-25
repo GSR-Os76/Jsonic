@@ -1,4 +1,6 @@
-﻿namespace GSR.Jsonic.Formatting
+﻿using System.Data.Common;
+
+namespace GSR.Jsonic.Formatting
 {
     /// <summary>
     /// Formatting defining how to format a <see cref="JsonArray"/> or <see cref="JsonObject"/> in commong.
@@ -29,24 +31,38 @@
         /// Whitespace to add after every single newline for indentation, will be added once per collection body to indicate depth.
         /// </summary>
         public string Indentation { get; } = "    ";
-
+        /// <summary>
+        /// Whitespace to add after every single element separating comma that's not followed by a newline.
+        /// </summary>
+        public string PostCommaSpacing { get; } = " ";
 
 
 
         /// <inheritdoc/>
-        public JsonCollectionFormatting(int emptyCollectionNewlineCount, bool newLineProceedingFirstElement, bool newLineBetweenElements, bool newLineSucceedingLastElement, string indentation) 
+        public JsonCollectionFormatting(
+            int emptyCollectionNewlineCount = 0,
+            bool newLineProceedingFirstElement = true,
+            bool newLineBetweenElements = true,
+            bool newLineSucceedingLastElement = true, 
+            string indentation = "    ", 
+            string postCommaSpacing = "") 
         {
 #if DEBUG
-            if (emptyCollectionNewlineCount > 0)
+            if (emptyCollectionNewlineCount < 0)
                 throw new ArgumentOutOfRangeException(nameof(emptyCollectionNewlineCount));
 
-            if (!JsonUtil.ANCHORED_WHITESPACE_REGEX.IsMatch(indentation))
+            if (!Util.ANCHORED_WHITESPACE_REGEX.IsMatch(indentation))
+                throw new ArgumentException();
+            
+            if (!Util.ANCHORED_WHITESPACE_REGEX.IsMatch(postCommaSpacing))
                 throw new ArgumentException();
 #endif
             EmptyCollectionNewLining = emptyCollectionNewlineCount;
             NewLineProceedingFirstElement = newLineProceedingFirstElement;
             NewLineBetweenElements = newLineBetweenElements;
             NewLineSucceedingLastElement = newLineSucceedingLastElement;
+            Indentation = indentation;
+            PostCommaSpacing = postCommaSpacing;
         } // end ctor
 
     } // end struct
