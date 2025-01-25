@@ -36,10 +36,8 @@ namespace GSR.Tests.Jsonic
             [DataRow("\"f\"", "f")]
             [DataRow("\"u98A3\"", "u98A3")]
             [DataRow("\"n\"", "n")]
-            public void ParseJson(string toParse, string expectation)
-            {
-                Assert.AreEqual(expectation, JsonString.ParseJson(toParse).Value);
-            }// end ParseJson()
+            public void ParseJson(string toParse, string expectation) 
+                => Assert.AreEqual(expectation, JsonString.ParseJson(toParse).Value);
 
             [TestMethod]
             [DataRow("\"\"", "", "")]
@@ -147,9 +145,7 @@ namespace GSR.Tests.Jsonic
             [DataRow("\"\"")]
             [DataRow("\"hnjmkwjn4nbhy5uenj nhjby\"")]
             public void NullEquality(string json)
-            {
-                Assert.IsFalse(JsonString.ParseJson(json).Equals(null));
-            }// end TestNullEquality()
+                => Assert.IsFalse(JsonString.ParseJson(json).Equals(null));
         } // end inner NullEquality Valid
 
         [TestClass]
