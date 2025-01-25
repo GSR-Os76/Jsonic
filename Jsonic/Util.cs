@@ -15,7 +15,7 @@ namespace GSR.Jsonic
         /// <param name="newLineType"></param>
         /// <param name="entabbing"></param>
         /// <returns></returns>
-        internal static string Entabbed(this string s, NewLineType newLineType, string entabbing) => 
+        internal static string Entabbed(this string s, NewLineType newLineType, string entabbing) =>
             newLineType == NewLineType.NONE
             ? s
             : s.Replace(newLineType.Str(), $"{newLineType.Str()}{entabbing}");

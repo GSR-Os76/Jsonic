@@ -140,44 +140,44 @@ namespace GSR.Jsonic
 
 
         /// <inheritdoc/>
-        public override string ToString(JsonFormatting formatting) 
+        public override string ToString(JsonFormatting formatting)
         {
             StringBuilder sb = new("[");
             if (_elements.Count == 0)
-                for (int i = 0; i < formatting.ArrayFormatting.Formatting.EmptyCollectionNewLining; i++)
+                for (int i = 0; i < formatting.ArrayFormatting.EmptyCollectionNewLining; i++)
                     sb.Append(formatting.NewLineType.Str());
             else
-                WriteElements(sb, formatting);            
+                WriteElements(sb, formatting);
             sb.Append(']');
             return sb.ToString();
         } // end ToString()
 
-        private void WriteElements(StringBuilder stringBuilder, JsonFormatting formatting) 
+        private void WriteElements(StringBuilder stringBuilder, JsonFormatting formatting)
         {
-            if (formatting.ArrayFormatting.Formatting.NewLineProceedingFirstElement)
+            if (formatting.ArrayFormatting.NewLineProceedingFirstElement)
             {
                 stringBuilder.Append(formatting.NewLineType.Str());
-                stringBuilder.Append(formatting.ArrayFormatting.Formatting.Indentation);
+                stringBuilder.Append(formatting.ArrayFormatting.Indentation);
 
             }
 
             for (int i = 0; i < _elements.Count; i++)
             {
-                stringBuilder.Append(_elements[i].ToString(formatting).Entabbed(formatting.NewLineType, formatting.ArrayFormatting.Formatting.Indentation));
+                stringBuilder.Append(_elements[i].ToString(formatting).Entabbed(formatting.NewLineType, formatting.ArrayFormatting.Indentation));
                 if (i != _elements.Count - 1)
                 {
                     stringBuilder.Append(',');
-                    if (formatting.ArrayFormatting.Formatting.NewLineBetweenElements)
+                    if (formatting.ArrayFormatting.NewLineBetweenElements)
                     {
                         stringBuilder.Append(formatting.NewLineType.Str());
-                        stringBuilder.Append(formatting.ArrayFormatting.Formatting.Indentation);
+                        stringBuilder.Append(formatting.ArrayFormatting.Indentation);
                     }
                     else
-                        stringBuilder.Append(formatting.ArrayFormatting.Formatting.PostCommaSpacing);
+                        stringBuilder.Append(formatting.ArrayFormatting.PostCommaSpacing);
                 }
             }
 
-            if (formatting.ArrayFormatting.Formatting.NewLineSucceedingLastElement)
+            if (formatting.ArrayFormatting.NewLineSucceedingLastElement)
                 stringBuilder.Append(formatting.NewLineType.Str());
         } // end WriteElements()
 

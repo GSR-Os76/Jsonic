@@ -3,13 +3,8 @@
     /// <summary>
     /// Formatting defining how to format a <see cref="JsonObject"/>.
     /// </summary>
-    public struct JsonObjectFormatting
+    public sealed class JsonObjectFormatting : JsonCollectionFormatting
     {
-        /// <summary>
-        /// Collectionwise formatting of the object.
-        /// </summary>
-        public JsonCollectionFormatting Formatting { get; }
-
         /// <summary>
         /// Whitespace to add after the key in a key value pair.
         /// </summary>
@@ -23,18 +18,31 @@
 
 
         /// <inheritdoc/>
-        public JsonObjectFormatting(JsonCollectionFormatting formatting, string postKeyWhitespace, string preValueWhitespace)
+        public JsonObjectFormatting(
+            int emptyCollectionNewlineCount = 0,
+            bool newLineProceedingFirstElement = true,
+            bool newLineBetweenElements = true,
+            bool newLineSucceedingLastElement = true,
+            string indentation = "    ",
+            string postCommaSpacing = "",
+            string postKeyWhitespace = "",
+            string preValueWhitespace = " ") : base(
+        emptyCollectionNewlineCount,
+        newLineProceedingFirstElement,
+        newLineBetweenElements,
+        newLineSucceedingLastElement,
+        indentation,
+        postCommaSpacing)
         {
 #if DEBUG
             if (!Util.ANCHORED_WHITESPACE_REGEX.IsMatch(postKeyWhitespace))
                 throw new ArgumentException();
-            
+
             if (!Util.ANCHORED_WHITESPACE_REGEX.IsMatch(preValueWhitespace))
                 throw new ArgumentException();
 #endif
-            Formatting = formatting;
             PostKeyWhitespace = postKeyWhitespace;
             PreValueWhitespace = preValueWhitespace;
         } // end ctor
-    } // end struct
+    } // end class
 } // end namespace

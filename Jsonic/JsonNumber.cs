@@ -319,7 +319,7 @@ namespace GSR.Jsonic
                 else if (obj is decimal other12)
                     return other12 == (decimal)this;
             }
-            catch (OverflowException) { }            
+            catch (OverflowException) { }
             return false;
         } // end equals
 

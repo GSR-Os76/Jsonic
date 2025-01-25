@@ -107,8 +107,8 @@ namespace GSR.Tests.Jsonic
         {
             JsonArray data = new();
             Assert.AreEqual(expectation, data.ToString(new(
-                newLineType:newLineType,
-                arrayFormatting:new(new(emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation)))));
+                newLineType: newLineType,
+                arrayFormatting: new(emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation))));
         } // end ToStringEmpty()
 
         [TestMethod]
@@ -129,7 +129,7 @@ namespace GSR.Tests.Jsonic
             JsonArray data = new((JsonElement)new JsonArray());
             Assert.AreEqual(expectation, data.ToString(new(
                             newLineType: newLineType,
-                            arrayFormatting: new(new(emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation)))));
+                            arrayFormatting: new(emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation))));
         } // end ToStringNested1()
 
         [TestMethod]
@@ -147,7 +147,7 @@ namespace GSR.Tests.Jsonic
             JsonArray data = new(new JsonArray(false), true);
             Assert.AreEqual(expectation, data.ToString(new(
                             newLineType: newLineType,
-                            arrayFormatting: new(new(emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation)))));
+                            arrayFormatting: new(emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation))));
         } // end ToStringNested2()
 
         [TestMethod]
@@ -165,7 +165,7 @@ namespace GSR.Tests.Jsonic
             JsonArray data = new(new JsonArray(false), true, "ar\re");
             Assert.AreEqual(expectation, data.ToString(new(
                             newLineType: newLineType,
-                            arrayFormatting: new(new(emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation)))));
+                            arrayFormatting: new(emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation))));
         } // end ToStringNested3()
         #endregion
 

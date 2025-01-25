@@ -117,7 +117,7 @@ namespace GSR.Tests.Jsonic
             Assert.AreEqual(expectation, data.ToString(new(
                 newLineType: newLineType,
                 objectFormatting: new(
-                    new(emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation),
+                    emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation,
                     postkeySpacing,
                     preValueSpacing))));
         } // end ToStringEmpty()
@@ -142,7 +142,7 @@ namespace GSR.Tests.Jsonic
             Assert.AreEqual(expectation, data.ToString(new(
                 newLineType: newLineType,
                 objectFormatting: new(
-                    new(emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation),
+                    emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation,
                     postkeySpacing,
                     preValueSpacing))));
         } // end ToString1()
@@ -164,7 +164,7 @@ namespace GSR.Tests.Jsonic
             Assert.AreEqual(expectation, data.ToString(new(
                 newLineType: newLineType,
                 objectFormatting: new(
-                    new(emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation),
+                    emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation,
                     postkeySpacing,
                     preValueSpacing))));
         } // end ToStringNested1()
@@ -184,9 +184,9 @@ namespace GSR.Tests.Jsonic
             JsonObject data = new JsonObject().Add("position", new JsonArray().Add(-12).Add(0).Add(403));
             Assert.AreEqual(expectation, data.ToString(new(
                 newLineType: newLineType,
-                arrayFormatting: new(new(emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation)),
+                arrayFormatting: new(emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation),
                 objectFormatting: new(
-                    new(emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation),
+                   emptySpacing, newLineProceedingFirstElement, newLineBetweenElements, newLineSucceedingLastElement, indentation, postCommaSeparation,
                     postkeySpacing,
                     preValueSpacing))));
             //Assert.AreEqual(, new JsonObject().Add("position", new JsonArray().Add(-12).Add(0).Add(403)).ToString());

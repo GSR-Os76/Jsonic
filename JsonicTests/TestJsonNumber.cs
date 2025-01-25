@@ -228,8 +228,8 @@ namespace GSR.Tests.Jsonic
 
             [DataRow("167", "167", false, false, false, false, true, 0)]
             [DataRow("17.0", "17", false, false, false, false, true, 0)]
-            public void ToString(string json, string expectation, 
-                bool preserve, bool placeExponent, bool capitalizeExponent, 
+            public void ToString(string json, string expectation,
+                bool preserve, bool placeExponent, bool capitalizeExponent,
                 bool explicitlySignExponent, bool allowInsignificantDigits, int decimalPositioning)
             {
                 Assert.AreEqual(expectation, JsonNumber.ParseJson(json).ToString(new(numberFormatting: new(preserve, placeExponent, capitalizeExponent, explicitlySignExponent, allowInsignificantDigits, decimalPositioning))));
@@ -243,7 +243,7 @@ namespace GSR.Tests.Jsonic
             [DataRow("19e0", "19.00000000000e0", true)]
             [DataRow("5", "5", true)]
             public void HomotypicEquals(string a, string b, bool expectation) => Assert.AreEqual(expectation, JsonNumber.ParseJson(a).Equals(JsonNumber.ParseJson(b)));
-            
+
             [TestMethod]
             [DataRow("3.2e3", "32e2", false)]
             [DataRow("1", "-1", false)]

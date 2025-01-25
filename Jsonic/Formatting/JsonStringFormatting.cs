@@ -3,7 +3,7 @@
     /// <summary>
     /// Formatting defining how to format a <see cref="JsonString"/>.
     /// </summary>
-    public struct JsonStringFormatting
+    public sealed class JsonStringFormatting
     {
         /// <summary>
         /// Write to string exactly as how it was parsed. Overrides all the other settings.
@@ -13,7 +13,7 @@
         /// <summary>
         /// Should forward slashes be escaped: '\/'.
         /// </summary>
-        public bool EscapeSolidi { get; } = false;
+        public bool EscapeSolidi { get; }
 
 #warning could escape unicode code points inside a specified range.
 
@@ -27,5 +27,5 @@
             Preserve = preserve;
             EscapeSolidi = escapeSolidus;
         } // end ctor
-    } // end struct
+    } // end class
 } // end namespace

@@ -7,36 +7,36 @@ namespace GSR.Tests.Jsonic
     public class TestJsonElement
     {
         #region ToString() and ToCompressedString()
-/*        [TestMethod]
-        public void TestNullValue()
-        {
-            Assert.AreEqual("null", new JsonElement(JsonNull.NULL).ToString());
-            Assert.AreEqual("null", new JsonElement().ToString());
-            Assert.AreEqual("null", new JsonElement(JsonNull.NULL).ToCompressedString());
-            Assert.AreEqual("null", new JsonElement().ToCompressedString());
-        } // end TestNullValue()
+        /*        [TestMethod]
+                public void TestNullValue()
+                {
+                    Assert.AreEqual("null", new JsonElement(JsonNull.NULL).ToString());
+                    Assert.AreEqual("null", new JsonElement().ToString());
+                    Assert.AreEqual("null", new JsonElement(JsonNull.NULL).ToCompressedString());
+                    Assert.AreEqual("null", new JsonElement().ToCompressedString());
+                } // end TestNullValue()
 
-        [TestMethod]
-        [DataRow(false, "false")]
-        [DataRow(true, "true")]
-        public void TestBooleanValue(bool b, string expectation)
-        {
-            JsonElement j = new(b);
-            Assert.AreEqual(expectation, j.ToString());
-            Assert.AreEqual(expectation, j.ToCompressedString());
-        } // end TestNullValue()
+                [TestMethod]
+                [DataRow(false, "false")]
+                [DataRow(true, "true")]
+                public void TestBooleanValue(bool b, string expectation)
+                {
+                    JsonElement j = new(b);
+                    Assert.AreEqual(expectation, j.ToString());
+                    Assert.AreEqual(expectation, j.ToCompressedString());
+                } // end TestNullValue()
 
-        [TestMethod]
-        public void TestArrayToString()
-        {
-            JsonElement j = new(new JsonArray());
-            Assert.AreEqual("[\r\r]", j.ToString());
-            Assert.AreEqual("[]", j.ToCompressedString());
+                [TestMethod]
+                public void TestArrayToString()
+                {
+                    JsonElement j = new(new JsonArray());
+                    Assert.AreEqual("[\r\r]", j.ToString());
+                    Assert.AreEqual("[]", j.ToCompressedString());
 
-            j.AsArray().Add(true).Add(new JsonArray()).Add(90);
-            Assert.AreEqual("[\r\ttrue,\r\t[\r\t\r\t],\r\t90\r]", j.ToString());
-            Assert.AreEqual("[true,[],90]", j.ToCompressedString());
-        } // end TestNullValue()*/
+                    j.AsArray().Add(true).Add(new JsonArray()).Add(90);
+                    Assert.AreEqual("[\r\ttrue,\r\t[\r\t\r\t],\r\t90\r]", j.ToString());
+                    Assert.AreEqual("[true,[],90]", j.ToCompressedString());
+                } // end TestNullValue()*/
 #warning others
         #endregion
 

@@ -3,7 +3,7 @@
     /// <summary>
     /// Formatting defining how to format a <see cref="JsonNumber"/>.
     /// </summary>
-    public struct JsonNumberFormatting
+    public sealed class JsonNumberFormatting
     {
         /// <summary>
         /// Write to string exactly as how it was parsed. Overrides all the other settings.
@@ -62,7 +62,13 @@
 
 
         /// <inheritdoc/>
-        public JsonNumberFormatting(bool preserve, bool placeExponent, bool capitalizeExponent, bool explicitlySignExponent, bool allowInsignificantDigits, int decimalPositioning) 
+        public JsonNumberFormatting(
+            bool preserve = true, 
+            bool placeExponent = false, 
+            bool capitalizeExponent = false, 
+            bool explicitlySignExponent = false, 
+            bool allowInsignificantDigits = false, 
+            int decimalPositioning = 0)
         {
             Preserve = preserve;
             PlaceExponent = placeExponent;
@@ -71,5 +77,5 @@
             AllowInsignificantDigits = allowInsignificantDigits;
             DecimalPositioning = decimalPositioning;
         } // end ctor
-    } // end struct
+    } // end class
 } // end namespace

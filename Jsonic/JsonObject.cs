@@ -14,7 +14,6 @@ namespace GSR.Jsonic
 
 
 
-
         /// <summary>
         /// Get the current number of key value pairs in the object
         /// </summary>
@@ -23,13 +22,12 @@ namespace GSR.Jsonic
         /// <inheritdoc/>
         public bool IsReadOnly => false;
 
-
         /// <inheritdoc/>
         public ICollection<JsonString> Keys => _elements.Keys;
 
-
         /// <inheritdoc/>
         public ICollection<JsonElement> Values => _elements.Values;
+
 
 
         /// <summary>
@@ -185,7 +183,7 @@ namespace GSR.Jsonic
         {
             StringBuilder sb = new("{");
             if (_elements.Count == 0)
-                for (int i = 0; i < formatting.ObjectFormatting.Formatting.EmptyCollectionNewLining; i++)
+                for (int i = 0; i < formatting.ObjectFormatting.EmptyCollectionNewLining; i++)
                     sb.Append(formatting.NewLineType.Str());
             else
                 WriteElements(sb, formatting);
@@ -196,10 +194,10 @@ namespace GSR.Jsonic
 
         private void WriteElements(StringBuilder stringBuilder, JsonFormatting formatting)
         {
-            if (formatting.ObjectFormatting.Formatting.NewLineProceedingFirstElement)
+            if (formatting.ObjectFormatting.NewLineProceedingFirstElement)
             {
                 stringBuilder.Append(formatting.NewLineType.Str());
-                stringBuilder.Append(formatting.ObjectFormatting.Formatting.Indentation);
+                stringBuilder.Append(formatting.ObjectFormatting.Indentation);
             }
 
             int i = 0;
@@ -209,24 +207,24 @@ namespace GSR.Jsonic
                 stringBuilder.Append(formatting.ObjectFormatting.PostKeyWhitespace);
                 stringBuilder.Append(':');
                 stringBuilder.Append(formatting.ObjectFormatting.PreValueWhitespace);
-                stringBuilder.Append(kvp.Value.ToString(formatting).Entabbed(formatting.NewLineType, formatting.ObjectFormatting.Formatting.Indentation));
+                stringBuilder.Append(kvp.Value.ToString(formatting).Entabbed(formatting.NewLineType, formatting.ObjectFormatting.Indentation));
 
 
                 if (i != _elements.Count - 1)
                 {
                     stringBuilder.Append(',');
-                    if (formatting.ObjectFormatting.Formatting.NewLineBetweenElements)
+                    if (formatting.ObjectFormatting.NewLineBetweenElements)
                     {
                         stringBuilder.Append(formatting.NewLineType.Str());
-                        stringBuilder.Append(formatting.ObjectFormatting.Formatting.Indentation);
+                        stringBuilder.Append(formatting.ObjectFormatting.Indentation);
                     }
                     else
-                        stringBuilder.Append(formatting.ObjectFormatting.Formatting.PostCommaSpacing);
+                        stringBuilder.Append(formatting.ObjectFormatting.PostCommaSpacing);
                 }
                 i++;
             }
 
-            if (formatting.ObjectFormatting.Formatting.NewLineSucceedingLastElement)
+            if (formatting.ObjectFormatting.NewLineSucceedingLastElement)
                 stringBuilder.Append(formatting.NewLineType.Str());
         } // end WriteElements()
 
