@@ -185,7 +185,7 @@ namespace GSR.Tests.Jsonic
 
             [TestMethod]
             [ExpectedException(typeof(ArgumentException))]
-            public void Add() =>  new JsonObject()
+            public void Add() => new JsonObject()
                     .Add(new JsonString("A"), new JsonElement())
                     .Add(new JsonString("BetaCapionssr3gwty"), new JsonElement())
                     .Add("A", new JsonArray());

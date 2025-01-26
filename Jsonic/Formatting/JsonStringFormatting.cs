@@ -15,7 +15,8 @@
         /// </summary>
         public bool EscapeSolidi { get; }
 
-#warning could escape unicode code points inside a specified range.   -   also, captial/lowercase hex
+#warning could escape unicode code points inside a specified range. 
+#warning captial/lowercase hex
 
 
 

@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <Title>GSR Jsonic</Title>
     <PackageId>gsr_jsonic</PackageId>
-    <Version>2.2.2.0</Version>
+    <Version>3.0.0.0</Version>
     <Authors>GSR</Authors>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/GSR-Os76/Jsonic</RepositoryUrl>

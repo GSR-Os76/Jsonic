@@ -109,7 +109,7 @@ namespace GSR.Jsonic
             if (obj is null)
                 return Type == JsonType.Null;
 
-            if(obj is JsonElement other)
+            if (obj is JsonElement other)
                 return other.Type == Type
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
                 && (Type == JsonType.Null || other.Value.Equals(Value));

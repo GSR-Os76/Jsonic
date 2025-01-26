@@ -63,11 +63,11 @@
 
         /// <inheritdoc/>
         public JsonNumberFormatting(
-            bool preserve = true, 
-            bool placeExponent = false, 
-            bool capitalizeExponent = false, 
-            bool explicitlySignExponent = false, 
-            bool allowInsignificantDigits = false, 
+            bool preserve = true,
+            bool placeExponent = false,
+            bool capitalizeExponent = false,
+            bool explicitlySignExponent = false,
+            bool allowInsignificantDigits = false,
             int decimalPositioning = 0)
         {
             Preserve = preserve;

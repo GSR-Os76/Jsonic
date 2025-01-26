@@ -36,7 +36,7 @@ namespace GSR.Tests.Jsonic
             [DataRow("\"f\"", "f")]
             [DataRow("\"u98A3\"", "u98A3")]
             [DataRow("\"n\"", "n")]
-            public void ParseJson(string toParse, string expectation) 
+            public void ParseJson(string toParse, string expectation)
                 => Assert.AreEqual(expectation, JsonString.ParseJson(toParse).Value);
 
             [TestMethod]
@@ -131,7 +131,7 @@ namespace GSR.Tests.Jsonic
                 Assert.AreEqual(value, (string)v);
                 Assert.AreEqual($"\"{expectation}\"", v.ToString(format));
             } // end ConstructedFormattedToString()
-            
+
             [TestMethod]
             [DataRow("\"\\u9999\"", "香", "香", false, false)]
             [DataRow("\"\\u6038\"", "怸", "怸", false, false)]

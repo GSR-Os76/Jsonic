@@ -5,7 +5,7 @@ namespace GSR.Tests.Jsonic
     public class TestJsonBoolean
     {
         [TestClass]
-        public class Valid 
+        public class Valid
         {
             [TestMethod]
             public void MethodEquality()

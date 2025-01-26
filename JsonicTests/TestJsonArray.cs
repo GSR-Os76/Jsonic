@@ -133,15 +133,15 @@ namespace GSR.Tests.Jsonic
                 Assert.AreEqual(new JsonElement(), arr[0]);
             } // end Add()
 
-/*            [TestMethod]
-            public void IndexerSet()
-            {
-                JsonArray arr = new();
-#pragma warning disable CS8625
-                arr[0] = null;
-#pragma warning restore CS8625 
-                Assert.AreEqual(new JsonElement(), arr[0]);
-            } // end IndexerSet()*/
+            /*            [TestMethod]
+                        public void IndexerSet()
+                        {
+                            JsonArray arr = new();
+            #pragma warning disable CS8625
+                            arr[0] = null;
+            #pragma warning restore CS8625 
+                            Assert.AreEqual(new JsonElement(), arr[0]);
+                        } // end IndexerSet()*/
 
             [TestMethod]
             public void InsertAt()

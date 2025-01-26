@@ -22,8 +22,7 @@ namespace GSR.Jsonic
                     return _value;
 
                 string? val;
-#warning what happens if garbage collection occurs after lazy is calculated but before returning?
-                if (!_valueP.Value.TryGetTarget(out val))
+                if (!_valueP.IsValueCreated || !_valueP.Value.TryGetTarget(out val))
                 {
                     val = Regex.Unescape(_parsedJson?[1..^1] ?? throw new InvalidOperationException("Value hypothetically shouldn't possibly be null currently."));
                     _valueP.Value.SetTarget(val);
@@ -59,7 +58,7 @@ namespace GSR.Jsonic
         {
             _parsedJson = parsed;
             _value = value;
-            _valueP = new Lazy<WeakReference<string>>(() => new WeakReference<string>(Regex.Unescape(_parsedJson?[1..^1] ?? throw new InvalidOperationException("Value hypothetically shouldn't possibly be null currently."))));
+            _valueP = new Lazy<WeakReference<string>>(() => new WeakReference<string>(""));
         } // end ctor
 
 
